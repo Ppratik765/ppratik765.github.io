@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beyond the Apex (F1 Telemetry Engine) — Project Detail</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  
+  <!-- Modular Scripts -->
+  <script src="../js/effects.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- ========== Navigation ========== -->
+  <nav class="nav">
+    <a href="../index.html" class="nav__logo">← PP</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-toggle__icon" id="theme-icon">☾</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ========== Project Details ========== -->
+  <main class="project-details">
+    <header class="project-details__header">
+      <p class="section-label">02 // Project Focus</p>
+      <h1 class="project-details__title">Beyond the Apex</h1>
+      
+      <div class="project-details__meta">
+        <div class="meta-item">
+          <span class="meta-item__label">Domain</span>
+          <span class="meta-item__value">Data Ingestion / Race Telemetry Analytics</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Core Stack</span>
+          <span class="meta-item__value">Python, FastF1, Pandas, Canvas 2D, D3.js</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Data Metrics</span>
+          <span class="meta-item__value">Delta speeds, steering angles, gear transitions</span>
+        </div>
+      </div>
+
+      <div class="project-details__actions">
+        <a href="https://github.com/Ppratik765/Beyond-The-Apex-Pro-vercel" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
+        <a href="https://beyond-the-apex-pro.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Live Demo</a>
+      </div>
+    </header>
+
+    <section class="project-details__desc-section" style="min-height: auto; padding: 0; margin-bottom: 3.5rem;">
+      <div>
+        <h3>Purpose & Necessity</h3>
+        <p>
+          Formula 1 data feeds are highly dense, timing-critical, and complex. Combining multiple driver metrics (steering angle, throttle/brake overlays, velocity vectors) to analyze overtaking opportunities or pit wall strategy is challenging without clear spatial rendering. Beyond the Apex serves as a high-performance telemetry dashboard, ingesting and aligning fast-moving API packages into legible, interactive data charts.
+        </p>
+        
+        <h3>Key Technical Implementation</h3>
+        <p>
+          The engine ingests data from python-wrapped FastF1 APIs, indexing frames using Pandas arrays. Clean Canvas 2D grids render line sweep overlays when selecting driver channels, tracking metrics like braking points and throttle inputs across coordinates of specific F1 circuits.
+        </p>
+      </div>
+    </section>
+
+    <!-- Embedded Live Iframe -->
+    <div class="project-details__iframe-container">
+      <iframe class="project-details__iframe" src="https://beyond-the-apex-pro.vercel.app/" title="Beyond the Apex Live View"></iframe>
+    </div>
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="footer__left">
+      © 2026 Priyanshu Pratik Beyond the Apex.
+    </div>
+    <div class="footer__right">
+      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+        DEPLOYMENT: OPERATIONAL
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

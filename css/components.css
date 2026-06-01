@@ -1,0 +1,570 @@
+/* ============================================================
+   PORTFOLIO — css/components.css
+   Project Cards, Spotlight effects, Terminal CLI, Buttons, Stills
+   ============================================================ */
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 1.85rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn--primary {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+.btn--primary:hover {
+  box-shadow: 0 0 30px rgba(255, 195, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1.5px solid var(--text-muted);
+  color: var(--text-secondary);
+}
+
+.btn--ghost:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+/* ---------- Stat Cards ---------- */
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-glow);
+  transform: scale(0.95);
+  opacity: 0;
+  transition: border-color 0.3s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-card:hover {
+  border-color: var(--accent-primary);
+}
+
+.stat-card__value {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1.1;
+}
+
+.stat-card__label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.5rem;
+}
+
+/* ---------- Project Showcase Card ---------- */
+.project-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-decoration: none;
+  color: inherit;
+  transform: perspective(1000px);
+  transform-style: preserve-3d;
+  transition: border-color 0.4s, box-shadow 0.4s, transform 0.2s ease-out;
+  cursor: pointer;
+}
+
+/* Magnetic Spotlight Radial Background */
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 195, 0, 0.16),
+    transparent 80%
+  );
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+[data-theme="light"] .project-card::before {
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(204, 154, 6, 0.14),
+    transparent 80%
+  );
+}
+
+.project-card:hover {
+  border-color: rgba(255, 195, 0, 0.6);
+  box-shadow: 0 15px 45px rgba(255, 195, 0, 0.16);
+}
+
+[data-theme="light"] .project-card:hover {
+  border-color: rgba(204, 154, 6, 0.55);
+  box-shadow: 0 15px 45px rgba(204, 154, 6, 0.12);
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+/* Inner Container for 3D translation */
+.project-card__content {
+  transform: translateZ(30px);
+  position: relative;
+  z-index: 3;
+}
+
+.project-card__visual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.project-card__visual canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.project-card__tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+}
+
+.project-card__title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.project-card__desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.project-card__tech {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tech-pill {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Hover Visual: Vector Squadron (Grid Flash) */
+#vector-grid-canvas {
+  opacity: 0.12;
+  transition: opacity 0.4s;
+}
+.project-card:hover #vector-grid-canvas {
+  opacity: 0.68;
+}
+
+/* Hover Visual: Waveglider (Subtle Displacement Ripple) */
+#ocean-canvas {
+  opacity: 0.08;
+  transition: opacity 0.4s;
+}
+.project-card:hover #ocean-canvas {
+  opacity: 0.58;
+}
+
+/* Hover Visual: Beyond the Apex (Line Chart Drawing) */
+#f1-canvas {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.project-card:hover #f1-canvas {
+  opacity: 0.85;
+}
+
+/* Hover Visual: Agentic Supply (Isometric Nodes) */
+#supply-canvas {
+  opacity: 0.15;
+  transition: opacity 0.4s;
+}
+.project-card:hover #supply-canvas {
+  opacity: 0.85;
+}
+
+/* Hover Visual: LocalPDF Pro (Decrypt Console) */
+.project-card__decrypt-block {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.18;
+  transition: opacity 0.4s, color 0.4s;
+}
+.project-card:hover .project-card__decrypt-block {
+  opacity: 0.9;
+  color: var(--accent-primary);
+}
+
+/* ---------- Terminal Command CLI ---------- */
+.terminal {
+  background: #0b0f17;
+  border: 1px solid #1f2530;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-mono);
+}
+
+[data-theme="light"] .terminal {
+  background: #1c212b;
+  border-color: #2b3240;
+}
+
+.terminal__bar {
+  background: #121822;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1px solid #1f2530;
+}
+
+[data-theme="light"] .terminal__bar {
+  background: #171d28;
+  border-bottom-color: #2b3240;
+}
+
+.terminal__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal__dot--red   { background: #ff5f56; }
+.terminal__dot--yellow{ background: #ffbd2e; }
+.terminal__dot--green { background: #27c93f; }
+
+.terminal__title {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.terminal__body {
+  padding: 1.75rem;
+  height: 320px;
+  overflow-y: auto;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: #ccd6e0;
+  text-align: left;
+}
+
+.terminal__line {
+  margin-bottom: 0.4rem;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.terminal__prompt {
+  color: var(--terminal-green);
+  font-weight: bold;
+}
+
+.terminal__cmd {
+  color: #ffd60a;
+}
+
+.terminal__output {
+  color: #8b949e;
+}
+
+.terminal__link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s, text-decoration 0.2s;
+}
+
+.terminal__link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.terminal__cursor-blink {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background: var(--terminal-green);
+  animation: terminalBlink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 3px;
+}
+
+@keyframes terminalBlink {
+  50% { opacity: 0; }
+}
+
+.terminal__buttons {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Terminal button with Spotlight gradient support */
+.terminal__btn {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.5rem 1.15rem;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.terminal__btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    80px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 195, 0, 0.15),
+    transparent 80%
+  );
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.terminal__btn:hover::before {
+  opacity: 1;
+}
+
+.terminal__btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.terminal__btn-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Pathfinding Map styles ---------- */
+.custom-leaflet-icon {
+  background: transparent;
+}
+
+.marker-inner-wrapper {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: center center;
+}
+
+.custom-leaflet-icon:hover .marker-inner-wrapper {
+  transform: scale(1.3);
+}
+
+.leaflet-custom-tooltip {
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  font-size: 0.85rem !important;
+  font-family: var(--font-sans) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-glow) !important;
+  white-space: normal !important;
+  width: 240px !important;
+  line-height: 1.6 !important;
+}
+
+.leaflet-custom-tooltip::before {
+  display: none !important;
+}
+
+/* ---------- Project Details Page Common styles ---------- */
+.project-details {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-top: 10rem;
+}
+
+.project-details__header {
+  margin-bottom: 3.5rem;
+}
+
+.project-details__title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.project-details__meta {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-item__label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.meta-item__value {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.project-details__actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.project-details__desc-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+}
+
+.project-details__desc-section h3 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.project-details__desc-section p {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.project-details__iframe-container {
+  width: 100%;
+  height: 600px;
+  background: #000;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-glow);
+  margin-bottom: 6rem;
+}
+
+.project-details__iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Hover Visual: Aura (Audio visualizer EQ bars) */
+#aura-canvas {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.project-card:hover #aura-canvas {
+  opacity: 0.88;
+}
+
+/* Hover Visual: Pulmosense (Medical Scanning Line) */
+#pulmo-canvas {
+  opacity: 0.08;
+  transition: opacity 0.4s;
+}
+.project-card:hover #pulmo-canvas {
+  opacity: 0.85;
+}
+
+/* Hover Visual: Retro Arcade (Pixel dissolve block transition overlay) */
+#arcade-canvas {
+  opacity: 0.06;
+  transition: opacity 0.4s;
+}
+.project-card:hover #arcade-canvas {
+  opacity: 0.78;
+}

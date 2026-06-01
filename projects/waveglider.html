@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waveglider Ocean Simulation — Project Detail</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  
+  <!-- Modular Scripts -->
+  <script src="../js/effects.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- ========== Navigation ========== -->
+  <nav class="nav">
+    <a href="../index.html" class="nav__logo">← PP</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-toggle__icon" id="theme-icon">☾</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ========== Project Details ========== -->
+  <main class="project-details">
+    <header class="project-details__header">
+      <p class="section-label">02 // Project Focus</p>
+      <h1 class="project-details__title">Waveglider Ocean</h1>
+      
+      <div class="project-details__meta">
+        <div class="meta-item">
+          <span class="meta-item__label">Domain</span>
+          <span class="meta-item__value">Fluid Physics Simulation / WebGL</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Core Stack</span>
+          <span class="meta-item__value">WebGL, Three.js, GLSL, Gerstner Math</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Performance</span>
+          <span class="meta-item__value">GPU-based vertex displacements at 60 FPS</span>
+        </div>
+      </div>
+
+      <div class="project-details__actions">
+        <a href="https://github.com/Ppratik765/Ocean-simulation" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
+        <a href="https://waveglider.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Live Demo</a>
+      </div>
+    </header>
+
+    <section class="project-details__desc-section" style="min-height: auto; padding: 0; margin-bottom: 3.5rem;">
+      <div>
+        <h3>Purpose & Necessity</h3>
+        <p>
+          Rendering realistic fluid surfaces in browsers requires heavy floating-point calculation. Doing this on the CPU degrades browser responsiveness and kills framerates. Waveglider delegates these displacement calculations entirely to the GPU by translating Gerstner wave vector equations into vertex shaders, keeping CPU resources clear for logistical or layout tasks.
+        </p>
+        
+        <h3>Key Technical Implementation</h3>
+        <p>
+          A Gerstner wave model defines wave height, sharpness, and directional movement vectors using parameter matrices. Dynamic foam particles are spawned at steep crests inside fragment shaders. To optimize rendering boundaries, a level-of-detail (LOD) grid decreases geometry density at further distances from the camera plane.
+        </p>
+      </div>
+    </section>
+
+    <!-- Embedded Live Iframe -->
+    <div class="project-details__iframe-container">
+      <iframe class="project-details__iframe" src="https://waveglider.vercel.app/" title="Waveglider Ocean Simulation Live View"></iframe>
+    </div>
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="footer__left">
+      © 2026 Priyanshu Pratik Waveglider.
+    </div>
+    <div class="footer__right">
+      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+        DEPLOYMENT: OPERATIONAL
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

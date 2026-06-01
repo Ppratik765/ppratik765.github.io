@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic Supply Chain Optimization — Project Detail</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  
+  <!-- Modular Scripts -->
+  <script src="../js/effects.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- ========== Navigation ========== -->
+  <nav class="nav">
+    <a href="../index.html" class="nav__logo">← PP</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-toggle__icon" id="theme-icon">☾</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ========== Project Details ========== -->
+  <main class="project-details">
+    <header class="project-details__header">
+      <p class="section-label">02 // Project Focus</p>
+      <h1 class="project-details__title">Agentic Supply Chain</h1>
+      
+      <div class="project-details__meta">
+        <div class="meta-item">
+          <span class="meta-item__label">Domain</span>
+          <span class="meta-item__value">Logistics / Multi-Agent Route Optimization</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Core Stack</span>
+          <span class="meta-item__value">LangChain, Python, Reinforcement Learning, NetworkX</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Methodology</span>
+          <span class="meta-item__value">Decentralized agents communicating routing updates</span>
+        </div>
+      </div>
+
+      <div class="project-details__actions">
+        <a href="https://github.com/Ppratik765/Agentic-supply-chain-management-Beer-Game" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
+        <a href="https://agentic-beer-game.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Live Demo</a>
+      </div>
+    </header>
+
+    <section class="project-details__desc-section" style="min-height: auto; padding: 0; margin-bottom: 3.5rem;">
+      <div>
+        <h3>Purpose & Necessity</h3>
+        <p>
+          Traditional supply chain routers use static, centralized algorithms. If a single transit link goes down or a node experiences congestion, recalculating paths for thousands of active shipments causes severe delays. Agentic Supply Chain models the network as a decentralized grid, placing independent, communicative AI agents at each node to coordinate routing decisions locally.
+        </p>
+        
+        <h3>Key Technical Implementation</h3>
+        <p>
+          Each coordinate node hosts a Python agent powered by LangChain orchestration. Agents utilize Q-learning reinforcement structures, adjusting route recommendations based on incoming feed indicators (fuel prices, weather patterns, localized traffic indices). Paths are modeled dynamically using NetworkX topological graphing.
+        </p>
+      </div>
+    </section>
+
+    <!-- Embedded Live Iframe -->
+    <div class="project-details__iframe-container">
+      <iframe class="project-details__iframe" src="https://agentic-beer-game.vercel.app/" title="Agentic Supply Chain Live View"></iframe>
+    </div>
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="footer__left">
+      © 2026 Priyanshu Pratik Agentic Supply Chain.
+    </div>
+    <div class="footer__right">
+      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+        DEPLOYMENT: OPERATIONAL
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
