@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Priyanshu Pratik — AI & Interactive Systems Developer</title>
+  <meta name="description" content="Portfolio of Priyanshu Pratik — Building intelligent systems and interactive realities. AI & Data Science, Transportation Logistics, and Creative Frontend Development." />
+  <meta name="keywords" content="Priyanshu Pratik, AI developer, data science, portfolio, interactive, Three.js, WebGL" />
+  <meta name="author" content="Priyanshu Pratik" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <!-- Main Script -->
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <!-- ========== Custom Cursor Canvas ========== -->
+  <canvas id="cursor-canvas"></canvas>
+
+  <!-- ========== Navigation ========== -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav__logo">PP.</a>
+    <ul class="nav__links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-toggle__icon" id="theme-icon">☾</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ========== Section 1: Hero ========== -->
+  <section class="hero" id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero__content">
+      <p class="hero__tagline">// systems engineer · creative developer</p>
+      <h1 class="hero__name">
+        <span>Priyanshu</span>
+        <span class="highlight">Pratik.</span>
+      </h1>
+      <p class="hero__subtitle">
+        Building intelligent systems and interactive realities. 
+        From autonomous supply chains to immersive WebGL experiences — 
+        engineering the future, one algorithm at a time.
+      </p>
+      <div class="hero__cta-row">
+        <a href="#projects" class="btn btn--primary">View Projects</a>
+        <a href="#contact" class="btn btn--ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero__scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ========== Section 2: About ========== -->
+  <section id="about">
+    <div class="about">
+      <div class="about__text">
+        <p class="section-label">01 // About Me</p>
+        <h2 class="section-title reveal">The Pathfinding<br/>Journey</h2>
+        <p class="reveal">
+          I'm Priyanshu Pratik — an AI & Data Science undergraduate at 
+          <strong>Gati Shakti Vishwavidyalaya</strong> (formerly NRTI), 
+          specializing in <strong>Transportation and Logistics</strong>. 
+          My academic foundation merges cutting-edge AI with the complex 
+          real-world domain of supply chain optimization.
+        </p>
+        <p class="reveal">
+          With a <strong>CGPA of 8.5+</strong>, I balance theoretical depth 
+          with hands-on systems building. I've solved <strong>160+ problems 
+          on LeetCode</strong>, sharpening my algorithmic thinking for 
+          competitive contexts. Currently preparing for <strong>GATE 2027 
+          (DA)</strong> to push deeper into data science research.
+        </p>
+        <p class="reveal">
+          My journey began at <strong>Soar Valley College</strong> through 
+          10th, 12th, and JEE preparation — a disciplined path that built 
+          my foundation in mathematics and problem-solving. That same 
+          drive now fuels my work in autonomous systems, F1 telemetry 
+          analysis, and immersive web experiences.
+        </p>
+
+        <div class="about__stats">
+          <div class="stat-card reveal-scale">
+            <div class="stat-card__value">8.5+</div>
+            <div class="stat-card__label">CGPA</div>
+          </div>
+          <div class="stat-card reveal-scale">
+            <div class="stat-card__value">160+</div>
+            <div class="stat-card__label">LeetCode Solved</div>
+          </div>
+          <div class="stat-card reveal-scale">
+            <div class="stat-card__value">AI&DS</div>
+            <div class="stat-card__label">Specialization</div>
+          </div>
+          <div class="stat-card reveal-scale">
+            <div class="stat-card__value">2027</div>
+            <div class="stat-card__label">GATE DA Target</div>
+          </div>
+        </div>
+      </div>
+      <div class="about__visual reveal-right">
+        <canvas id="pathfinding-canvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Section 3: Projects ========== -->
+  <section id="projects">
+    <div class="projects">
+      <p class="section-label">02 // Projects</p>
+      <h2 class="section-title reveal">The Showcase</h2>
+      <div class="projects__grid">
+
+        <!-- Project A: Waveglider -->
+        <div class="project-card reveal-scale" id="card-ocean">
+          <div class="project-card__visual">
+            <canvas id="ocean-canvas"></canvas>
+          </div>
+          <div class="project-card__content">
+            <p class="project-card__tag">WebGL · Simulation</p>
+            <h3 class="project-card__title">Waveglider — Infinite Ocean</h3>
+            <p class="project-card__desc">
+              A real-time infinite ocean simulation built with custom WebGL 
+              shaders. Dynamic wave systems with Gerstner wave functions, 
+              atmospheric scattering, and GPU-driven particle foam.
+            </p>
+            <div class="project-card__tech">
+              <span class="tech-pill">Three.js</span>
+              <span class="tech-pill">GLSL</span>
+              <span class="tech-pill">WebGL</span>
+              <span class="tech-pill">Physics</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project B: Beyond The Apex -->
+        <div class="project-card reveal-scale" id="card-f1">
+          <div class="project-card__visual">
+            <canvas id="f1-canvas"></canvas>
+          </div>
+          <div class="project-card__content">
+            <p class="project-card__tag">Data Analysis · F1 Telemetry</p>
+            <h3 class="project-card__title">Beyond The Apex</h3>
+            <p class="project-card__desc">
+              An F1 telemetry engine that ingests and visualizes real-time 
+              racing data. Powered by FastF1, it renders speed traces, 
+              throttle maps, and lap-by-lap strategy analysis.
+            </p>
+            <div class="project-card__tech">
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">FastF1</span>
+              <span class="tech-pill">Pandas</span>
+              <span class="tech-pill">Canvas 2D</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project C: Supply Chain -->
+        <div class="project-card reveal-scale" id="card-supply">
+          <div class="project-card__visual">
+            <canvas id="supply-canvas"></canvas>
+          </div>
+          <div class="project-card__content">
+            <p class="project-card__tag">AI Agents · Optimization</p>
+            <h3 class="project-card__title">Agentic Supply Chain</h3>
+            <p class="project-card__desc">
+              Multi-agent system for autonomous supply chain management. 
+              Intelligent agents coordinate route optimization, demand 
+              forecasting, and real-time inventory balancing.
+            </p>
+            <div class="project-card__tech">
+              <span class="tech-pill">LangChain</span>
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">RL</span>
+              <span class="tech-pill">Graph</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project D: LocalPDF Pro -->
+        <div class="project-card reveal-scale" id="card-pdf">
+          <div class="project-card__visual"></div>
+          <div class="project-card__content">
+            <p class="project-card__tag">Privacy-First · Tool</p>
+            <h3 class="project-card__title">LocalPDF Pro</h3>
+            <p class="project-card__desc">
+              A fully offline, privacy-first PDF toolkit. Merge, split, 
+              compress, and annotate documents without any data ever 
+              leaving your machine. Zero cloud. Zero tracking.
+            </p>
+            <div class="project-card__tech">
+              <span class="tech-pill">JavaScript</span>
+              <span class="tech-pill">PDF.js</span>
+              <span class="tech-pill">Web Workers</span>
+              <span class="tech-pill">Offline</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Section 4: Contact / Terminal ========== -->
+  <section id="contact">
+    <div class="contact">
+      <p class="section-label">03 // Contact</p>
+      <h2 class="section-title reveal">The Terminal</h2>
+      <div class="terminal reveal-scale">
+        <div class="terminal__bar">
+          <div class="terminal__dot terminal__dot--red"></div>
+          <div class="terminal__dot terminal__dot--yellow"></div>
+          <div class="terminal__dot terminal__dot--green"></div>
+          <span class="terminal__title">priyanshu@portfolio ~ contact</span>
+        </div>
+        <div class="terminal__body" id="terminal-body">
+          <div class="terminal__line">
+            <span class="terminal__prompt">visitor@portfolio:~$</span> <span class="terminal__cmd">cat welcome.txt</span>
+          </div>
+          <div class="terminal__line terminal__output">
+            Let's build something extraordinary together.
+          </div>
+          <div class="terminal__line terminal__output">
+            Choose a command below to reveal contact info.
+          </div>
+          <div class="terminal__line">&nbsp;</div>
+          <div id="terminal-output"></div>
+          <div class="terminal__line" id="terminal-input-line">
+            <span class="terminal__prompt">visitor@portfolio:~$</span> <span class="terminal__cursor-blink"></span>
+          </div>
+        </div>
+        <div style="padding: 0 1.5rem 1.5rem;">
+          <div class="terminal__buttons">
+            <button class="terminal__btn" data-cmd="email" id="btn-email">→ show email</button>
+            <button class="terminal__btn" data-cmd="linkedin" id="btn-linkedin">→ show linkedin</button>
+            <button class="terminal__btn" data-cmd="github" id="btn-github">→ show github</button>
+            <button class="terminal__btn" data-cmd="clear" id="btn-clear">→ clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer" id="footer">
+    <div class="footer__left">
+      © 2026 Priyanshu Pratik — Built with Three.js, GSAP & ☕
+    </div>
+    <div class="footer__right">
+      <div class="efficiency-toggle">
+        <button class="efficiency-btn" id="efficiency-btn">⚡ Efficiency Mode</button>
+        <span class="fps-counter" id="fps-counter">-- FPS</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
