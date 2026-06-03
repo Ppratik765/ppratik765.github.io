@@ -20,7 +20,7 @@
   --text-muted:      #6b7f99;
   --card-bg:         rgba(0, 29, 61, 0.55);
   --card-border:     rgba(255, 195, 0, 0.15);
-  --glass-bg:        rgba(0, 8, 20, 0.7);
+  --glass-bg:        rgba(0, 8, 20, 0.3);
   --glass-border:    rgba(255, 195, 0, 0.12);
   --shadow-glow:     0 0 40px rgba(255, 195, 0, 0.08);
   --terminal-green:  #39ff14;
@@ -47,7 +47,7 @@
   --text-muted:      #5a7394;
   --card-bg:         rgba(240, 236, 226, 0.6);
   --card-border:     rgba(204, 154, 6, 0.18);
-  --glass-bg:        rgba(250, 247, 240, 0.8);
+  --glass-bg:        rgba(250, 247, 240, 0.35);
   --glass-border:    rgba(204, 154, 6, 0.12);
   --shadow-glow:     0 0 40px rgba(204, 154, 6, 0.1);
   --terminal-green:  #1a6b3c;

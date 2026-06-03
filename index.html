@@ -63,7 +63,14 @@
   <section class="hero" id="hero">
     <!-- Backing Iframe Container (locked to autoplay) -->
     <div class="hero__iframe-container">
-      <iframe id="hero-iframe" class="hero__iframe" src="https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=dark" title="Vector Squadron Space Autopilot" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
+      <iframe id="hero-iframe" class="hero__iframe" src="" title="Vector Squadron Space Autopilot" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
+      <script>
+        (function() {
+          var t = localStorage.getItem('portfolio-theme') || 'dark';
+          document.getElementById('hero-iframe').src =
+            'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + t;
+        })();
+      </script>
     </div>
     <!-- Fade Overlay -->
     <div class="hero__overlay"></div>
