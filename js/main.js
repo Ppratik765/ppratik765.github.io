@@ -14,51 +14,60 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeLabel = document.getElementById('theme-label');
 
   if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
+    themeToggleBtn.addEventListener('click', (e) => {
       const htmlEl = document.documentElement;
       const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
-      const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-      // Create a full-screen flash transition overlay
-      const transitionOverlay = document.createElement('div');
-      transitionOverlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 10000;
-        pointer-events: none;
-        background: ${targetTheme === 'light' ? '#faf7f0' : '#000814'};
-        opacity: 0;
-      `;
-      document.body.appendChild(transitionOverlay);
+      // 2. Immediately update the iframe
+      const heroIframe = document.getElementById('hero-iframe');
+      if (heroIframe) {
+        heroIframe.src = 'https://shooting-game-st-git-b73568-priyanshu-pratiks-projects-c61974fc.vercel.app/?autoplay=true&theme=' + nextTheme;
+      }
 
-      // GSAP Flash
-      gsap.timeline()
-        .to(transitionOverlay, {
-          opacity: 0.7,
-          duration: 0.25,
-          ease: 'power2.in',
+      // 3. Create a temporary div overlay covering the entire screen
+      const overlay = document.createElement('div');
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100vw';
+      overlay.style.height = '100vh';
+      overlay.style.zIndex = '9999';
+      overlay.style.pointerEvents = 'none';
+      overlay.style.backgroundColor = nextTheme === 'light' ? '#fefae0' : '#000814';
+
+      // 4. Append the overlay to the body
+      document.body.appendChild(overlay);
+
+      // 5. Use GSAP to animate the overlay
+      gsap.fromTo(overlay, 
+        { clipPath: `circle(0px at ${e.clientX}px ${e.clientY}px)` }, 
+        { 
+          clipPath: `circle(150% at ${e.clientX}px ${e.clientY}px)`, 
+          duration: 0.8, 
+          ease: "power3.inOut", 
           onComplete: () => {
-            // Apply attributes
-            htmlEl.setAttribute('data-theme', targetTheme);
-            themeIcon.textContent = targetTheme === 'dark' ? '☾' : '☀';
-            themeLabel.textContent = targetTheme === 'dark' ? 'Light' : 'Dark';
+            // 6. In the onComplete callback:
+            // Update the document's data-theme attribute
+            htmlEl.setAttribute('data-theme', nextTheme);
             
-            // Dispatch a theme changed event so D3.js can update colors
+            // Update the toggle button icon/text
+            if (themeIcon) {
+              themeIcon.textContent = nextTheme === 'dark' ? '☾' : '☀';
+            }
+            if (themeLabel) {
+              themeLabel.textContent = nextTheme === 'dark' ? 'Light' : 'Dark';
+            }
+            
+            // Dispatch a theme changed event so other scripts can update colors
             const ev = new CustomEvent('theme-changed');
             window.dispatchEvent(ev);
-          }
-        })
-        .to(transitionOverlay, {
-          opacity: 0,
-          duration: 0.4,
-          ease: 'power2.out',
-          onComplete: () => {
-            transitionOverlay.remove();
-          }
-        });
+
+            // Remove the temporary overlay from the DOM
+            overlay.remove();
+          } 
+        }
+      );
     });
   }
 

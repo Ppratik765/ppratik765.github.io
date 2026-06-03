@@ -506,14 +506,42 @@ section {
     display: none;
   }
 
+  /* Scale down the massive typography */
   .hero__name {
-    font-size: clamp(2.5rem, 10vw, 5rem);
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
   }
 
+  .hero__subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero__cta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  /* Center the "Take Control / Play Game" button at the bottom of the screen instead of the corner */
   .hero__control-btn {
-    position: static;
-    margin-top: 2rem;
-    display: inline-block;
+    position: absolute;
+    bottom: 4rem;
+    /* Keeps it above mobile browser bars */
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    z-index: 10;
+    display: block;
+    width: auto;
+    text-align: center;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.75rem;
   }
 
   .about__stats {
@@ -529,38 +557,5 @@ section {
     gap: 1rem;
     align-items: center;
     text-align: center;
-  }
-}
-
-
-@media (max-width: 768px) {
-
-  /* Scale down the massive typography */
-  .hero__name {
-    font-size: clamp(2rem, 8vw, 3.5rem);
-    line-height: 1.1;
-    margin-bottom: 1rem;
-  }
-
-  .hero__subtitle {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  /* Center the button at the bottom of the screen instead of the corner */
-  .hero__cta-row {
-    position: absolute;
-    bottom: 4rem;
-    /* Keeps it above mobile browser bars */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.75rem;
   }
 }
