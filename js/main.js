@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 2. Immediately update the iframe
       const heroIframe = document.getElementById('hero-iframe');
       if (heroIframe) {
-        heroIframe.src = 'https://shooting-game-st-git-b73568-priyanshu-pratiks-projects-c61974fc.vercel.app/?autoplay=true&theme=' + nextTheme;
+        heroIframe.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + nextTheme;
       }
 
       // 3. Create a temporary div overlay covering the entire screen
