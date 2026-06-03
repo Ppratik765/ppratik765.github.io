@@ -10,7 +10,7 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 1.25rem 2.5rem;
+  padding: 0.9rem 2.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -218,11 +218,17 @@ html[data-theme="light"] .hero__overlay {
   background: transparent;
 }
 
+html[data-theme="light"] .hero__iframe-container {
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
 .hero__content {
   position: relative;
   z-index: 3;
   max-width: 950px;
   pointer-events: auto;
+  margin-top: 3.2rem;
 }
 
 .hero__tagline {
@@ -242,7 +248,7 @@ html[data-theme="light"] .hero__overlay {
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -0.03em;
-  margin-bottom: 2rem;
+  margin-bottom: 1.05rem;
   color: var(--text-primary);
   opacity: 0;
   transform: translateY(30px);
@@ -264,7 +270,7 @@ html[data-theme="light"] .hero__overlay {
   color: var(--text-secondary);
   line-height: 1.6;
   max-width: 650px;
-  margin-bottom: 3rem;
+  margin-bottom: 0.5rem;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -275,6 +281,11 @@ html[data-theme="light"] .hero__overlay {
   flex-wrap: wrap;
   opacity: 0;
   transform: translateY(20px);
+}
+
+.hero__cta-row .btn--ghost {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 
 /* Take Control Interactive Floating Button */
@@ -514,12 +525,12 @@ html[data-theme="light"] .hero__overlay {
   .hero__name {
     font-size: clamp(2rem, 8vw, 3.5rem);
     line-height: 1.1;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .hero__subtitle {
     font-size: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
   }
 
   .hero__cta-row {
@@ -561,5 +572,9 @@ html[data-theme="light"] .hero__overlay {
     gap: 1rem;
     align-items: center;
     text-align: center;
+  }
+
+  .hero__content {
+    margin-top: 2.2rem;
   }
 }

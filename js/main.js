@@ -312,8 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .to('.hero__tagline', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
       .to('.hero__name', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
       .to('.hero__subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.6')
-      .to('.hero__cta-row', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
-      .to('.hero__scroll-hint', { opacity: 1, duration: 0.5 }, '-=0.2');
+      .to('.hero__cta-row', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5');
 
     // Generic reveal transitions
     gsap.utils.toArray('.reveal').forEach(el => {
