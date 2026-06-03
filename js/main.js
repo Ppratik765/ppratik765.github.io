@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
          TIMING  &  SPEED CURVE
          crawl  →  build  →  E X P L O D E
       ============================================ */
-      const DUR = 1800;   // total ms (+100ms extra budget)
+      const DUR = 1600;   // total ms
       let t0 = 0;
       let swapped = false;
 
@@ -250,7 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
           for (let r = 0; r < nRays; r++) {
             const ang = (r / nRays) * Math.PI * 2 + p * 0.6;
             const len = Math.max(W, H);
-            ctx.globalAlpha = ra * (0.35 + Math.random() * 0.65);
+            // Use deterministic per-ray brightness instead of random flicker
+            const rayBr = 0.35 + (Math.sin(r * 2.39996) * 0.5 + 0.5) * 0.65;
+            ctx.globalAlpha = ra * rayBr;
             ctx.strokeStyle = 'rgba(200,218,255,1)';
             ctx.lineWidth = 1.2 + rt * 4.5;
             ctx.beginPath();
