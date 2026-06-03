@@ -7,6 +7,16 @@
   <meta name="description" content="Portfolio of Priyanshu Pratik — Building intelligent systems and interactive realities. AI & Data Science, Transportation Logistics, and Creative Frontend Development." />
   <meta name="keywords" content="Priyanshu Pratik, AI developer, data science, portfolio, interactive, D3.js, GSAP, WebGL" />
   <meta name="author" content="Priyanshu Pratik" />
+  
+  <!-- Prevent FOUC by applying theme early -->
+  <script>
+    (function() {
+      var savedTheme = localStorage.getItem('portfolio-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -77,7 +87,7 @@
 
     <!-- Take Control Floating Action Button -->
     <div class="hero__control-btn">
-      <a class="control-btn" href="https://vector-squadron-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer">
+      <a class="control-btn" href="https://vector-squadron.vercel.app/" target="_blank" rel="noopener noreferrer">
         <span class="control-btn__pulse"></span>
         Take Control / Play Game
       </a>

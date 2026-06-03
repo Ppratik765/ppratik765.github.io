@@ -9,18 +9,37 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ----------------------------------------------------------
      1. THEME SWITCHER WITH GSAP TRANSITION
   ---------------------------------------------------------- */
+  const htmlEl = document.documentElement;
+  const savedTheme = localStorage.getItem('portfolio-theme');
+  const initialTheme = savedTheme || 'dark';
+
+  // Apply saved theme on initial load if not already set by head script
+  if (savedTheme) {
+    htmlEl.setAttribute('data-theme', savedTheme);
+  }
+
   const themeToggleBtn = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
   const themeLabel = document.getElementById('theme-label');
+  const heroIframe = document.getElementById('hero-iframe');
+
+  // Sync initial UI state with the current theme
+  if (themeIcon) {
+    themeIcon.textContent = initialTheme === 'dark' ? '☾' : '☀';
+  }
+  if (themeLabel) {
+    themeLabel.textContent = initialTheme === 'dark' ? 'Light' : 'Dark';
+  }
+  if (heroIframe) {
+    heroIframe.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + initialTheme;
+  }
 
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', (e) => {
-      const htmlEl = document.documentElement;
       const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
       const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
       // 2. Immediately update the iframe
-      const heroIframe = document.getElementById('hero-iframe');
       if (heroIframe) {
         heroIframe.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + nextTheme;
       }
@@ -50,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 6. In the onComplete callback:
             // Update the document's data-theme attribute
             htmlEl.setAttribute('data-theme', nextTheme);
+            localStorage.setItem('portfolio-theme', nextTheme);
             
             // Update the toggle button icon/text
             if (themeIcon) {
