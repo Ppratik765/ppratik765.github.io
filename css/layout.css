@@ -726,3 +726,84 @@ html[data-theme="light"] .hero__iframe-container {
     padding: 1.5rem 1rem;
   }
 }
+
+/* ============================================================
+   MOBILE LANDSCAPE FIXES
+============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3.5rem 1.5rem 1rem;
+  }
+  
+  .hero__content {
+    display: contents; 
+  }
+
+  .hero__tagline,
+  .hero__name,
+  .hero__subtitle,
+  .hero__cta-row {
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
+  }
+  
+  .hero__name {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin: 0.25rem 0;
+  }
+
+  .hero__tagline {
+    margin-top: 1rem;
+    font-size: 0.6rem;
+  }
+  
+  .hero__subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+    max-width: 90%;
+  }
+  
+  .hero__cta-row {
+    display: flex;
+    width: auto;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    margin-top: 0.5rem;
+  }
+  
+  .hero__control-btn {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 0;
+    margin-top: -1.9rem; /* Pull up to be in the same row as CTA */
+    align-self: flex-end; /* Align to the right */
+    z-index: 15;
+  }
+  
+  .control-btn {
+    font-size: 0.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .btn {
+    font-size: 0.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* Force light appearance for iframe if it gets stuck in dark mode on landscape */
+  html[data-theme="light"] .hero__iframe {
+    filter: invert(1) hue-rotate(180deg) saturate(1.2) contrast(1.1);
+  }
+  
+  html[data-theme="light"] .hero__iframe-container {
+    mix-blend-mode: normal !important;
+    opacity: 1 !important;
+  }
+}
