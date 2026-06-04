@@ -25,6 +25,12 @@
   --shadow-glow:     0 0 40px rgba(255, 195, 0, 0.08);
   --terminal-green:  #39ff14;
 
+  /* Dynamic effects variables */
+  --card-hover-border: rgba(255, 195, 0, 0.6);
+  --card-hover-shadow: 0 15px 45px rgba(255, 195, 0, 0.16);
+  --card-spotlight: rgba(255, 195, 0, 0.16);
+  --accent-glow: rgba(255, 195, 0, 0.35);
+
   /* Font Families */
   --font-display:    'Cormorant Garamond', Georgia, serif;
   --font-body:       'Inter', sans-serif;
@@ -32,25 +38,40 @@
   --transition-theme: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Light Theme — Golden Daylight
-   Same gold accent family as dark mode, navy text,
-   warm ivory base — dawn to the dark mode's dusk. */
 [data-theme="light"] {
-  --bg-primary:        #faf7f0;
-  --global-bg-primary: #faf7f0;
-  --bg-secondary:    #f0ece2;
-  --bg-tertiary:     #e2ddd2;
-  --accent-primary:  #cc9a06;
-  --accent-secondary:#b8860b;
-  --text-primary:    #001d3d;
-  --text-secondary:  #003566;
-  --text-muted:      #5a7394;
-  --card-bg:         rgba(240, 236, 226, 0.6);
-  --card-border:     rgba(204, 154, 6, 0.18);
-  --glass-bg:        rgba(250, 247, 240, 0.05);
-  --glass-border:    rgba(204, 154, 6, 0.12);
-  --shadow-glow:     0 0 40px rgba(204, 154, 6, 0.1);
-  --terminal-green:  #1a6b3c;
+  /* Core Background: Powder Petal */
+  --bg-primary:        #efd9ce;
+  --global-bg-primary: #efd9ce;
+  --bg-secondary:      #e5cdbf;
+  --bg-tertiary:       #dbbfae;
+
+  /* Surface Glass effects */
+  --surface-color:     rgba(255, 255, 255, 0.65);
+  --card-bg:           var(--surface-color);
+  --glass-bg:          rgba(255, 255, 255, 0.05);
+  --glass-border:      rgba(113, 97, 239, 0.15);
+
+  /* Typography */
+  --text-primary:      #111111; /* Near black for maximum contrast */
+  --text-secondary:    #333333; /* Dark charcoal for subheadings */
+  --text-muted:        #555555;
+
+  /* Accents */
+  --accent-primary:    #7161ef; /* Medium Slate Blue */
+  --accent-secondary:  #957fef; /* Soft Periwinkle */
+  --accent-tertiary:   #b79ced; /* Wisteria */
+  --accent-muted:      #dec0f1; /* Mauve */
+
+  /* Borders & Grids */
+  --card-border:       rgba(113, 97, 239, 0.3); /* Slate Blue with transparency */
+  --shadow-glow:       0 0 40px rgba(113, 97, 239, 0.12);
+  --terminal-green:    #7161ef;
+
+  /* Dynamic effects variables (Purple Theme) */
+  --card-hover-border: rgba(113, 97, 239, 0.6);
+  --card-hover-shadow: 0 15px 45px rgba(113, 97, 239, 0.16);
+  --card-spotlight:    rgba(113, 97, 239, 0.16);
+  --accent-glow:       rgba(113, 97, 239, 0.35);
 }
 
 /* ---------- Reset & Base ---------- */

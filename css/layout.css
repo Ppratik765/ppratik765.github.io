@@ -521,29 +521,45 @@ html[data-theme="light"] .hero__iframe-container {
     display: none;
   }
 
+  /* Prevent mobile headers/tabs from overlapping hero content */
+  .hero {
+    padding-top: 5rem;
+  }
+
+  .hero__content {
+    margin-top: 0;
+  }
+
   /* Scale down the massive typography */
   .hero__name {
     font-size: clamp(2rem, 8vw, 3.5rem);
     line-height: 1.1;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .hero__subtitle {
     font-size: 1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
   }
 
+  /* Center the CTA row near the bottom */
   .hero__cta-row {
+    position: absolute;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     display: flex;
+    justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    z-index: 15;
   }
 
-  /* Center the "Take Control / Play Game" button at the bottom of the screen instead of the corner */
+  /* Center "Take Control" below the CTA row to avoid overlaps */
   .hero__control-btn {
     position: absolute;
-    bottom: 4rem;
+    bottom: 1.5rem;
     /* Keeps it above mobile browser bars */
     left: 50%;
     transform: translateX(-50%);
@@ -572,9 +588,5 @@ html[data-theme="light"] .hero__iframe-container {
     gap: 1rem;
     align-items: center;
     text-align: center;
-  }
-
-  .hero__content {
-    margin-top: 2.2rem;
   }
 }

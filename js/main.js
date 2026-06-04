@@ -45,10 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
       const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
+      let iframeLoaded = false;
+      const onLoad = () => {
+        iframeLoaded = true;
+        if (heroIframe) {
+          heroIframe.removeEventListener('load', onLoad);
+        }
+      };
+
       // Pre-load iframe theme while animation plays
       if (heroIframe) {
+        heroIframe.addEventListener('load', onLoad);
         heroIframe.src =
           'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + nextTheme;
+      } else {
+        iframeLoaded = true;
       }
 
       /* ============================================
@@ -110,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const DUR = 1600;   // total ms
       let t0 = 0;
       let swapped = false;
+      let freezeStart = 0;
 
       function warp(p) {
         if (p < 0.10) return p * p * 6;              // barely perceptible drift
@@ -127,7 +139,20 @@ document.addEventListener('DOMContentLoaded', () => {
           // Trigger CSS fade-in after first frame is painted
           canvas.style.opacity = '1';
         }
-        const ms = now - t0;
+        let ms = now - t0;
+
+        // Hold the animation at the peak of the flash (p = 0.87) until the new iframe theme has finished loading.
+        // Capped with a 2-second safety timeout so it transitions anyway if there's a connection failure.
+        const peakMs = DUR * 0.87;
+        if (ms > peakMs && !iframeLoaded) {
+          if (!freezeStart) freezeStart = now;
+          const freezeDuration = now - freezeStart;
+          if (freezeDuration < 2000) {
+            t0 = now - peakMs;
+            ms = peakMs;
+          }
+        }
+
         const p = Math.min(ms / DUR, 1);
 
         /* ---- motion-blur: semi-transparent clear ---- */
