@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
       time += 0.05;
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const colorBase = isLight ? 'rgba(204, 154, 6,' : 'rgba(255, 195, 0,';
+      const colorBase = isLight ? 'rgba(113, 97, 239,' : 'rgba(255, 195, 0,';
 
       // Draw grid intersections
       for (let x = spacing / 2; x < canvas.width; x += spacing) {
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const baseColor = isLight ? [226, 221, 210] : [0, 53, 102];
-      const waveColor = isLight ? [184, 134, 11] : [255, 195, 0];
+      const waveColor = isLight ? [113, 97, 239] : [255, 195, 0];
 
       const lines = 12;
       for (let i = 0; i < lines; i++) {
@@ -220,9 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const channelColors = [
-      ['rgba(255, 195, 0,', 'rgba(204, 154, 6,'],   // Driver 1: Hamilton (Accent 1)
-      ['rgba(255, 214, 10,', 'rgba(184, 134, 11,'],  // Driver 2: Verstappen (Accent 2)
-      ['rgba(0, 240, 255,', 'rgba(0, 180, 210,'],    // Driver 3: Leclerc (Cyan)
+      ['rgba(255, 195, 0,', 'rgba(113, 97, 239,'],   // Driver 1: Slate Blue (Accent 1)
+      ['rgba(255, 214, 10,', 'rgba(149, 127, 239,'],  // Driver 2: Periwinkle (Accent 2)
+      ['rgba(0, 240, 255,', 'rgba(183, 156, 237,'],    // Driver 3: Wisteria (Accent 3)
     ];
 
     function animate() {
@@ -256,10 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.beginPath();
         ctx.moveTo(sweepProgress, 0);
         ctx.lineTo(sweepProgress, canvas.height);
-        ctx.strokeStyle = isLight ? 'rgba(204, 154, 6, 0.85)' : 'rgba(255, 195, 0, 0.95)';
+        ctx.strokeStyle = isLight ? 'rgba(113, 97, 239, 0.85)' : 'rgba(255, 195, 0, 0.95)';
         ctx.lineWidth = 2.0;
         ctx.shadowBlur = 10;
-        ctx.shadowColor = isLight ? '#cc9a06' : '#ffc300';
+        ctx.shadowColor = isLight ? '#7161ef' : '#ffc300';
         ctx.stroke();
         ctx.shadowBlur = 0; // reset
       }
@@ -314,10 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
       time += 0.02;
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const nodeColor = isLight ? 'rgba(204, 154, 6,' : 'rgba(255, 195, 0,';
+      const nodeColor = isLight ? 'rgba(113, 97, 239,' : 'rgba(255, 195, 0,';
       const edgeColor = isLight ? 'rgba(0, 53, 102, 0.08)' : 'rgba(0, 53, 102, 0.15)';
-      const activeEdgeColor = isLight ? 'rgba(204, 154, 6, 0.4)' : 'rgba(255, 195, 0, 0.45)';
-      const agentColor = isLight ? '#b8860b' : '#ffd60a';
+      const activeEdgeColor = isLight ? 'rgba(113, 97, 239, 0.4)' : 'rgba(255, 195, 0, 0.45)';
+      const agentColor = isLight ? '#7161ef' : '#ffd60a';
 
       const w = canvas.width;
       const h = canvas.height;
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
       time += 0.22;
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const color = isLight ? 'rgba(204, 154, 6, 0.75)' : 'rgba(255, 195, 0, 0.85)';
+      const color = isLight ? 'rgba(113, 97, 239, 0.75)' : 'rgba(255, 195, 0, 0.85)';
 
       const w = canvas.width;
       const h = canvas.height;
@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (progress > 0) {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        ctx.fillStyle = isLight ? 'rgba(204, 154, 6, 0.28)' : 'rgba(255, 195, 0, 0.32)';
+        ctx.fillStyle = isLight ? 'rgba(113, 97, 239, 0.28)' : 'rgba(255, 195, 0, 0.32)';
 
         // Draw blocks up to current progress index
         for (let i = 0; i < Math.floor(progress); i++) {

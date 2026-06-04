@@ -166,6 +166,24 @@ section {
   color: #ffffff !important;
 }
 
+html[data-theme="light"] .hero {
+  background: var(--global-bg-primary) !important;
+  color: var(--text-primary) !important;
+  --bg-primary: #efd9ce;
+  --bg-secondary: #e5cdbf;
+  --bg-tertiary: #dbbfae;
+  --accent-primary: #7161ef;
+  --accent-secondary: #957fef;
+  --text-primary: #111111;
+  --text-secondary: #333333;
+  --text-muted: #555555;
+  --card-bg: rgba(255, 255, 255, 0.65);
+  --card-border: rgba(113, 97, 239, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(113, 97, 239, 0.15);
+  --shadow-glow: 0 0 40px rgba(113, 97, 239, 0.12);
+}
+
 /* Bottom gradient fade mask to blend Hero smoothly into active theme background */
 .hero::after {
   content: '';
@@ -215,7 +233,7 @@ section {
 }
 
 html[data-theme="light"] .hero__overlay {
-  background: transparent;
+  background: radial-gradient(circle at 60% 50%, transparent 15%, var(--bg-primary) 80%);
 }
 
 html[data-theme="light"] .hero__iframe-container {
