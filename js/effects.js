@@ -230,9 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (isHovered) {
-        sweepProgress = Math.min(sweepProgress + 1.2, canvas.width);
+        sweepProgress = Math.min(sweepProgress + 2.5, canvas.width);
       } else {
-        sweepProgress = Math.max(sweepProgress - 2.5, 0);
+        sweepProgress = Math.max(sweepProgress - 4, 0);
       }
 
       if (sweepProgress > 0) {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
           for (let i = 0; i < size; i++) {
             const x = (i / size) * canvas.width;
             if (x > sweepProgress) break;
-            const y = canvas.height * 0.40 - (trace[i] * canvas.height * 0.28) + idx * 6;
+            const y = canvas.height * 0.7 - (trace[i] * canvas.height * 0.5) + idx * 8;
             if (i === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
           }
@@ -252,10 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.stroke();
         });
 
-        // Glowing Vertical Sweep Bar (restricted to wave region)
+        // Glowing Vertical Sweep Bar
         ctx.beginPath();
-        ctx.moveTo(sweepProgress, canvas.height * 0.08);
-        ctx.lineTo(sweepProgress, canvas.height * 0.45);
+        ctx.moveTo(sweepProgress, 0);
+        ctx.lineTo(sweepProgress, canvas.height);
         ctx.strokeStyle = isLight ? 'rgba(113, 97, 239, 0.85)' : 'rgba(255, 195, 0, 0.95)';
         ctx.lineWidth = 2.0;
         ctx.shadowBlur = 10;
