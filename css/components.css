@@ -350,6 +350,28 @@
   50% { opacity: 0; }
 }
 
+#terminal-hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  width: 1px;
+  height: 1px;
+}
+
+#terminal-input-echo {
+  white-space: pre;
+  color: #ffd60a; /* matching terminal__cmd color */
+}
+
+.terminal__output--error {
+  color: #ff5f56 !important; /* using the red terminal dot color */
+}
+
+.terminal__output--success {
+  color: #27c93f !important; /* using the green terminal dot color */
+}
+
 .terminal__buttons {
   display: flex;
   gap: 0.85rem;

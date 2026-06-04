@@ -391,8 +391,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const outputArea = document.getElementById('terminal-output');
     const termBody = document.getElementById('terminal-body');
     const buttons = document.querySelectorAll('.terminal__btn');
+    const hiddenInput = document.getElementById('terminal-hidden-input');
+    const inputEcho = document.getElementById('terminal-input-echo');
 
     if (!outputArea || !buttons.length) return;
+
+    // Optional interactivity for the input if it exists
+    if (hiddenInput && inputEcho) {
+      termBody.addEventListener('click', () => {
+        hiddenInput.focus();
+      });
+
+      hiddenInput.addEventListener('input', (e) => {
+        inputEcho.textContent = e.target.value;
+      });
+
+      hiddenInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const rawCommand = hiddenInput.value.trim();
+          hiddenInput.value = '';
+          inputEcho.textContent = '';
+          if (rawCommand) {
+            processRawCommand(rawCommand);
+          }
+        }
+      });
+    }
 
     const commandsData = {
       email: {
@@ -421,6 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ],
         link: 'https://github.com/ppratik765',
         linkText: 'github.com/ppratik765'
+      },
+      resume: {
+        command: './download_resume.sh',
+        output: [
+          '→ PRIYANSHU_PRATIK_RESUME.pdf',
+          '  Downloading secure file from /data/ volume...'
+        ]
       }
     };
 
@@ -438,16 +469,50 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Print to terminal utility
+    function printToTerminal(commandStr, outputLines, isError = false, isSuccess = false, linkText = null, linkHref = null) {
+      const commandLine = document.createElement('div');
+      commandLine.className = 'terminal__line';
+      commandLine.innerHTML = '<span class="terminal__prompt">visitor@portfolio:~$</span> ';
+      const cmdSpan = document.createElement('span');
+      cmdSpan.className = 'terminal__cmd';
+      cmdSpan.textContent = commandStr;
+      commandLine.appendChild(cmdSpan);
+      outputArea.appendChild(commandLine);
+
+      outputLines.forEach(lineText => {
+        const outLine = document.createElement('div');
+        outLine.className = 'terminal__line terminal__output';
+        if (isError) outLine.classList.add('terminal__output--error');
+        if (isSuccess) outLine.classList.add('terminal__output--success');
+
+        if (linkText && lineText.includes(linkText)) {
+          outLine.innerHTML = lineText.replace(linkText, `<a href="${linkHref}" target="_blank" rel="noopener noreferrer" class="terminal__link">${linkText}</a>`);
+        } else {
+          outLine.textContent = lineText;
+        }
+
+        outputArea.appendChild(outLine);
+        gsap.to(outLine, { opacity: 1, duration: 0.3 });
+      });
+
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'terminal__line';
+      emptyDiv.innerHTML = '&nbsp;';
+      outputArea.appendChild(emptyDiv);
+
+      termBody.scrollTop = termBody.scrollHeight;
+    }
+
     async function executeCommand(cmdName) {
       if (cmdName === 'clear') {
         outputArea.innerHTML = '';
         return;
       }
-
+      
       const data = commandsData[cmdName];
       if (!data) return;
 
-      // Add a line representing the prompt + input command
       const commandLine = document.createElement('div');
       commandLine.className = 'terminal__line';
       commandLine.innerHTML = '<span class="terminal__prompt">visitor@portfolio:~$</span> ';
@@ -456,42 +521,129 @@ document.addEventListener('DOMContentLoaded', () => {
       commandLine.appendChild(cmdSpan);
       outputArea.appendChild(commandLine);
 
-      // Typing simulation
       await typeCommandText(cmdSpan, data.command);
 
-      // Render outputs
       data.output.forEach(lineText => {
         const outLine = document.createElement('div');
         outLine.className = 'terminal__line terminal__output';
-
-        if (lineText.includes(data.linkText)) {
-          // Replace link text with clickable anchor
-          outLine.innerHTML = `→ <a href="${data.link}" target="_blank" rel="noopener noreferrer" class="terminal__link">${data.linkText}</a>`;
+        
+        if (data.linkText && lineText.includes(data.linkText)) {
+          outLine.innerHTML = lineText.replace(data.linkText, `<a href="${data.link}" target="_blank" rel="noopener noreferrer" class="terminal__link">${data.linkText}</a>`);
         } else {
           outLine.textContent = lineText;
         }
 
         outLine.style.opacity = '0';
         outputArea.appendChild(outLine);
-
-        // Animate visibility entry
         gsap.to(outLine, { opacity: 1, duration: 0.3 });
       });
 
-      // Insert separation line
+      if (cmdName === 'resume') {
+        triggerResumeDownload();
+      }
+
       const emptyDiv = document.createElement('div');
       emptyDiv.className = 'terminal__line';
       emptyDiv.innerHTML = '&nbsp;';
       outputArea.appendChild(emptyDiv);
-
-      // Scroll to bottom
       termBody.scrollTop = termBody.scrollHeight;
     }
 
+    function triggerResumeDownload() {
+      const a = document.createElement('a');
+      a.href = 'data/Priyanshu_Pratik_Resume.pdf';
+      a.download = 'Priyanshu_Resume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Parse raw text commands from the hidden input
+    function processRawCommand(rawCmd) {
+      const cmd = rawCmd.toLowerCase();
+      
+      if (cmd === 'clear') {
+        outputArea.innerHTML = '';
+        return;
+      }
+
+      if (cmd === 'help') {
+        printToTerminal(rawCmd, [
+          'AVAILABLE COMMANDS:',
+          '  email       - Initialize direct mail protocol',
+          '  linkedin    - Retrieve professional network data',
+          '  github      - Clone repository manifests',
+          '  resume      - Download authorized curriculum vitae',
+          '  status      - Display system/availability status',
+          '  clear       - Clear the terminal screen',
+          '  help        - Show this manual'
+        ]);
+        return;
+      }
+
+      if (cmd === 'resume' || cmd === 'get_resume' || cmd === 'download resume') {
+        printToTerminal(rawCmd, [
+          '→ PRIYANSHU_PRATIK_RESUME.pdf',
+          '  Downloading secure file from /data/ volume...'
+        ]);
+        triggerResumeDownload();
+        return;
+      }
+
+      if (cmd === 'email') return executeCommand('email');
+      if (cmd === 'linkedin') return executeCommand('linkedin');
+      if (cmd === 'github') return executeCommand('github');
+
+      if (cmd === 'status' || cmd === 'whoami') {
+        printToTerminal(rawCmd, [
+          'USER: visitor',
+          'SYSTEM STATUS: Optimal',
+          'AUTHOR AVAILABILITY: Open to new opportunities.',
+          'CURRENT OBJECTIVE: Building intelligent agentic systems and scalable architecture.'
+        ], false, true);
+        return;
+      }
+
+      if (cmd === 'ls' || cmd === 'dir') {
+        printToTerminal(rawCmd, [
+          'contacts/   projects/   about/   resume.pdf'
+        ]);
+        return;
+      }
+
+      if (cmd === 'date') {
+        printToTerminal(rawCmd, [new Date().toString()]);
+        return;
+      }
+
+      if (cmd === 'ping' || cmd.startsWith('ping ')) {
+        printToTerminal(rawCmd, [
+          'PONG. System latency: 12ms. Connection solid.'
+        ]);
+        return;
+      }
+
+      // Easter Eggs
+      if (cmd === 'sudo' || cmd.startsWith('sudo ')) {
+        printToTerminal(rawCmd, [
+          'visitor is not in the sudoers file.',
+          'This incident will be reported to Priyanshu.'
+        ], true);
+        return;
+      }
+
+      // Fallback
+      printToTerminal(rawCmd, [
+        `bash: ${cmd.split(' ')[0]}: command not found`,
+        `Type 'help' to see a list of available systems.`
+      ], true);
+    }
+
+    // Attach to buttons (keeps existing functionality)
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         const cmdName = btn.dataset.cmd;
-        executeCommand(cmdName);
+        if (cmdName) executeCommand(cmdName);
       });
     });
   })();
