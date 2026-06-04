@@ -540,105 +540,119 @@ html[data-theme="light"] .hero__iframe-container {
     padding: 6rem 1.5rem 4rem;
   }
 
-  /* ---------- Task 1: Reveal & Format Mobile Navigation ---------- */
+  /* ---------- Single-Row Mobile Navigation ---------- */
   .nav {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-between;
-    padding: 1rem 1.25rem;
-    position: relative;
+    align-items: center;
+    padding: 0.65rem 0.75rem;
+    gap: 0;
+  }
+
+  .nav__logo {
+    font-size: 1.15rem;
+    flex-shrink: 0;
   }
 
   .nav__links {
     display: flex;
-    width: 100%;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 0.75rem;
+    width: auto;
+    justify-content: flex-end;
+    gap: 0.55rem;
+    margin-top: 0;
     font-size: 0.85rem;
     align-items: center;
   }
 
   .nav__links a {
-    font-size: 0.72rem;
-    letter-spacing: 0.03em;
+    font-size: 0.6rem;
+    letter-spacing: 0.02em;
   }
 
-  /* Pull the theme toggle li out of the link row and place it top-right */
   .nav__links li:last-child {
-    position: absolute;
-    top: 0.75rem;
-    right: 1.25rem;
+    position: static;
   }
 
   .theme-toggle {
-    font-size: 0.68rem;
-    padding: 0.35rem 0.85rem;
+    font-size: 0.55rem;
+    padding: 0.28rem 0.6rem;
+    gap: 0.25rem;
   }
 
-  /* ---------- Task 2: Fix Hero Typography & Spacing ---------- */
+  .theme-toggle__icon {
+    font-size: 0.75rem;
+  }
+
+  /* ---------- Hero Typography & Spacing ---------- */
   .hero {
-    padding: 5rem 1.5rem 6rem;
+    padding: 4.5rem 1.25rem 5rem;
     align-items: flex-start;
   }
 
   .hero__content {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 
   .hero__name {
-    font-size: clamp(3.5rem, 14vw, 5rem);
-    margin-top: 1rem;
-    line-height: 1.1;
-    margin-bottom: 1rem;
+    font-size: clamp(4rem, 16vw, 5.5rem);
+    margin-top: 0.75rem;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
   }
 
   .hero__tagline {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     letter-spacing: 0.15em;
+    margin-bottom: 1rem;
   }
 
   .hero__subtitle {
-    font-size: 1rem;
-    margin-bottom: 2rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    margin-bottom: 1.75rem;
     max-width: 100%;
   }
 
-  /* ---------- Task 2: Fix CTA Row (flow layout, not absolute) ---------- */
+  /* ---------- CTA Row: all 3 buttons inline ---------- */
   .hero__cta-row {
     position: relative;
     bottom: auto;
     left: auto;
     transform: none;
-    width: auto;
+    width: 100%;
     display: flex;
     justify-content: flex-start;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
     z-index: 15;
     margin-top: 1rem;
   }
 
+  /* Move Take Control inline beside the other CTA buttons */
   .hero__control-btn {
     position: relative;
     bottom: auto;
     left: auto;
     right: auto;
     transform: none;
-    margin-top: 1.5rem;
-    z-index: 10;
-    display: block;
+    margin-top: 0;
+    z-index: 15;
+    display: inline-flex;
     width: auto;
-    text-align: left;
+    text-align: center;
   }
 
   .control-btn {
-    font-size: 0.72rem;
-    padding: 0.85rem 1.6rem;
+    font-size: 0.65rem;
+    padding: 0.6rem 1rem;
+    white-space: nowrap;
   }
 
   .btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.75rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.65rem;
+    white-space: nowrap;
   }
 
   /* ---------- Task 3: Fix Project Cards ---------- */
