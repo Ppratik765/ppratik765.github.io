@@ -534,65 +534,106 @@ html[data-theme="light"] .hero__iframe-container {
 }
 
 @media (max-width: 768px) {
+
+  /* ---------- Global Section Spacing ---------- */
   section {
     padding: 6rem 1.5rem 4rem;
   }
 
+  /* ---------- Task 1: Reveal & Format Mobile Navigation ---------- */
   .nav {
-    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    position: relative;
   }
 
   .nav__links {
-    display: none;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    align-items: center;
   }
 
-  /* Prevent mobile headers/tabs from overlapping hero content */
+  .nav__links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* Pull the theme toggle li out of the link row and place it top-right */
+  .nav__links li:last-child {
+    position: absolute;
+    top: 0.75rem;
+    right: 1.25rem;
+  }
+
+  .theme-toggle {
+    font-size: 0.68rem;
+    padding: 0.35rem 0.85rem;
+  }
+
+  /* ---------- Task 2: Fix Hero Typography & Spacing ---------- */
   .hero {
-    padding-top: 5rem;
+    padding: 5rem 1.5rem 6rem;
+    align-items: flex-start;
   }
 
   .hero__content {
-    margin-top: 0;
+    margin-top: 2rem;
   }
 
-  /* Scale down the massive typography */
   .hero__name {
-    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-size: clamp(3.5rem, 14vw, 5rem);
+    margin-top: 1rem;
     line-height: 1.1;
     margin-bottom: 1rem;
+  }
+
+  .hero__tagline {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
   }
 
   .hero__subtitle {
     font-size: 1rem;
     margin-bottom: 2rem;
+    max-width: 100%;
   }
 
-  /* Center the CTA row near the bottom */
+  /* ---------- Task 2: Fix CTA Row (flow layout, not absolute) ---------- */
   .hero__cta-row {
-    position: absolute;
-    bottom: 5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    width: auto;
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    justify-content: flex-start;
+    gap: 0.75rem;
     flex-wrap: wrap;
     z-index: 15;
+    margin-top: 1rem;
   }
 
-  /* Center "Take Control" below the CTA row to avoid overlaps */
   .hero__control-btn {
-    position: absolute;
-    bottom: 1.5rem;
-    /* Keeps it above mobile browser bars */
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    transform: none;
+    margin-top: 1.5rem;
     z-index: 10;
     display: block;
     width: auto;
-    text-align: center;
+    text-align: left;
+  }
+
+  .control-btn {
+    font-size: 0.72rem;
+    padding: 0.85rem 1.6rem;
   }
 
   .btn {
@@ -600,18 +641,65 @@ html[data-theme="light"] .hero__iframe-container {
     font-size: 0.75rem;
   }
 
+  /* ---------- Task 3: Fix Project Cards ---------- */
+  .projects__grid {
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    min-height: 280px;
+    padding: 1.75rem;
+  }
+
+  .project-card__title {
+    font-size: 1.4rem;
+  }
+
+  .project-card__desc {
+    font-size: 0.88rem;
+  }
+
+  /* ---------- Task 4: Fix About Section ---------- */
   .about__stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .about__text p {
+    font-size: 1rem;
   }
 
   .map-container {
-    height: 400px;
+    height: 350px;
   }
 
+  /* ---------- Task 5: Fix Contact / Terminal ---------- */
+  .terminal__body {
+    height: 260px;
+    padding: 1.25rem;
+    font-size: 0.78rem;
+  }
+
+  .terminal__buttons {
+    gap: 0.5rem;
+  }
+
+  .terminal__btn {
+    font-size: 0.68rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  /* ---------- Section Titles ---------- */
+  .section-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  /* ---------- Task 6: Fix Footer ---------- */
   .footer {
     flex-direction: column;
     gap: 1rem;
     align-items: center;
     text-align: center;
+    padding: 1.5rem 1rem;
   }
 }
