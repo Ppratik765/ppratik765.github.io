@@ -162,6 +162,10 @@ section {
   --glass-border: rgba(255, 195, 0, 0.12);
   --shadow-glow: 0 0 40px rgba(255, 195, 0, 0.08);
 
+  /* Button Glows */
+  --control-glow: rgba(255, 195, 0, 0.4);
+  --control-hover-glow: rgba(255, 195, 0, 0.6);
+
   background: #000000 !important;
   color: #ffffff !important;
 }
@@ -182,6 +186,9 @@ html[data-theme="light"] .hero {
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(113, 97, 239, 0.15);
   --shadow-glow: 0 0 40px rgba(113, 97, 239, 0.12);
+
+  --control-glow: rgba(113, 97, 239, 0.4);
+  --control-hover-glow: rgba(113, 97, 239, 0.6);
 }
 
 /* Bottom gradient fade mask to blend Hero smoothly into active theme background */
@@ -330,7 +337,7 @@ html[data-theme="light"] .hero__iframe-container {
   padding: 1.1rem 2.2rem;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 8px 30px rgba(255, 195, 0, 0.4);
+  box-shadow: 0 8px 30px var(--control-glow);
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -338,7 +345,7 @@ html[data-theme="light"] .hero__iframe-container {
 .control-btn:hover {
   transform: scale(1.05) translateY(-3px);
   background: var(--accent-secondary);
-  box-shadow: 0 12px 40px rgba(255, 195, 0, 0.6);
+  box-shadow: 0 12px 40px var(--control-hover-glow);
 }
 
 .control-btn__pulse {
