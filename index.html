@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Priyanshu Pratik — AI & Interactive Systems Developer</title>
-  <meta name="description" content="Portfolio of Priyanshu Pratik — Building intelligent systems and interactive realities. AI & Data Science, Transportation Logistics, and Creative Frontend Development." />
-  <meta name="keywords" content="Priyanshu Pratik, AI developer, data science, portfolio, interactive, D3.js, GSAP, WebGL" />
+  <meta name="description"
+    content="Portfolio of Priyanshu Pratik — Building intelligent systems and interactive realities. AI & Data Science, Transportation Logistics, and Creative Frontend Development." />
+  <meta name="keywords"
+    content="Priyanshu Pratik, AI developer, data science, portfolio, interactive, D3.js, GSAP, WebGL" />
   <meta name="author" content="Priyanshu Pratik" />
-  
+
   <!-- Prevent FOUC by applying theme early -->
   <script>
-    (function() {
+    (function () {
       var savedTheme = localStorage.getItem('portfolio-theme');
       if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -28,7 +31,7 @@
   <link rel="stylesheet" href="css/components.css" />
 
   <!-- Leaflet.js -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
 
 
@@ -41,6 +44,7 @@
   <script src="js/map-route.js" defer></script>
   <script src="js/main.js" defer></script>
 </head>
+
 <body>
 
   <!-- ========== Navigation ========== -->
@@ -63,9 +67,10 @@
   <section class="hero" id="hero">
     <!-- Backing Iframe Container (locked to autoplay) -->
     <div class="hero__iframe-container">
-      <iframe id="hero-iframe" class="hero__iframe" src="" title="Vector Squadron Space Autopilot" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
+      <iframe id="hero-iframe" class="hero__iframe" src="" title="Vector Squadron Space Autopilot"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
       <script>
-        (function() {
+        (function () {
           var t = localStorage.getItem('portfolio-theme') || 'dark';
           document.getElementById('hero-iframe').src =
             'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + t;
@@ -83,7 +88,7 @@
         <span class="highlight">Pratik</span>
       </h1>
       <p class="hero__subtitle">
-        Building intelligent systems and interactive realities. 
+        Building intelligent systems and interactive realities.
         Specializing in AI-driven logistical optimization and high-performance WebGL architectures.
       </p>
       <div class="hero__cta-row">
@@ -106,15 +111,21 @@
     <div class="about">
       <div class="about__text">
         <p class="section-label">01 // About Me</p>
-        <h2 class="section-title reveal">The Pathfinding<br/>Journey</h2>
+        <h2 class="section-title reveal">The Pathfinding<br />Journey</h2>
         <p class="reveal">
-          I'm Priyanshu Pratik — an AI & Data Science student at <strong>Gati Shakti Vishwavidyalaya</strong>, specializing in Transportation and Logistics. My focus centers on building intelligent algorithms to model and optimize physical logistics networks.
+          I'm Priyanshu Pratik — an AI & Data Science student at <strong>Gati Shakti Vishwavidyalaya</strong>,
+          specializing in Transportation and Logistics. My focus centers on building intelligent algorithms to model and
+          optimize physical logistics networks.
         </p>
         <p class="reveal">
-          With a <strong>CGPA of 8.5+</strong> and over <strong>160+ algorithms solved on LeetCode</strong>, I bridge mathematical principles with high-performance execution. I am currently preparing for the <strong>GATE 2027 (DA)</strong> examination to transition into advanced data science and systems research.
+          With a <strong>CGPA of 8.5+</strong> and over <strong>160+ algorithms solved on LeetCode</strong>, I bridge
+          mathematical principles with high-performance execution. I am currently preparing for the <strong>GATE 2027
+            (DA)</strong> examination to transition into advanced data science and systems research.
         </p>
         <p class="reveal">
-          My academic foundations began at <strong>Soar Valley College</strong>, followed by <strong>DPS Harni</strong> where I scored 435/500 in my 12th standards and achieved a 96.6 percentile (50,000 rank) in JEE Main, charting my trajectory into systems engineering.
+          My academic foundations began at <strong>Soar Valley College</strong>, followed by <strong>DPS Harni</strong>
+          where I scored 435/500 in my 12th standards and achieved a 96.6 percentile (50,000 rank) in JEE Main, charting
+          my trajectory into systems engineering.
         </p>
 
         <div class="about__stats">
@@ -162,7 +173,8 @@
             <p class="project-card__tag">3D Render · Arcade Game</p>
             <h3 class="project-card__title">Vector Squadron</h3>
             <p class="project-card__desc">
-              High-performance 3D space flight simulator and shooter. Features automated autopilot behaviors, GPU physics, and custom rendering pipelines.
+              High-performance 3D space flight simulator and shooter. Features automated autopilot behaviors, GPU
+              physics, and custom rendering pipelines.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Three.js</span>
@@ -200,7 +212,8 @@
             <p class="project-card__tag">Python · Telemetry</p>
             <h3 class="project-card__title">Beyond the Apex (F1 Engine)</h3>
             <p class="project-card__desc">
-              Real-time Formula 1 lap telemetry visualizations. Feeds telemetry curves mapping delta metrics across speed and gear transitions.
+              Real-time Formula 1 lap telemetry visualizations. Feeds telemetry curves mapping delta metrics across
+              speed and gear transitions.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Python</span>
@@ -219,7 +232,8 @@
             <p class="project-card__tag">Multi-Agent · Optimization</p>
             <h3 class="project-card__title">Agentic Supply Chain</h3>
             <p class="project-card__desc">
-              Autonomous logistics coordinator. Decentralized agents map dynamic pathfinding models to optimize physical node routes in real time.
+              Autonomous logistics coordinator. Decentralized agents map dynamic pathfinding models to optimize physical
+              node routes in real time.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">LangChain</span>
@@ -238,7 +252,8 @@
             <p class="project-card__tag">Utility · Privacy-First</p>
             <h3 class="project-card__title">LocalPDF Pro</h3>
             <p class="project-card__desc">
-              Offline compilation and parsing toolkit. Operates entirely via Web Assembly inside sandbox containers, ensuring zero metadata leakages.
+              Offline compilation and parsing toolkit. Operates entirely via Web Assembly inside sandbox containers,
+              ensuring zero metadata leakages.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Wasm</span>
@@ -257,7 +272,8 @@
             <p class="project-card__tag">Android · Audio DSP</p>
             <h3 class="project-card__title">Aura</h3>
             <p class="project-card__desc">
-              Android-based audio detection and identification utility. Executes system recording fingerprint loops matching Gracenote catalog index feeds.
+              Android-based audio detection and identification utility. Executes system recording fingerprint loops
+              matching Gracenote catalog index feeds.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Kotlin</span>
@@ -276,7 +292,8 @@
             <p class="project-card__tag">Deep Learning · Medical</p>
             <h3 class="project-card__title">PulmoSense</h3>
             <p class="project-card__desc">
-              Diagnostics classification interface for lung disease radiographs. Powered by deep CNN PyTorch training modules and diagnostic Grad-CAM heatmaps.
+              Diagnostics classification interface for lung disease radiographs. Powered by deep CNN PyTorch training
+              modules and diagnostic Grad-CAM heatmaps.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Python</span>
@@ -295,7 +312,8 @@
             <p class="project-card__tag">Classic Gaming · Python</p>
             <h3 class="project-card__title">Retro Arcade Suite</h3>
             <p class="project-card__desc">
-              Collection of classic desktop games (Snake, Pong, Shooter, and Hangman) implementing custom collision logic and event GUI layers.
+              Collection of classic desktop games (Snake, Pong, Shooter, and Hangman) implementing custom collision
+              logic and event GUI layers.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Python</span>
@@ -314,7 +332,7 @@
     <div class="contact">
       <p class="section-label">03 // Contact</p>
       <h2 class="section-title reveal">The Terminal</h2>
-      
+
       <div class="terminal reveal">
         <!-- Terminal Title Bar -->
         <div class="terminal__bar">
@@ -326,12 +344,14 @@
 
         <!-- Terminal Output Area -->
         <div class="terminal__body" id="terminal-body">
-          <div class="terminal__line"><span class="terminal__prompt">visitor@portfolio:~$</span> <span class="terminal__cmd">cat welcome.sh</span></div>
+          <div class="terminal__line"><span class="terminal__prompt">visitor@portfolio:~$</span> <span
+              class="terminal__cmd">cat welcome.sh</span></div>
           <div class="terminal__line terminal__output">Loading contact terminals. Systems functional.</div>
           <div class="terminal__line terminal__output">Run commands using prompt triggers below.</div>
           <div class="terminal__line">&nbsp;</div>
           <div id="terminal-output"></div>
-          <div class="terminal__line" id="terminal-input-line"><span class="terminal__prompt">visitor@portfolio:~$</span> <span class="terminal__cursor-blink"></span></div>
+          <div class="terminal__line" id="terminal-input-line"><span
+              class="terminal__prompt">visitor@portfolio:~$</span> <span class="terminal__cursor-blink"></span></div>
         </div>
 
         <!-- CLI Buttons supporting Spotlight -->
@@ -358,7 +378,7 @@
   <!-- ========== Footer ========== -->
   <footer class="footer">
     <div class="footer__left">
-      © 2026 Priyanshu Pratik Modular Architecture.
+      © 2026 Priyanshu Pratik.
     </div>
     <div class="footer__right">
       <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
@@ -368,4 +388,5 @@
   </footer>
 
 </body>
+
 </html>
