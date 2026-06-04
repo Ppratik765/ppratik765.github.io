@@ -230,9 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (isHovered) {
-        sweepProgress = Math.min(sweepProgress + 8, canvas.width);
+        sweepProgress = Math.min(sweepProgress + 1.2, canvas.width);
       } else {
-        sweepProgress = Math.max(sweepProgress - 14, 0);
+        sweepProgress = Math.max(sweepProgress - 2.5, 0);
       }
 
       if (sweepProgress > 0) {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
           for (let i = 0; i < size; i++) {
             const x = (i / size) * canvas.width;
             if (x > sweepProgress) break;
-            const y = canvas.height * 0.7 - (trace[i] * canvas.height * 0.5) + idx * 8;
+            const y = canvas.height * 0.40 - (trace[i] * canvas.height * 0.28) + idx * 6;
             if (i === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
           }
@@ -252,10 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.stroke();
         });
 
-        // Glowing Vertical Sweep Bar
+        // Glowing Vertical Sweep Bar (restricted to wave region)
         ctx.beginPath();
-        ctx.moveTo(sweepProgress, 0);
-        ctx.lineTo(sweepProgress, canvas.height);
+        ctx.moveTo(sweepProgress, canvas.height * 0.08);
+        ctx.lineTo(sweepProgress, canvas.height * 0.45);
         ctx.strokeStyle = isLight ? 'rgba(113, 97, 239, 0.85)' : 'rgba(255, 195, 0, 0.95)';
         ctx.lineWidth = 2.0;
         ctx.shadowBlur = 10;
@@ -449,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function animate() {
       resize();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time += 0.22;
+      time += isHovered ? 0.06 : 0.015;
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const color = isLight ? 'rgba(113, 97, 239, 0.75)' : 'rgba(255, 195, 0, 0.85)';
@@ -462,13 +462,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       for (let i = 0; i < barCount; i++) {
         const targetH = isHovered 
-          ? (Math.sin(time + i * 0.8) * 0.5 + 0.5) * h * 0.72 + Math.random() * 16
-          : 6 + Math.sin(time * 0.2 + i) * 4;
+          ? (Math.sin(time + i * 0.8) * 0.5 + 0.5) * h * 0.30 + Math.random() * 8
+          : 4 + Math.sin(time * 0.2 + i) * 2;
 
-        heights[i] += (targetH - heights[i]) * 0.3;
+        heights[i] += (targetH - heights[i]) * 0.35;
 
         const bx = startX + i * (barW + gap);
-        const by = h * 0.85 - heights[i];
+        const by = h * 0.45 - heights[i];
 
         ctx.fillStyle = color;
         ctx.fillRect(bx, by, barW, heights[i]);
