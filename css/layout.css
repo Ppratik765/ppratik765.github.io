@@ -544,7 +544,6 @@ html[data-theme="light"] .hero__iframe-container {
   .nav {
     flex-wrap: nowrap;
     justify-content: space-between;
-    align-items: center;
     padding: 0.65rem 0.75rem;
     gap: 0;
   }
@@ -556,12 +555,9 @@ html[data-theme="light"] .hero__iframe-container {
 
   .nav__links {
     display: flex;
-    width: auto;
-    justify-content: flex-end;
-    gap: 0.55rem;
-    margin-top: 0;
-    font-size: 0.85rem;
+    gap: 0.6rem;
     align-items: center;
+    margin: 0;
   }
 
   .nav__links a {
@@ -569,89 +565,102 @@ html[data-theme="light"] .hero__iframe-container {
     letter-spacing: 0.02em;
   }
 
-  .nav__links li:last-child {
-    position: static;
-  }
-
   .theme-toggle {
     font-size: 0.55rem;
-    padding: 0.28rem 0.6rem;
-    gap: 0.25rem;
+    padding: 0.3rem 0.6rem;
+    gap: 0.3rem;
   }
 
   .theme-toggle__icon {
     font-size: 0.75rem;
   }
 
-  /* ---------- Hero Typography & Spacing ---------- */
+  /* ---------- Fix Hero Typography & Spacing ---------- */
   .hero {
-    padding: 4.5rem 1.25rem 5rem;
+    padding: 4rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
+    justify-content: center;
   }
 
+  /* On mobile, flatten .hero__content so its children become direct flex items of .hero */
   .hero__content {
-    margin-top: 1.5rem;
+    display: contents;
+  }
+
+  /* Re-apply z-index & pointer-events to individual hero text elements since display:contents removes the wrapper */
+  .hero__tagline,
+  .hero__name,
+  .hero__subtitle,
+  .hero__cta-row {
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
   }
 
   .hero__name {
-    font-size: clamp(4rem, 16vw, 5.5rem);
+    font-size: clamp(3.8rem, 16vw, 5.5rem);
     margin-top: 0.75rem;
     line-height: 1.05;
     margin-bottom: 0.75rem;
   }
 
   .hero__tagline {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     letter-spacing: 0.15em;
-    margin-bottom: 1rem;
+    margin-top: 1.5rem;
   }
 
   .hero__subtitle {
     font-size: 1.05rem;
-    line-height: 1.55;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1rem;
     max-width: 100%;
+    line-height: 1.55;
   }
 
-  /* ---------- CTA Row: all 3 buttons inline ---------- */
+  /* ---------- CTA Row + Take Control: single visual row ---------- */
   .hero__cta-row {
     position: relative;
     bottom: auto;
     left: auto;
     transform: none;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
+    display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.4rem;
     flex-wrap: nowrap;
     z-index: 15;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
   }
 
-  /* Move Take Control inline beside the other CTA buttons */
+  /* Take Control button pulled up to align with CTA row */
   .hero__control-btn {
     position: relative;
     bottom: auto;
     left: auto;
     right: auto;
     transform: none;
-    margin-top: 0;
+    margin: 0;
+    margin-top: -2.4rem;
+    align-self: flex-end;
     z-index: 15;
     display: inline-flex;
-    width: auto;
-    text-align: center;
   }
 
   .control-btn {
-    font-size: 0.65rem;
-    padding: 0.6rem 1rem;
+    font-size: 0.52rem;
+    padding: 0.5rem 0.7rem;
     white-space: nowrap;
   }
 
+  .control-btn__pulse {
+    width: 7px;
+    height: 7px;
+  }
+
   .btn {
-    padding: 0.55rem 1rem;
-    font-size: 0.65rem;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.6rem;
     white-space: nowrap;
   }
 
