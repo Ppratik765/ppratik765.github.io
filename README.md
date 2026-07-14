@@ -32,7 +32,7 @@ Building intelligent systems, autonomous routing, and high-performance interacti
   </picture>
 </div>
 
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.svg" width="100%">
+---
 
 ### Beyond the Portfolio
 The 8 projects listed on my interactive portfolio are just the surface. From deep learning pipelines to low-latency arcade emulators and oceanic pathfinding algorithms, I am constantly building.
