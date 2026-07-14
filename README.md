@@ -26,9 +26,9 @@ Building intelligent systems, autonomous routing, and high-performance interacti
 
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/dist/github-contribution-grid-snake-dark.svg?palette=github-dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/dist/github-contribution-grid-snake.svg">
-    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/dist/github-contribution-grid-snake.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/github-contribution-grid-snake-dark.svg?palette=github-dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/github-contribution-grid-snake.svg">
+    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/github-contribution-grid-snake.svg">
   </picture>
 </div>
 
