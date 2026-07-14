@@ -10,26 +10,17 @@
 
 Building intelligent systems, autonomous routing, and high-performance interactive environments. I specialize in bridging the gap between heavy backend data processing and highly creative, performant frontend experiences.
 
-<br/>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.svg" width="100%">
 
 <div align="center">
   <h3>Core Technologies</h3>
   <br/>
-  <p>
-    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-    <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
-    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-    <img src="https://img.shields.io/badge/Kotlin-0095D5?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin" />
-  </p>
-  <p>
-    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
-    <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" alt="LangChain" />
-    <img src="https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white" alt="WebGL" />
-    <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white" alt="Three.js" />
-  </p>
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=py,rust,js,kotlin,pytorch,threejs,webgl,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3&perline=7&theme=dark" alt="Skill Icons" />
+  </a>
 </div>
 
-<br/>
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.svg" width="100%">
 
 ### Beyond the Portfolio
 The 8 projects listed on my interactive portfolio are just the surface. From deep learning pipelines to low-latency arcade emulators and oceanic pathfinding algorithms, I am constantly building.
