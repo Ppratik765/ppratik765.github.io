@@ -10,21 +10,17 @@
 
 Building intelligent systems, autonomous routing, and high-performance interactive environments. I specialize in bridging the gap between heavy backend data processing and highly creative, performant frontend experiences.
 
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.svg" width="100%">
+---
 
 <div align="center">
   <h3>Core Technologies</h3>
   <br/>
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=py,rust,js,kotlin,pytorch,threejs,webgl,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3&perline=7&theme=dark" alt="Skill Icons" />
+    <img src="https://skillicons.dev/icons?i=py,rust,js,ts,kotlin,pytorch,tensorflow,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3&perline=7&theme=dark" alt="Skill Icons" />
   </a>
 </div>
 
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.svg" width="100%">
-
-<div align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=Ppratik765&theme=radical&no-frame=true&no-bg=true&margin-w=15" alt="GitHub Trophies" />
-</div>
+---
 
 <br/>
 
