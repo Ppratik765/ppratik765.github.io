@@ -9,3 +9,10 @@
 **AI & Interactive Systems Developer**
 
 Building intelligent systems, autonomous routing, and high-performance interactive environments. I specialize in bridging the gap between heavy backend data processing and highly creative, performant frontend experiences.
+
+<br/>
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Ppratik765&show_icons=true&theme=radical&hide_border=true&bg_color=0D1117" alt="GitHub Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ppratik765&layout=compact&theme=radical&hide_border=true&bg_color=0D1117" alt="Top Languages" />
+</div>
