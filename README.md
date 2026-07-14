@@ -15,7 +15,11 @@
 # Priyanshu Pratik
 **AI & Interactive Systems Developer**
 
-Building intelligent systems, autonomous routing, and high-performance interactive environments. I specialize in bridging the gap between heavy backend data processing and highly creative, performant frontend experiences.
+Hi, I am **Priyanshu Pratik** — an AI & Data Science student at **Gati Shakti Vishwavidyalaya** and an AI Engineering Intern at **BISAG-N**.
+
+I specialize in building intelligent systems, ranging from deploying custom PyTorch models to Android via TensorFlow Lite (**PulmoSense**), to engineering real-time acoustic fingerprinting DSP engines (**Aura**). Currently, I'm developing an Agentic Supply Chain simulator using LangGraph and Generative AI to mitigate logistical bullwhip effects. 
+
+Beyond backend data processing, I love building highly creative, performant interactive environments like WebGL 3D flight simulators (**Vector Squadron**) and real-time Formula 1 telemetry visualizers. I'm actively preparing for the GATE 2027 (DA) paper and have solved over 160+ algorithmic problems on LeetCode.
 
 ---
 
