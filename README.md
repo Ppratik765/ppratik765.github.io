@@ -27,7 +27,7 @@ Beyond backend data processing, I love building highly creative, performant inte
   <h3>Core Technologies</h3>
   <br/>
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=py,rust,js,ts,kotlin,pytorch,tensorflow,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3&perline=7&theme=dark" alt="Skill Icons" />
+    <img src="https://skillicons.dev/icons?i=py,rust,js,ts,kotlin,pytorch,tensorflow,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3,java,docker,android&perline=8&theme=dark" alt="Skill Icons" />
   </a>
 </div>
 

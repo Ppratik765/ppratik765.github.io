@@ -30,8 +30,8 @@ Beyond backend data processing, I love building highly creative, performant inte
       <br/><br/><br/>
       <h3>Core Technologies</h3>
       <a href="https://skillicons.dev">
-        <!-- Changed perline to 4 so it fits beautifully inside this narrow left column -->
-        <img src="https://skillicons.dev/icons?i=py,rust,js,ts,kotlin,pytorch,tensorflow,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3&perline=4&theme=dark" alt="Skill Icons" />
+        <!-- Perfect 4x6 grid (24 icons) to fit beautifully inside this narrow left column -->
+        <img src="https://skillicons.dev/icons?i=py,rust,js,ts,kotlin,pytorch,tensorflow,html,css,git,linux,github,bash,c,cpp,wasm,regex,nodejs,react,vite,d3,java,docker,android&perline=4&theme=dark" alt="Skill Icons" />
       </a>
     </td>
     <td width="60%" valign="top" align="center">
