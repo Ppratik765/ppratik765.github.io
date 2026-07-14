@@ -31,16 +31,6 @@ Building intelligent systems, autonomous routing, and high-performance interacti
 
 ---
 
-### Custom Project Architecture (AI Rendered)
-
-| <img src="assets/vector_squadron.png" width="400" /> | <img src="assets/waveglider.png" width="400" /> |
-| :---: | :---: |
-| **Vector Squadron (Rust/WASM)**<br/>High-performance 3D space flight simulator with automated autopilot behaviors, GPU physics, and custom rendering pipelines. | **Waveglider (WebGL)**<br/>Gerstner wave vector displacement rendering a live, infinite oceanic surface simulation on the GPU. |
-
-| <img src="assets/apex_f1.png" width="400" /> | <img src="assets/agentic_nodes.png" width="400" /> |
-| :---: | :---: |
-| **Beyond the Apex (Python/D3)**<br/>Real-time Formula 1 lap telemetry visualizations mapping delta metrics across speed and gear transitions. | **Agentic Supply Chain (LangChain/RL)**<br/>Autonomous logistics coordinator using decentralized agents to optimize dynamic pathfinding models. |
----
 
 ### GitHub Analytics Dashboard
 
