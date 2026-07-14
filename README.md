@@ -27,23 +27,26 @@ Building intelligent systems, autonomous routing, and high-performance interacti
   </a>
 </div>
 
----
-
----
-
-### GitHub Analytics
-
-<div align="center">
-  <img src="https://streak-stats.demolab.com?user=Ppratik765&theme=radical&hide_border=true&border_radius=4.5" alt="GitHub Streak" />
 </div>
 
-<br/>
+---
+
+### Custom Project Architecture (AI Rendered)
+
+| <img src="assets/vector_squadron.png" width="400" /> | <img src="assets/waveglider.png" width="400" /> |
+| :---: | :---: |
+| **Vector Squadron (Rust/WASM)**<br/>High-performance 3D space flight simulator with automated autopilot behaviors, GPU physics, and custom rendering pipelines. | **Waveglider (WebGL)**<br/>Gerstner wave vector displacement rendering a live, infinite oceanic surface simulation on the GPU. |
+
+| <img src="assets/apex_f1.png" width="400" /> | <img src="assets/agentic_nodes.png" width="400" /> |
+| :---: | :---: |
+| **Beyond the Apex (Python/D3)**<br/>Real-time Formula 1 lap telemetry visualizations mapping delta metrics across speed and gear transitions. | **Agentic Supply Chain (LangChain/RL)**<br/>Autonomous logistics coordinator using decentralized agents to optimize dynamic pathfinding models. |
+---
+
+### GitHub Analytics Dashboard
 
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/github-contribution-grid-snake-dark.svg?palette=github-dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/github-contribution-grid-snake.svg">
-    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/output/github-contribution-grid-snake.svg">
+    <img src="https://raw.githubusercontent.com/Ppratik765/ppratik765.github.io/main/github-metrics.svg" alt="Metrics" width="100%">
   </picture>
 </div>
 
