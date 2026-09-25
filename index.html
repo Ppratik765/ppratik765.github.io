@@ -58,6 +58,23 @@
     })();
   </script>
 
+  <!-- Animation watchdog: if GSAP hasn't wired up scroll reveals within
+       2.2s (blocked CDN, slow network, etc.), fall back to showing all
+       content immediately via the .no-anim CSS rule in base.css. -->
+  <script>
+    (function () {
+      window.__animFallback = setTimeout(function () {
+        document.documentElement.classList.add('no-anim');
+      }, 2200);
+    })();
+  </script>
+  <noscript>
+    <style>
+      .reveal, .hero__tagline, .hero__name, .hero__subtitle, .hero__cta-row,
+      .stat-card, .project-card { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -84,11 +101,15 @@
 
 <body>
 
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
   <!-- ========== Navigation ========== -->
   <nav class="nav" id="nav">
     <a href="#" class="nav__logo">
       <img src="data/watermark.png" alt="PP" class="nav__logo-img">
     </a>
+    <div class="nav__scrim"></div>
     <ul class="nav__links">
       <li><a href="#about">About</a></li>
       <li><a href="#projects">Projects</a></li>
@@ -100,6 +121,11 @@
         </button>
       </li>
     </ul>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
   </nav>
 
   <!-- ========== Section 1: Hero (Cinematic Dark Mode Zone) ========== -->
@@ -110,9 +136,21 @@
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
       <script>
         (function () {
+          var frame = document.getElementById('hero-iframe');
           var t = localStorage.getItem('portfolio-theme') || 'dark';
-          document.getElementById('hero-iframe').src =
-            'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + t;
+          frame.addEventListener('load', function () {
+            frame.classList.add('is-loaded');
+          });
+          // Defer the heavy external embed until the browser is idle so it
+          // never competes with the page's own critical first paint.
+          var load = function () {
+            frame.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + t;
+          };
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(load, { timeout: 1500 });
+          } else {
+            setTimeout(load, 200);
+          }
         })();
       </script>
     </div>
@@ -202,8 +240,8 @@
       <h2 class="section-title reveal">The Showcase Grid</h2>
       <div class="projects__grid">
 
-        <!-- Card 1: Vector Squadron -->
-        <a href="projects/vector-squadron.html" class="project-card reveal">
+        <!-- Card 1: Vector Squadron (Featured) -->
+        <a href="projects/vector-squadron.html" class="project-card project-card--featured reveal">
           <div class="project-card__visual">
             <canvas id="vector-grid-canvas"></canvas>
           </div>
@@ -212,7 +250,8 @@
             <h3 class="project-card__title">Vector Squadron</h3>
             <p class="project-card__desc">
               High-performance 3D space flight simulator built with Rust (compiled to WASM) and Three.js, featuring
-              automated autopilot behaviors and custom GLSL shaders.
+              automated autopilot behaviors and custom GLSL shaders. The autopilot running behind this page's hero
+              section is the same engine, live.
             </p>
             <div class="project-card__tech">
               <span class="tech-pill">Rust (WASM)</span>
@@ -223,7 +262,51 @@
           </div>
         </a>
 
-        <!-- Card 2: Waveglider -->
+        <!-- Card 2: AeroTwin (Featured) -->
+        <a href="projects/aerotwin.html" class="project-card project-card--featured reveal">
+          <div class="project-card__visual">
+            <canvas id="radar-canvas"></canvas>
+          </div>
+          <div class="project-card__content">
+            <p class="project-card__tag">Digital Twin · Simulation</p>
+            <h3 class="project-card__title">AeroTwin</h3>
+            <p class="project-card__desc">
+              Bi-directional 3D digital twin of Vadodara Airport's ground operations — a deadlock-free ATC engine,
+              Dijkstra-routed taxi clearances, and ML-driven delay prediction, generalized from one surveyed
+              airfield to five more Indian airports.
+            </p>
+            <div class="project-card__tech">
+              <span class="tech-pill">FastAPI</span>
+              <span class="tech-pill">SimPy</span>
+              <span class="tech-pill">Deck.GL</span>
+              <span class="tech-pill">React</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 3: DamageLens (Featured) -->
+        <a href="projects/damagelens.html" class="project-card project-card--featured reveal">
+          <div class="project-card__visual">
+            <canvas id="damage-canvas"></canvas>
+          </div>
+          <div class="project-card__content">
+            <p class="project-card__tag">Deep Learning · Geospatial</p>
+            <h3 class="project-card__title">DamageLens</h3>
+            <p class="project-card__desc">
+              A Siamese U-Net trained on the xBD dataset classifies building damage from paired pre/post-disaster
+              satellite imagery into four severity tiers, surfaced through a Next.js geospatial viewer with an
+              interactive before/after swipe and per-site impact analytics.
+            </p>
+            <div class="project-card__tech">
+              <span class="tech-pill">PyTorch</span>
+              <span class="tech-pill">Next.js</span>
+              <span class="tech-pill">React-Leaflet</span>
+              <span class="tech-pill">GeoPandas</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 4: Waveglider -->
         <a href="projects/waveglider.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="ocean-canvas"></canvas>
@@ -243,7 +326,7 @@
           </div>
         </a>
 
-        <!-- Card 3: Beyond the Apex -->
+        <!-- Card 5: Beyond the Apex -->
         <a href="projects/beyond-the-apex.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="f1-canvas"></canvas>
@@ -263,7 +346,7 @@
           </div>
         </a>
 
-        <!-- Card 4: Agentic Supply Chain -->
+        <!-- Card 6: Agentic Supply Chain -->
         <a href="projects/agentic-supply.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="supply-canvas"></canvas>
@@ -283,7 +366,7 @@
           </div>
         </a>
 
-        <!-- Card 5: LocalPDF Pro -->
+        <!-- Card 7: LocalPDF Pro -->
         <a href="projects/localpdf-pro.html" class="project-card reveal">
           <div class="project-card__visual">
             <div class="project-card__decrypt-block">DEC_SECURE</div>
@@ -303,7 +386,7 @@
           </div>
         </a>
 
-        <!-- Card 6: Aura -->
+        <!-- Card 8: Aura -->
         <a href="projects/aura.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="aura-canvas"></canvas>
@@ -323,7 +406,7 @@
           </div>
         </a>
 
-        <!-- Card 7: Pulmosense -->
+        <!-- Card 9: Pulmosense -->
         <a href="projects/pulmosense.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="pulmo-canvas"></canvas>
@@ -343,7 +426,7 @@
           </div>
         </a>
 
-        <!-- Card 8: Retro Arcade Suite -->
+        <!-- Card 10: Retro Arcade Suite -->
         <a href="projects/retro-arcade.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="arcade-canvas"></canvas>
@@ -424,7 +507,7 @@
   <!-- ========== Footer ========== -->
   <footer class="footer">
     <div class="footer__left">
-      © 2026 Priyanshu Pratik.
+      © 2026 Priyanshu Pratik
     </div>
     <div class="footer__right">
       <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">

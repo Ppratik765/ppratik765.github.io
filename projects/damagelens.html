@@ -3,29 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vector Squadron — Project Detail</title>
-  <link rel="canonical" href="https://ppratik765.github.io/projects/vector-squadron.html" />
+  <title>DamageLens — Project Detail</title>
+  <link rel="canonical" href="https://ppratik765.github.io/projects/damagelens.html" />
   <link rel="icon" type="image/jpeg" href="../data/favicon.jpeg" />
   <link rel="shortcut icon" type="image/jpeg" href="../data/favicon.jpeg" />
-  <meta name="description" content="High-performance 3D space flight simulator and shooter with Rust WASM logic." />
+  <meta name="description" content="Deep learning building damage assessment from post-disaster satellite imagery, classified into four severity tiers and visualized on an interactive geospatial map." />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://ppratik765.github.io/projects/vector-squadron.html" />
-  <meta property="og:title" content="Vector Squadron — Priyanshu Pratik" />
-  <meta property="og:description" content="High-performance 3D space flight simulator and shooter with Rust WASM logic." />
+  <meta property="og:url" content="https://ppratik765.github.io/projects/damagelens.html" />
+  <meta property="og:title" content="DamageLens — Priyanshu Pratik" />
+  <meta property="og:description" content="Deep learning building damage assessment from post-disaster satellite imagery, classified into four severity tiers and visualized on an interactive geospatial map." />
   <meta property="og:image" content="https://ppratik765.github.io/data/watermark.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Vector Squadron",
-    "applicationCategory": "GameApplication",
+    "name": "DamageLens",
+    "applicationCategory": "GeospatialApplication",
     "operatingSystem": "Web",
-    "description": "High-performance 3D space flight simulator and shooter with Rust WASM logic.",
+    "description": "Deep learning building damage assessment from post-disaster satellite imagery, classified into four severity tiers and visualized on an interactive geospatial map.",
     "author": { "@type": "Person", "name": "Priyanshu Pratik" }
   }
   </script>
-  
+
   <!-- Animation watchdog: if GSAP hasn't wired up scroll reveals within
        2.2s (blocked CDN, slow network, etc.), fall back to showing all
        content immediately via the .no-anim CSS rule in base.css. -->
@@ -54,7 +54,7 @@
 
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  
+
   <!-- Modular Scripts -->
   <script src="../js/effects.js" defer></script>
   <script src="../js/main.js" defer></script>
@@ -90,26 +90,26 @@
   <main class="project-details">
     <header class="project-details__header">
       <p class="section-label">02 // Project Focus</p>
-      <h1 class="project-details__title">Vector Squadron</h1>
-      
+      <h1 class="project-details__title">DamageLens</h1>
+
       <div class="project-details__meta">
         <div class="meta-item">
           <span class="meta-item__label">Domain</span>
-          <span class="meta-item__value">3D Space Flight Simulation / Game</span>
+          <span class="meta-item__value">Disaster Response / Geospatial Deep Learning</span>
         </div>
         <div class="meta-item">
           <span class="meta-item__label">Core Stack</span>
-          <span class="meta-item__value">Three.js, GLSL, WebGL, Web Audio API</span>
+          <span class="meta-item__value">PyTorch, Next.js 14, React-Leaflet, GeoPandas, Shapely</span>
         </div>
         <div class="meta-item">
-          <span class="meta-item__label">Architecture</span>
-          <span class="meta-item__value">Static client-side modular script pipelines</span>
+          <span class="meta-item__label">Data Layer</span>
+          <span class="meta-item__value">xBD post-disaster satellite imagery, geo-referenced pre/post pairs</span>
         </div>
       </div>
 
       <div class="project-details__actions">
-        <a href="https://github.com/Ppratik765/Shooting-game-star-wars-style" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
-        <a href="https://vector-squadron.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Live Demo</a>
+        <a href="https://github.com/Ppratik765/Building-Damage-Assessment-from-Post-Disaster-Satellite-Imagery" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
+        <a href="https://damagelens.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Live Demo</a>
       </div>
     </header>
 
@@ -117,19 +117,32 @@
       <div>
         <h3>Purpose & Necessity</h3>
         <p>
-          Vector Squadron is built to push the boundary of web-based GPU rendering and game loops. High-fidelity rendering in the browser traditionally requires bulky, opinionated engine assets. This project explores building a light, responsive game engine using vanilla Three.js coupled with custom vertex and fragment shaders (GLSL) to execute lightning-fast space flight simulation without sacrificing performance or visual aesthetics.
+          In the hours after a disaster, responders need to know which buildings are safe, which are damaged, and
+          which are destroyed — long before ground teams can physically reach every site. DamageLens automates that
+          triage from satellite imagery alone: given a pre-disaster and post-disaster image pair, it localizes every
+          building and classifies its damage into four severity tiers, then surfaces the result on an interactive
+          map instead of a raw model output.
         </p>
-        
+
         <h3>Key Technical Implementation</h3>
         <p>
-          Autonomous pathfinding coordinates and autopilot algorithms allow drones and support ships to patrol wireframe grid paths. A custom GPU physics solver handles projectile collisions, particle explosion expansions, and collision bounds checks inside browser threads. Sound is spatialized using the native Web Audio API, shifting frequency and panning based on camera vectors.
+          The core model is a Siamese U-Net (Siam-UNet-Diff) with a shared-weight ResNet-34 encoder that extracts
+          features from the pre- and post-disaster images independently, then differences and concatenates them
+          through the decoder. Two heads branch off the shared features: a binary localization head that segments
+          building footprints, and a classification head that scores each one across the xBD damage scale — none,
+          minor, major, or destroyed. The training pipeline (PyTorch, Albumentations, GeoPandas) exports a
+          standardized manifest, GeoJSON, and paired PNGs to a strict data contract, so the model side and the
+          frontend never need to know about each other's internals. That frontend is a Next.js 14 app with an
+          interactive before/after swipe comparison built on React-Leaflet — sliding across a disaster site reveals
+          the classified damage polygons, color-coded by tier, over the raw imagery, alongside aggregate per-site
+          impact statistics.
         </p>
       </div>
     </section>
 
     <!-- Embedded Live Iframe -->
     <div class="project-details__iframe-container">
-      <iframe class="project-details__iframe" src="https://vector-squadron.vercel.app/?mode=autopilot&muted=true" title="Vector Squadron Live View"></iframe>
+      <iframe class="project-details__iframe" src="https://damagelens.vercel.app" title="DamageLens Live View"></iframe>
     </div>
   </main>
 

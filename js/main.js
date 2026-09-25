@@ -6,6 +6,81 @@
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
+  const REDUCE_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  /* ----------------------------------------------------------
+     0. MOBILE NAV (hamburger / slide-out panel)
+  ---------------------------------------------------------- */
+  (function initMobileNav() {
+    const nav = document.getElementById('nav') || document.querySelector('.nav');
+    const toggle = document.getElementById('nav-toggle');
+    const links = nav ? nav.querySelectorAll('.nav__links a') : [];
+    if (!nav || !toggle) return;
+
+    function closeNav() {
+      nav.classList.remove('nav--open');
+      document.body.classList.remove('nav-locked');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    function openNav() {
+      nav.classList.add('nav--open');
+      document.body.classList.add('nav-locked');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+
+    toggle.addEventListener('click', () => {
+      nav.classList.contains('nav--open') ? closeNav() : openNav();
+    });
+    links.forEach((a) => a.addEventListener('click', closeNav));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeNav();
+    });
+    const scrim = nav.querySelector('.nav__scrim');
+    if (scrim) scrim.addEventListener('click', closeNav);
+  })();
+
+  /* ----------------------------------------------------------
+     0b. SCROLL PROGRESS BAR + ACTIVE SECTION NAV STATE
+  ---------------------------------------------------------- */
+  (function initScrollProgress() {
+    const bar = document.getElementById('scroll-progress');
+    const navLinks = document.querySelectorAll('.nav__links a[href*="#"]');
+    const sections = Array.from(document.querySelectorAll('main section[id], body > section[id]'));
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      if (bar) {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+        bar.style.width = pct + '%';
+      }
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+    update();
+
+    // Active section highlighting only applies where in-page sections exist (index.html)
+    if (sections.length && navLinks.length && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach((a) => {
+            const match = a.getAttribute('href') === `#${id}`;
+            a.classList.toggle('active', match);
+          });
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+      sections.forEach((s) => io.observe(s));
+    }
+  })();
+
   /* ----------------------------------------------------------
      1. THEME SWITCHER WITH GSAP TRANSITION
   ---------------------------------------------------------- */
@@ -44,6 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
       const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      // Reduced motion: swap instantly, skip the starfield warp entirely.
+      if (REDUCE_MOTION) {
+        htmlEl.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('portfolio-theme', nextTheme);
+        if (themeIcon) themeIcon.textContent = nextTheme === 'dark' ? '☾' : '☀';
+        if (themeLabel) themeLabel.textContent = nextTheme === 'dark' ? 'Light' : 'Dark';
+        if (heroIframe) {
+          heroIframe.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + nextTheme;
+        }
+        hyperspaceRunning = false;
+        return;
+      }
 
       let iframeLoaded = false;
       const onLoad = () => {
@@ -329,6 +417,11 @@ document.addEventListener('DOMContentLoaded', () => {
      2. GSAP SCROLL ENTRANCE & REVEALS
   ---------------------------------------------------------- */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    // GSAP is up — cancel the <head> watchdog that would otherwise force
+    // everything visible via the .no-anim CSS escape hatch.
+    if (window.__animFallback) clearTimeout(window.__animFallback);
+    htmlEl.classList.remove('no-anim');
+
     gsap.registerPlugin(ScrollTrigger);
 
     // Hero entrance

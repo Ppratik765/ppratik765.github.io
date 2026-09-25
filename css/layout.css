@@ -82,6 +82,67 @@
   width: 100%;
 }
 
+.nav__links a.active {
+  color: var(--accent-primary);
+}
+
+.nav__links a.active::after {
+  width: 100%;
+}
+
+/* ---------- Scroll Progress Bar ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2.5px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  z-index: 1100;
+  transition: width 0.1s linear, background 0.6s ease;
+  pointer-events: none;
+}
+
+/* ---------- Mobile Nav Toggle (Hamburger) ---------- */
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1.5px solid var(--card-border);
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1200;
+  position: relative;
+}
+
+.nav__toggle-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.nav--open .nav__toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav--open .nav__toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+.nav--open .nav__toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.nav__scrim {
+  display: none;
+}
+
 /* ---------- Theme Toggle ---------- */
 .theme-toggle {
   background: none;
@@ -234,6 +295,12 @@ html[data-theme="light"] .hero {
   border: none;
   transform: scale(1.02);
   filter: saturate(1.2);
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.hero__iframe.is-loaded {
+  opacity: 1;
 }
 
 /* Overlay covering the iframe to allow click through to rest of Hero */
@@ -549,12 +616,11 @@ html[data-theme="light"] .hero__iframe-container {
     padding: 6rem 1.5rem 4rem;
   }
 
-  /* ---------- Single-Row Mobile Navigation ---------- */
+  /* ---------- Mobile Navigation: Slide-out Panel ---------- */
   .nav {
     flex-wrap: nowrap;
     justify-content: space-between;
-    padding: 0.5rem 0.5rem;
-    gap: 0;
+    padding: 0.75rem 1.25rem;
   }
 
   .nav__logo {
@@ -562,26 +628,65 @@ html[data-theme="light"] .hero__iframe-container {
     flex-shrink: 0;
   }
 
-  .nav__links {
+  .nav__toggle {
     display: flex;
-    gap: 0.4rem;
-    align-items: center;
+  }
+
+  .nav__links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(78vw, 320px);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2.25rem;
     margin: 0;
+    padding: 2rem 2.5rem;
+    background: var(--bg-primary);
+    border-left: 1px solid var(--card-border);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+    transform: translateX(100%);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 1150;
+  }
+
+  .nav--open .nav__links {
+    transform: translateX(0);
   }
 
   .nav__links a {
-    font-size: 0.55rem;
-    letter-spacing: 0;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
   }
 
   .theme-toggle {
-    font-size: 0.55rem;
-    padding: 0.3rem 0.5rem;
-    gap: 0.2rem;
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
   }
 
-  .theme-toggle__icon {
-    font-size: 0.7rem;
+  /* Scrim behind the slide-out panel */
+  .nav__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    z-index: 1100;
+  }
+
+  .nav--open .nav__scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Prevent background scroll while the panel is open */
+  body.nav-locked {
+    overflow: hidden;
   }
 
   /* ---------- Fix Hero Typography & Spacing ---------- */

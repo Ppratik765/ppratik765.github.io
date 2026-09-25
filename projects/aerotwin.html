@@ -3,29 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AURA Health Tracker — Project Detail</title>
-  <link rel="canonical" href="https://ppratik765.github.io/projects/aura.html" />
+  <title>AeroTwin — Project Detail</title>
+  <link rel="canonical" href="https://ppratik765.github.io/projects/aerotwin.html" />
   <link rel="icon" type="image/jpeg" href="../data/favicon.jpeg" />
   <link rel="shortcut icon" type="image/jpeg" href="../data/favicon.jpeg" />
-  <meta name="description" content="Advanced multi-modal biometric analysis platform leveraging wearable data." />
+  <meta name="description" content="Bi-directional 3D digital twin of Indian airport ground operations with a deadlock-free ATC engine and ML-driven delay prediction." />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://ppratik765.github.io/projects/aura.html" />
-  <meta property="og:title" content="AURA Health Tracker — Priyanshu Pratik" />
-  <meta property="og:description" content="Advanced multi-modal biometric analysis platform leveraging wearable data." />
+  <meta property="og:url" content="https://ppratik765.github.io/projects/aerotwin.html" />
+  <meta property="og:title" content="AeroTwin — Priyanshu Pratik" />
+  <meta property="og:description" content="Bi-directional 3D digital twin of Indian airport ground operations with a deadlock-free ATC engine and ML-driven delay prediction." />
   <meta property="og:image" content="https://ppratik765.github.io/data/watermark.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "AURA Health Tracker",
-    "applicationCategory": "HealthApplication",
+    "name": "AeroTwin",
+    "applicationCategory": "SimulationApplication",
     "operatingSystem": "Web",
-    "description": "Advanced multi-modal biometric analysis platform leveraging wearable data.",
+    "description": "Bi-directional 3D digital twin of Indian airport ground operations with a deadlock-free ATC engine and ML-driven delay prediction.",
     "author": { "@type": "Person", "name": "Priyanshu Pratik" }
   }
   </script>
-  
+
   <!-- Animation watchdog: if GSAP hasn't wired up scroll reveals within
        2.2s (blocked CDN, slow network, etc.), fall back to showing all
        content immediately via the .no-anim CSS rule in base.css. -->
@@ -54,7 +54,7 @@
 
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  
+
   <!-- Modular Scripts -->
   <script src="../js/effects.js" defer></script>
   <script src="../js/main.js" defer></script>
@@ -90,25 +90,25 @@
   <main class="project-details">
     <header class="project-details__header">
       <p class="section-label">02 // Project Focus</p>
-      <h1 class="project-details__title">Aura</h1>
-      
+      <h1 class="project-details__title">AeroTwin</h1>
+
       <div class="project-details__meta">
         <div class="meta-item">
           <span class="meta-item__label">Domain</span>
-          <span class="meta-item__value">Android Development / Audio Signal Processing</span>
+          <span class="meta-item__value">Airport Ground Operations / Digital Twin Simulation</span>
         </div>
         <div class="meta-item">
           <span class="meta-item__label">Core Stack</span>
-          <span class="meta-item__value">Kotlin, Android SDK, Gracenote API, Record Managers</span>
+          <span class="meta-item__value">Python (FastAPI · SimPy), React Three Fiber, Deck.GL, MapLibre GL</span>
         </div>
         <div class="meta-item">
-          <span class="meta-item__label">Hardware</span>
-          <span class="meta-item__value">System Mic Ingestion & Fourier Transform analysis</span>
+          <span class="meta-item__label">Architecture</span>
+          <span class="meta-item__value">Server-authoritative simulation, one engine per airport, synced live over WebSocket</span>
         </div>
       </div>
 
       <div class="project-details__actions">
-        <a href="https://github.com/Ppratik765/Detect-any-music-android-app" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
+        <a href="https://github.com/abhinavmishragsv-analytics/AeroTwin/tree/feature/vabo-pure-3d-twin" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">View Code on GitHub</a>
       </div>
     </header>
 
@@ -116,23 +116,41 @@
       <div>
         <h3>Purpose & Necessity</h3>
         <p>
-          Identifying playing ambient audio track signatures locally on resource-constrained mobile hardware is highly demanding. Aura targets fast, energy-efficient signal footprint parsing. By parsing microphone streams in light background threads, the application processes audio fingerprints locally and queries matching engines with zero user interface lag.
+          AeroTwin is a bi-directional 3D digital twin of Indian airport ground and terminal-area operations, built
+          around a real, surveyed model of Vadodara Airport (VABO) and a generic airport builder that extends the
+          same simulation core to Delhi, Mumbai, Ahmedabad, Pune, and Surat. "Bi-directional" is the operative word —
+          the browser isn't a static viewer. Posting a disruption (a runway closure, fog, a taxiway shutdown)
+          mutates the live SimPy simulation on the server, and every connected client sees the consequence within a
+          frame: aircraft holding short, arrivals going around, ground traffic re-routing around the closure.
         </p>
-        
+
         <h3>Key Technical Implementation</h3>
         <p>
-          Aura implements system mic sampling loops in Kotlin, executing Fast Fourier Transforms (FFT) to convert raw acoustic waves into binary spectral maps. These maps match frequency peak nodes against database indexing APIs to return metadata, covering cover arts, album descriptions, and streaming links.
+          Ground and runway conflicts are prevented by construction, not by tuning: every piece of pavement an
+          aircraft could occupy is a single-occupancy resource, and a taxi clearance is only granted once every
+          resource along the route is acquired in one canonical order — making deadlock and two-aircraft-in-the-same-
+          place structurally impossible. A Dijkstra router plans taxi clearances the way a real ground controller
+          would, preferring taxiways to taxilanes and rapid exits to right-angle turn-offs, while the runway itself is
+          modeled as a priority resource with wake-turbulence separation and crosswind/visibility minima. Each
+          airport's pavement, markings, and buildings are generated server-side from a compact structural schema
+          (runway thresholds, a taxi graph, stand positions), so the rendered picture can never drift from what the
+          simulation believes is true. An ML model registry layers on taxi-time regression, delay forecasting,
+          congestion-tier clustering, and weather ground-stop probability — falling back to a documented heuristic
+          when no trained model is present, so the twin still runs standalone. Safety isn't just asserted: a headless
+          soak-test script runs every airport under both nominal traffic and a deliberately hostile disruption
+          sequence, auditing actual inter-aircraft distances every frame against the 55m ground / 300m-120ft airborne
+          separation standards.
         </p>
       </div>
     </section>
 
-    <!-- Embedded Live Demo Container -->
+    <!-- Status Container (no public live demo yet — active development) -->
     <div class="project-details__iframe-container">
       <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #070a13; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem; text-align: center; padding: 2rem;">
         <div>
-          <p style="margin-bottom: 1rem; color: var(--accent-primary);">[ AURA ANDROID INTERACTION ]</p>
-          <p>Native Mobile App — Run on Android Studio / Physical Hardware</p>
-          <a href="https://github.com/Ppratik765/Detect-any-music-android-app" target="_blank" rel="noopener noreferrer" style="color: #fff; text-decoration: underline; margin-top: 1rem; display: inline-block;">Download APK / View Source on GitHub</a>
+          <p style="margin-bottom: 1rem; color: var(--accent-primary);">[ AEROTWIN GROUND CONTROL ]</p>
+          <p>Multi-Airport Simulation Engine &amp; ATC Safety Audit Suite</p>
+          <a href="https://github.com/abhinavmishragsv-analytics/AeroTwin/tree/feature/vabo-pure-3d-twin" target="_blank" rel="noopener noreferrer" style="color: #fff; text-decoration: underline; margin-top: 1rem; display: inline-block;">View Simulation Core &amp; Frontend on GitHub</a>
         </div>
       </div>
     </div>

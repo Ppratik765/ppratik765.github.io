@@ -102,6 +102,58 @@ body {
   color: var(--bg-primary);
 }
 
+/* ============================================================
+   Animation States
+   .reveal elements start hidden and are brought in by GSAP
+   ScrollTrigger (see js/main.js). The .no-anim escape hatch and
+   <noscript> blocks in each page's <head> guarantee content is
+   never stuck invisible if GSAP fails to load or JS is disabled.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.no-anim .reveal,
+.no-anim .hero__tagline,
+.no-anim .hero__name,
+.no-anim .hero__subtitle,
+.no-anim .hero__cta-row,
+.no-anim .stat-card,
+.no-anim .project-card {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .hero__tagline,
+  .hero__name,
+  .hero__subtitle,
+  .hero__cta-row,
+  .stat-card,
+  .project-card {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .project-card:hover {
+    transform: none !important;
+  }
+}
+
 /* ---------- Scrollbar ---------- */
 ::-webkit-scrollbar {
   width: 8px;

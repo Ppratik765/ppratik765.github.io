@@ -7,6 +7,37 @@ document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   /* ----------------------------------------------------------
+     0. SHARED HELPERS — reduced motion & visibility-gated loops
+  ---------------------------------------------------------- */
+  const REDUCE_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  // Runs `frameFn` on requestAnimationFrame only while `el` is on screen,
+  // so idle off-screen cards don't burn CPU/GPU forever. Under reduced
+  // motion, paints a single static frame instead of looping at all.
+  function runCanvasLoop(el, frameFn) {
+    if (REDUCE_MOTION) {
+      frameFn();
+      return;
+    }
+    let rafId = null;
+    function loop() {
+      frameFn();
+      rafId = requestAnimationFrame(loop);
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && rafId === null) {
+          rafId = requestAnimationFrame(loop);
+        } else if (!entry.isIntersecting && rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      });
+    }, { threshold: 0.01 });
+    io.observe(el);
+  }
+
+  /* ----------------------------------------------------------
      1. MAGNETIC SPOTLIGHT & 3D TILT
   ---------------------------------------------------------- */
   const cards = document.querySelectorAll('.project-card');
@@ -30,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
       handleSpotlight(e, card);
+      if (REDUCE_MOTION) return;
 
       // 3D Card Tilt
       const rect = card.getBoundingClientRect();
@@ -48,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+      if (!REDUCE_MOTION) {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+      }
       card.style.setProperty('--mouse-x', '50%');
       card.style.setProperty('--mouse-y', '50%');
     });
@@ -118,9 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
   })();
 
   // --- Project B: Waveglider (Subtle Displacement Ripple) ---
@@ -175,9 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.stroke();
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
   })();
 
   // --- Project C: Beyond the Apex (F1 Telemetry line chart sweeps) ---
@@ -264,9 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.shadowBlur = 0; // reset
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
   })();
 
   // --- Project D: Agentic Supply (Isometric Optimized Route) ---
@@ -382,9 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
   })();
 
   // --- Project E: LocalPDF Pro (CLI Cipher text decryption) ---
@@ -400,6 +430,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function decryptEffect() {
       const targetText = words[Math.floor(Math.random() * words.length)];
+
+      if (REDUCE_MOTION) {
+        block.textContent = targetText;
+        return;
+      }
+
       let iterations = 0;
 
       clearInterval(interval);
@@ -474,9 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillRect(bx, by, barW, heights[i]);
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
   })();
 
   // --- Project G: Pulmosense (Lung disease medical scanning lines) ---
@@ -560,9 +595,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.stroke();
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
   })();
 
   // --- Project H: Retro Arcade Suite (Pixel transition block dissolve overlay) ---
@@ -628,9 +662,198 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- Project I: AeroTwin (ATC radar sweep with aircraft blips) ---
+  (function initRadarSweep() {
+    const canvas = document.getElementById('radar-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    let isHovered = false;
+    let sweepAngle = 0;
+
+    function resize() {
+      if (canvas.width !== card.clientWidth || canvas.height !== card.clientHeight) {
+        canvas.width = card.clientWidth;
+        canvas.height = card.clientHeight;
+      }
+    }
+    resize();
+
+    card.addEventListener('mouseenter', () => isHovered = true);
+    card.addEventListener('mouseleave', () => isHovered = false);
+
+    // Aircraft blips: fixed polar coordinates (radius 0-1, angle radians),
+    // each with a slow individual drift so the field feels alive.
+    const blips = Array.from({ length: 9 }, () => ({
+      r: 0.18 + Math.random() * 0.75,
+      a: Math.random() * Math.PI * 2,
+      speed: (Math.random() - 0.5) * 0.006,
+      size: 1.6 + Math.random() * 1.4,
+    }));
+
+    function animate() {
+      resize();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxR = Math.min(w, h) * 0.46;
+
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const lineColor = isLight ? 'rgba(113, 97, 239,' : 'rgba(57, 255, 20,';
+      const sweepSpeed = isHovered ? 0.045 : 0.012;
+      sweepAngle += sweepSpeed;
+
+      // Concentric range rings + crosshair
+      ctx.strokeStyle = `${lineColor}0.16)`;
+      ctx.lineWidth = 1;
+      [0.33, 0.66, 1].forEach((f) => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxR * f, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.beginPath();
+      ctx.moveTo(cx - maxR, cy); ctx.lineTo(cx + maxR, cy);
+      ctx.moveTo(cx, cy - maxR); ctx.lineTo(cx, cy + maxR);
+      ctx.stroke();
+
+      // Sweep wedge (faint fill trailing the leading edge)
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, maxR, sweepAngle - 0.9, sweepAngle);
+      ctx.closePath();
+      const wedgeAlpha = isHovered ? 0.22 : 0.1;
+      ctx.fillStyle = `${lineColor}${wedgeAlpha})`;
+      ctx.fill();
+      ctx.restore();
+
+      // Sweep line
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(sweepAngle) * maxR, cy + Math.sin(sweepAngle) * maxR);
+      ctx.strokeStyle = `${lineColor}${isHovered ? 0.9 : 0.5})`;
+      ctx.lineWidth = isHovered ? 2 : 1.25;
+      ctx.stroke();
+
+      // Aircraft blips: brighten briefly as the sweep passes over them
+      blips.forEach((b) => {
+        b.a += b.speed * (isHovered ? 2.5 : 1);
+        const bx = cx + Math.cos(b.a) * b.r * maxR;
+        const by = cy + Math.sin(b.a) * b.r * maxR;
+
+        let angleDiff = Math.abs(((sweepAngle - b.a) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI);
+        const lit = angleDiff > Math.PI - 0.5;
+        const alpha = lit ? 0.95 : 0.28;
+
+        ctx.beginPath();
+        ctx.arc(bx, by, b.size, 0, Math.PI * 2);
+        ctx.fillStyle = `${lineColor}${alpha})`;
+        ctx.fill();
+
+        if (lit) {
+          ctx.beginPath();
+          ctx.arc(bx, by, b.size * 3, 0, Math.PI * 2);
+          ctx.fillStyle = `${lineColor}0.12)`;
+          ctx.fill();
+        }
+      });
+    }
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- Project J: DamageLens (before/after damage-tier swipe reveal) ---
+  (function initDamageSwipe() {
+    const canvas = document.getElementById('damage-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    let isHovered = false;
+    let sweepX = 0.35; // 0..1 across width, resting position
+
+    function resize() {
+      if (canvas.width !== card.clientWidth || canvas.height !== card.clientHeight) {
+        canvas.width = card.clientWidth;
+        canvas.height = card.clientHeight;
+      }
+    }
+    resize();
+
+    card.addEventListener('mouseenter', () => isHovered = true);
+    card.addEventListener('mouseleave', () => isHovered = false);
+
+    // Fixed "buildings" grid with a pre-assigned xBD-style damage tier.
+    const tierColors = ['#10b981', '#f59e0b', '#f97316', '#ef4444']; // none/minor/major/destroyed
+    const buildings = [];
+    const cols = 9, rows = 6;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const roll = Math.random();
+        const tier = roll < 0.45 ? 0 : roll < 0.7 ? 1 : roll < 0.9 ? 2 : 3;
+        buildings.push({
+          x: (c + 0.5) / cols,
+          y: (r + 0.5) / rows,
+          tier,
+          jitter: Math.random() * 0.4 + 0.8,
+        });
+      }
+    }
+
+    function animate() {
+      resize();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const w = canvas.width;
+      const h = canvas.height;
+
+      if (isHovered) {
+        sweepX += (Math.sin(Date.now() / 900) * 0.5 + 0.5 - sweepX) * 0.04;
+      } else {
+        sweepX += (0.35 - sweepX) * 0.06;
+      }
+      const sweepPx = sweepX * w;
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const gridColor = isLight ? 'rgba(0, 53, 102, 0.06)' : 'rgba(255, 255, 255, 0.05)';
+
+      // Base terrain grid
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      const g = 16;
+      for (let x = 0; x < w; x += g) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (let y = 0; y < h; y += g) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+      // Buildings: left of the swipe line render as flat "pre-disaster" gray
+      // squares; right of it render classified into their xBD damage tier.
+      const size = Math.min(w / cols, h / rows) * 0.32;
+      buildings.forEach((b) => {
+        const bx = b.x * w;
+        const by = b.y * h;
+        const classified = bx > sweepPx;
+        ctx.fillStyle = classified
+          ? `${tierColors[b.tier]}${isHovered ? 'e6' : '80'}`
+          : (isLight ? 'rgba(0, 53, 102, 0.22)' : 'rgba(255, 255, 255, 0.22)');
+        const s = size * b.jitter;
+        ctx.fillRect(bx - s / 2, by - s / 2, s, s);
+      });
+
+      // Sweep divider line + handle
+      ctx.beginPath();
+      ctx.moveTo(sweepPx, 0);
+      ctx.lineTo(sweepPx, h);
+      ctx.strokeStyle = isLight ? 'rgba(113, 97, 239, 0.85)' : 'rgba(255, 195, 0, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = isHovered ? 10 : 0;
+      ctx.shadowColor = isLight ? '#7161ef' : '#ffc300';
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+    runCanvasLoop(card, animate);
   })();
 
 });

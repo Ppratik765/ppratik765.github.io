@@ -26,6 +26,23 @@
   }
   </script>
   
+  <!-- Animation watchdog: if GSAP hasn't wired up scroll reveals within
+       2.2s (blocked CDN, slow network, etc.), fall back to showing all
+       content immediately via the .no-anim CSS rule in base.css. -->
+  <script>
+    (function () {
+      window.__animFallback = setTimeout(function () {
+        document.documentElement.classList.add('no-anim');
+      }, 2200);
+    })();
+  </script>
+  <noscript>
+    <style>
+      .reveal, .hero__tagline, .hero__name, .hero__subtitle, .hero__cta-row,
+      .stat-card, .project-card { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,9 +61,13 @@
 </head>
 <body>
 
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
   <!-- ========== Navigation ========== -->
-  <nav class="nav">
+  <nav class="nav" id="nav">
     <a href="../index.html" class="nav__logo">← PP</a>
+    <div class="nav__scrim"></div>
     <ul class="nav__links">
       <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
@@ -58,6 +79,11 @@
         </button>
       </li>
     </ul>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
   </nav>
 
   <!-- ========== Project Details ========== -->
@@ -110,7 +136,7 @@
   <!-- ========== Footer ========== -->
   <footer class="footer">
     <div class="footer__left">
-      © 2026 Priyanshu Pratik Waveglider.
+      © 2026 Priyanshu Pratik
     </div>
     <div class="footer__right">
       <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
