@@ -80,6 +80,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
+  <!-- Warm the connection to the hero game's origin as early as possible,
+       so the actual iframe request (fired below) doesn't pay the DNS/TLS
+       handshake cost on top of the page load. -->
+  <link rel="preconnect" href="https://vector-squadron-portfolio.vercel.app" crossorigin />
+  <link rel="dns-prefetch" href="https://vector-squadron-portfolio.vercel.app" />
+
   <!-- Modular Stylesheets -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -140,24 +146,24 @@
   <section class="hero" id="hero">
     <!-- Backing Iframe Container (locked to autoplay) -->
     <div class="hero__iframe-container">
-      <iframe id="hero-iframe" class="hero__iframe" src="" title="Vector Squadron Space Autopilot"
+      <!-- src is set directly (not injected by JS) so the browser's native
+           parser kicks off the request the instant it reaches this tag —
+           no waiting on JS execution. Defaults to the dark theme, which
+           matches this page's own default <html data-theme="dark">. -->
+      <iframe id="hero-iframe" class="hero__iframe" src="https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=dark" title="Vector Squadron Space Autopilot"
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
       <script>
         (function () {
           var frame = document.getElementById('hero-iframe');
-          var t = localStorage.getItem('portfolio-theme') || 'dark';
+          var t = localStorage.getItem('portfolio-theme');
           frame.addEventListener('load', function () {
             frame.classList.add('is-loaded');
           });
-          // Defer the heavy external embed until the browser is idle so it
-          // never competes with the page's own critical first paint.
-          var load = function () {
+          // Only re-point the iframe if the saved theme differs from the
+          // hardcoded default above — avoids paying for a second request
+          // in the common case (no saved preference, or already dark).
+          if (t && t !== 'dark') {
             frame.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + t;
-          };
-          if ('requestIdleCallback' in window) {
-            requestIdleCallback(load, { timeout: 1500 });
-          } else {
-            setTimeout(load, 200);
           }
         })();
       </script>
