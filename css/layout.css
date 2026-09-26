@@ -208,6 +208,24 @@ section {
   color: var(--text-primary);
 }
 
+/* Section titles use a kinetic per-line reveal instead of the generic
+   block fade — js/main.js wraps their text in .line-mask > span at
+   runtime, so the outer element itself should never fade/slide. */
+.section-title.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.section-title .line-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.section-title .line-mask > span {
+  display: block;
+  transform: translateY(115%);
+}
+
 /* ---------- Section 1: Hero (Autonomous Iframe) ---------- */
 .hero {
   position: relative;
@@ -351,12 +369,16 @@ html[data-theme="light"] .hero__iframe-container {
   letter-spacing: -0.03em;
   margin-bottom: 1.05rem;
   color: var(--text-primary);
-  opacity: 0;
-  transform: translateY(30px);
 }
 
-.hero__name span {
+.hero__name .line-mask {
   display: block;
+  overflow: hidden;
+}
+
+.hero__name .line-mask > span {
+  display: block;
+  transform: translateY(115%);
 }
 
 .hero__name .highlight {
@@ -542,7 +564,7 @@ html[data-theme="light"] .hero__iframe-container {
   border: 1px solid var(--card-border);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-glow);
+  box-shadow: inset 0 3px 0 0 var(--accent-primary), var(--shadow-glow);
 }
 
 #map-svg {

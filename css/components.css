@@ -100,6 +100,28 @@
   transform-style: preserve-3d;
   transition: border-color 0.4s, box-shadow 0.4s, transform 0.2s ease-out;
   cursor: pointer;
+  box-shadow: inset 0 3px 0 0 var(--card-border), 0 24px 55px -30px rgba(0, 0, 0, 0.65);
+}
+
+/* Editorial index numeral, top-right of every card */
+.projects__grid {
+  counter-reset: project-index;
+}
+.project-card {
+  counter-increment: project-index;
+}
+.project-card::after {
+  content: counter(project-index, decimal-leading-zero);
+  position: absolute;
+  top: 1.4rem;
+  right: 1.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  opacity: 0.55;
+  z-index: 3;
+  pointer-events: none;
 }
 
 /* Magnetic Spotlight Radial Background */
@@ -123,7 +145,7 @@
 
 .project-card:hover {
   border-color: var(--card-hover-border);
-  box-shadow: var(--card-hover-shadow);
+  box-shadow: inset 0 3px 0 0 var(--accent-primary), var(--card-hover-shadow);
 }
 
 .project-card:hover::before {
@@ -195,91 +217,18 @@
   letter-spacing: 0.05em;
 }
 
-/* ---------- Featured Project Card (wide, split layout) ---------- */
-.project-card--featured {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: row;
-  padding: 0;
-  min-height: 420px;
-  align-items: stretch;
-}
-
-.project-card--featured .project-card__visual {
-  position: relative;
-  width: 44%;
-  flex-shrink: 0;
-  height: auto;
-}
-
-.project-card--featured .project-card__content {
-  flex: 1;
-  padding: 3rem 3.25rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transform: none;
-}
-
-.project-card--featured .project-card__tag {
-  font-size: 0.75rem;
-}
-
-.project-card--featured .project-card__title {
-  font-size: clamp(1.9rem, 2.6vw, 2.6rem);
-}
-
-.project-card--featured .project-card__desc {
-  font-size: 1rem;
-  max-width: 46ch;
-}
-
-.project-card--featured::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 44%;
-  width: 1px;
-  height: 100%;
-  background: var(--card-border);
-  z-index: 2;
-}
-
-@media (max-width: 1024px) {
-  .project-card--featured {
-    flex-direction: column;
-    min-height: auto;
-  }
-
-  .project-card--featured .project-card__visual {
-    width: 100%;
-    height: 220px;
-  }
-
-  .project-card--featured .project-card__content {
-    padding: 2rem;
-  }
-
-  .project-card--featured::after {
-    display: none;
-  }
-}
-
 /* Hover Visual: Vector Squadron (Grid Flash) */
 #vector-grid-canvas {
-  opacity: 0.12;
+  opacity: 0.34;
   transition: opacity 0.4s;
 }
 .project-card:hover #vector-grid-canvas {
   opacity: 0.68;
 }
-.project-card--featured #vector-grid-canvas {
-  opacity: 0.34;
-}
 
 /* Hover Visual: Waveglider (Subtle Displacement Ripple) */
 #ocean-canvas {
-  opacity: 0.08;
+  opacity: 0.28;
   transition: opacity 0.4s;
 }
 .project-card:hover #ocean-canvas {
@@ -288,7 +237,7 @@
 
 /* Hover Visual: Beyond the Apex (Line Chart Drawing) */
 #f1-canvas {
-  opacity: 0;
+  opacity: 0.22;
   transition: opacity 0.4s;
 }
 .project-card:hover #f1-canvas {
@@ -297,7 +246,7 @@
 
 /* Hover Visual: Agentic Supply (Isometric Nodes) */
 #supply-canvas {
-  opacity: 0.15;
+  opacity: 0.32;
   transition: opacity 0.4s;
 }
 .project-card:hover #supply-canvas {
@@ -629,7 +578,7 @@
 
 /* Hover Visual: Aura (Audio visualizer EQ bars) */
 #aura-canvas {
-  opacity: 0;
+  opacity: 0.3;
   transition: opacity 0.4s;
 }
 .project-card:hover #aura-canvas {
@@ -638,7 +587,7 @@
 
 /* Hover Visual: Pulmosense (Medical Scanning Line) */
 #pulmo-canvas {
-  opacity: 0.08;
+  opacity: 0.26;
   transition: opacity 0.4s;
 }
 .project-card:hover #pulmo-canvas {
@@ -647,7 +596,7 @@
 
 /* Hover Visual: Retro Arcade (Pixel dissolve block transition overlay) */
 #arcade-canvas {
-  opacity: 0.06;
+  opacity: 0.18;
   transition: opacity 0.4s;
 }
 .project-card:hover #arcade-canvas {
@@ -656,24 +605,18 @@
 
 /* Hover Visual: AeroTwin (ATC radar sweep with aircraft blips) */
 #radar-canvas {
-  opacity: 0.22;
+  opacity: 0.34;
   transition: opacity 0.4s;
 }
 .project-card:hover #radar-canvas {
   opacity: 0.9;
 }
-.project-card--featured #radar-canvas {
-  opacity: 0.4;
-}
 
 /* Hover Visual: DamageLens (before/after damage-tier swipe reveal) */
 #damage-canvas {
-  opacity: 0.2;
+  opacity: 0.32;
   transition: opacity 0.4s;
 }
 .project-card:hover #damage-canvas {
   opacity: 0.88;
-}
-.project-card--featured #damage-canvas {
-  opacity: 0.4;
 }

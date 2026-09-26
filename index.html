@@ -70,8 +70,9 @@
   </script>
   <noscript>
     <style>
-      .reveal, .hero__tagline, .hero__name, .hero__subtitle, .hero__cta-row,
+      .reveal, .hero__tagline, .hero__subtitle, .hero__cta-row,
       .stat-card, .project-card { opacity: 1 !important; transform: none !important; }
+      .hero__name .line-mask > span, .section-title .line-mask > span { transform: none !important; }
     </style>
   </noscript>
 
@@ -100,6 +101,13 @@
 </head>
 
 <body>
+
+  <!-- Ambient background -->
+  <div class="bg-glow" aria-hidden="true">
+    <span class="bg-glow__orb bg-glow__orb--1"></span>
+    <span class="bg-glow__orb bg-glow__orb--2"></span>
+    <span class="bg-glow__orb bg-glow__orb--3"></span>
+  </div>
 
   <!-- Scroll progress indicator -->
   <div class="scroll-progress" id="scroll-progress"></div>
@@ -161,8 +169,8 @@
     <div class="hero__content">
       <p class="hero__tagline">// systems engineer · creative developer</p>
       <h1 class="hero__name">
-        <span>Priyanshu</span>
-        <span class="highlight">Pratik</span>
+        <span class="line-mask"><span>Priyanshu</span></span>
+        <span class="line-mask"><span class="highlight">Pratik</span></span>
       </h1>
       <p class="hero__subtitle">
         AI & Data Science student building real-time ML systems, edge models, and interactive WebGL experiences.
@@ -241,7 +249,7 @@
       <div class="projects__grid">
 
         <!-- Card 1: Vector Squadron (Featured) -->
-        <a href="projects/vector-squadron.html" class="project-card project-card--featured reveal">
+        <a href="projects/vector-squadron.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="vector-grid-canvas"></canvas>
           </div>
@@ -263,7 +271,7 @@
         </a>
 
         <!-- Card 2: AeroTwin (Featured) -->
-        <a href="projects/aerotwin.html" class="project-card project-card--featured reveal">
+        <a href="projects/aerotwin.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="radar-canvas"></canvas>
           </div>
@@ -285,7 +293,7 @@
         </a>
 
         <!-- Card 3: DamageLens (Featured) -->
-        <a href="projects/damagelens.html" class="project-card project-card--featured reveal">
+        <a href="projects/damagelens.html" class="project-card reveal">
           <div class="project-card__visual">
             <canvas id="damage-canvas"></canvas>
           </div>

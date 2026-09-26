@@ -38,8 +38,9 @@
   </script>
   <noscript>
     <style>
-      .reveal, .hero__tagline, .hero__name, .hero__subtitle, .hero__cta-row,
+      .reveal, .hero__tagline, .hero__subtitle, .hero__cta-row,
       .stat-card, .project-card { opacity: 1 !important; transform: none !important; }
+      .hero__name .line-mask > span, .section-title .line-mask > span { transform: none !important; }
     </style>
   </noscript>
 
@@ -60,6 +61,13 @@
   <script src="../js/main.js" defer></script>
 </head>
 <body>
+
+  <!-- Ambient background -->
+  <div class="bg-glow" aria-hidden="true">
+    <span class="bg-glow__orb bg-glow__orb--1"></span>
+    <span class="bg-glow__orb bg-glow__orb--2"></span>
+    <span class="bg-glow__orb bg-glow__orb--3"></span>
+  </div>
 
   <!-- Scroll progress indicator -->
   <div class="scroll-progress" id="scroll-progress"></div>

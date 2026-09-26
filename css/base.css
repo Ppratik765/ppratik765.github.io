@@ -94,6 +94,66 @@ body {
   transition: background var(--transition-theme), color var(--transition-theme);
   min-height: 100vh;
   line-height: 1.6;
+  position: relative;
+}
+
+/* ---------- Ambient Background: film grain + drifting glow orbs ---------- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-glow__orb {
+  position: absolute;
+  width: 52vw;
+  height: 52vw;
+  max-width: 760px;
+  max-height: 760px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.38;
+  background: radial-gradient(circle, var(--accent-primary), transparent 70%);
+  animation: bg-drift 28s ease-in-out infinite alternate;
+  transition: background var(--transition-theme), opacity var(--transition-theme);
+}
+
+.bg-glow__orb--1 { top: -6%; left: -6%; }
+.bg-glow__orb--2 {
+  top: 30%;
+  right: -10%;
+  background: radial-gradient(circle, var(--accent-secondary), transparent 70%);
+  animation-duration: 34s;
+  animation-delay: -9s;
+}
+.bg-glow__orb--3 {
+  bottom: -10%;
+  left: 30%;
+  opacity: 0.24;
+  animation-duration: 40s;
+  animation-delay: -18s;
+}
+
+@keyframes bg-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(6%, 9%) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-glow__orb { animation: none; }
 }
 
 /* ---------- Selection ---------- */
@@ -116,12 +176,16 @@ body {
 
 .no-anim .reveal,
 .no-anim .hero__tagline,
-.no-anim .hero__name,
 .no-anim .hero__subtitle,
 .no-anim .hero__cta-row,
 .no-anim .stat-card,
 .no-anim .project-card {
   opacity: 1 !important;
+  transform: none !important;
+}
+
+.no-anim .hero__name .line-mask > span,
+.no-anim .section-title .line-mask > span {
   transform: none !important;
 }
 
@@ -140,12 +204,16 @@ body {
 
   .reveal,
   .hero__tagline,
-  .hero__name,
   .hero__subtitle,
   .hero__cta-row,
   .stat-card,
   .project-card {
     opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero__name .line-mask > span,
+  .section-title .line-mask > span {
     transform: none !important;
   }
 

@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     const card = canvas.closest('.project-card');
     let isHovered = false;
-    let sweepProgress = 0;
+    let sweepProgress = 0.001; // small idle amount so a faint trace is always visible
 
     function resize() {
       if (canvas.width !== card.clientWidth || canvas.height !== card.clientHeight) {
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isHovered) {
         sweepProgress = Math.min(sweepProgress + 2.5, canvas.width);
       } else {
-        sweepProgress = Math.max(sweepProgress - 4, 0);
+        sweepProgress = Math.max(sweepProgress - 4, canvas.width * 0.16);
       }
 
       if (sweepProgress > 0) {

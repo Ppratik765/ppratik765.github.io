@@ -82,6 +82,24 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
+     0c. KINETIC TITLE SPLIT
+     Wraps each line of every .section-title in a masked span so
+     it can cascade in line-by-line (see js/main.js §3 and
+     css/layout.css). Runs unconditionally — if GSAP never loads,
+     the .no-anim / prefers-reduced-motion CSS rules still reveal
+     these spans plainly.
+  ---------------------------------------------------------- */
+  document.querySelectorAll('.section-title').forEach((el) => {
+    const lines = el.innerHTML
+      .split(/<br\s*\/?>/i)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    el.innerHTML = lines
+      .map((line) => `<span class="line-mask"><span>${line}</span></span>`)
+      .join('');
+  });
+
+  /* ----------------------------------------------------------
      1. THEME SWITCHER WITH GSAP TRANSITION
   ---------------------------------------------------------- */
   const htmlEl = document.documentElement;
@@ -428,12 +446,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroTimeline = gsap.timeline({ delay: 0.3 });
     heroTimeline
       .to('.hero__tagline', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
-      .to('.hero__name', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.5')
+      .to('.hero__name .line-mask > span', { y: '0%', duration: 1, ease: 'power3.out', stagger: 0.12 }, '-=0.5')
       .to('.hero__subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.6')
       .to('.hero__cta-row', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5');
 
-    // Generic reveal transitions
+    // Generic reveal transitions (section titles use the kinetic line
+    // reveal below instead — their outer element never fades as a block)
     gsap.utils.toArray('.reveal').forEach(el => {
+      if (el.classList.contains('section-title')) return;
       gsap.to(el, {
         scrollTrigger: {
           trigger: el,
@@ -444,6 +464,23 @@ document.addEventListener('DOMContentLoaded', () => {
         y: 0,
         duration: 0.8,
         ease: 'power3.out',
+      });
+    });
+
+    // Kinetic per-line reveal for section titles
+    document.querySelectorAll('.section-title').forEach((title) => {
+      const lines = title.querySelectorAll('.line-mask > span');
+      if (!lines.length) return;
+      gsap.to(lines, {
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+        y: '0%',
+        duration: 0.9,
+        ease: 'power3.out',
+        stagger: 0.1,
       });
     });
 
