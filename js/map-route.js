@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'soar-valley',
       coords: [52.6369, -1.1398], // Leicester, UK
-      tooltip: '<strong>Soar Valley College (Leicester, UK)</strong><br><span style="color: var(--accent-primary);">10th Standard</span>'
+      tooltip: '<strong>Soar Valley College (Leicester, UK)</strong><br><span style="color: var(--accent-primary);">Year 11 · 7 Grade 9s (GCSE)</span>'
     },
     {
       id: 'dps-harni',
@@ -34,24 +34,26 @@ document.addEventListener('DOMContentLoaded', () => {
     attributionControl: false 
   }).setView([35, 38], 3);
 
-  // Theming Tiles
-  const darkTilesUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-  const lightTilesUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  // Theming Tiles — Esri's keyless "Canvas" basemaps (no API key, no rate
+  // limit). Previously CARTO's basemaps.cartocdn.com, which started
+  // requiring a registered API key in Aug 2026 and now watermarks
+  // anonymous requests with "API KEY REQUIRED".
+  const darkTilesUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+  const lightTilesUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+  const tileOptions = {
+    maxZoom: 20,
+    maxNativeZoom: 16, // Esri's canvas tiles top out at 16; Leaflet upsamples past this
+    attribution: '&copy; <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a>',
+  };
 
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  let currentLayer = L.tileLayer(isLight ? lightTilesUrl : darkTilesUrl, {
-    subdomains: 'abcd',
-    maxZoom: 20
-  }).addTo(map);
+  let currentLayer = L.tileLayer(isLight ? lightTilesUrl : darkTilesUrl, tileOptions).addTo(map);
 
   // Watch for theme updates and swap tiles
   window.addEventListener('theme-changed', () => {
     const isLightNow = document.documentElement.getAttribute('data-theme') === 'light';
-    const newLayer = L.tileLayer(isLightNow ? lightTilesUrl : darkTilesUrl, {
-      subdomains: 'abcd',
-      maxZoom: 20
-    });
-    
+    const newLayer = L.tileLayer(isLightNow ? lightTilesUrl : darkTilesUrl, tileOptions);
+
     newLayer.addTo(map);
     setTimeout(() => {
       map.removeLayer(currentLayer);
