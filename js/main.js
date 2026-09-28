@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Stagger stat cards scale
+    // Stagger stat cards scale + count up any numeric values
     ScrollTrigger.batch('.stat-card', {
       start: 'top 85%',
       onEnter: (batch) => {
@@ -494,6 +494,37 @@ document.addEventListener('DOMContentLoaded', () => {
           stagger: 0.12,
           duration: 0.6,
           ease: 'back.out(1.3)',
+        });
+
+        batch.forEach((card) => {
+          const valueEl = card.querySelector('.stat-card__value[data-count]');
+          if (!valueEl || valueEl.dataset.counted) return;
+          valueEl.dataset.counted = 'true';
+
+          const target = parseFloat(valueEl.dataset.count);
+          const decimals = parseInt(valueEl.dataset.decimals || '0', 10);
+          const suffix = valueEl.dataset.suffix || '';
+
+          if (REDUCE_MOTION) {
+            valueEl.textContent = target.toFixed(decimals) + suffix;
+            return;
+          }
+
+          const proxy = { val: 0 };
+          valueEl.textContent = (0).toFixed(decimals) + suffix;
+
+          gsap.to(proxy, {
+            val: target,
+            duration: 1.4,
+            ease: 'power2.out',
+            delay: 0.15,
+            onUpdate: () => {
+              valueEl.textContent = proxy.val.toFixed(decimals) + suffix;
+            },
+            onComplete: () => {
+              valueEl.textContent = target.toFixed(decimals) + suffix;
+            },
+          });
         });
       },
     });
@@ -571,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
         command: 'git remote -v show origin',
         output: [
           '→ github.com/ppratik765',
-          '  Check codebases, algorithm templates (160+ LeetCode), and agentic workflows.'
+          '  Full source for every project above — commits, issues, and the occasional 2am hack.'
         ],
         link: 'https://github.com/ppratik765',
         linkText: 'github.com/ppratik765'

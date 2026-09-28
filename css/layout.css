@@ -19,6 +19,7 @@
   background: var(--glass-bg);
   border-bottom: 1px solid var(--glass-border);
   transition: background var(--transition-theme), border-color var(--transition-theme);
+  view-transition-name: site-nav;
 }
 
 .nav__logo {
@@ -290,17 +291,10 @@ html[data-theme="light"] .hero {
   bottom: 0;
   left: 0;
   width: 100%;
-<<<<<<< ours
-  height: 36vh;
+  height: 42vh;
   background:
-    radial-gradient(60% 100% at 50% 100%, var(--accent-glow), transparent 65%),
-    linear-gradient(to bottom, transparent, var(--global-bg-primary));
-=======
-  height: 46vh;
-  background:
-    radial-gradient(58% 85% at 50% 100%, var(--accent-glow), transparent 62%),
-    linear-gradient(to bottom, transparent 0%, var(--global-bg-primary) 45%, var(--global-bg-primary) 100%);
->>>>>>> theirs
+    radial-gradient(59% 90% at 50% 100%, var(--accent-glow), transparent 63%),
+    linear-gradient(to bottom, transparent 0%, var(--global-bg-primary) 50%, var(--global-bg-primary) 100%);
   z-index: 4;
   pointer-events: none;
   transition: background var(--transition-theme);
@@ -577,7 +571,7 @@ html[data-theme="light"] .hero__iframe-container {
   border: 1px solid var(--card-border);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: inset 0 3px 0 0 var(--accent-primary), var(--shadow-glow);
+  box-shadow: var(--shadow-glow);
 }
 
 #map-svg {
@@ -594,9 +588,49 @@ html[data-theme="light"] .hero__iframe-container {
 
 .projects__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(320px, auto);
+  gap: 1.75rem;
   margin-top: 3rem;
+}
+
+/* Bento sizing — the flagship project gets a large square slot, a
+   handful of others run wide, everything else sits at 1x1. Intentional
+   hierarchy instead of a repeating grid of identical tiles. */
+.project-card--feature {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.project-card--wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.project-card--feature .project-card__title {
+  font-size: clamp(1.8rem, 2.4vw, 2.6rem);
+}
+
+.project-card--feature .project-card__desc {
+  font-size: 1.02rem;
+  max-width: 46ch;
+}
+
+@media (max-width: 1024px) {
+  .projects__grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(280px, auto);
+  }
+
+  .project-card--feature {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .project-card--wide {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
 }
 
 /* ---------- Section 4: Contact ---------- */
@@ -628,14 +662,6 @@ html[data-theme="light"] .hero__iframe-container {
   .about {
     grid-template-columns: 1fr;
     gap: 3rem;
-  }
-
-  .projects__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .projects__grid> :nth-child(5n+5) {
-    grid-column: span 1;
   }
 
   .hero__control-btn {
@@ -815,7 +841,15 @@ html[data-theme="light"] .hero__iframe-container {
 
   /* ---------- Task 3: Fix Project Cards ---------- */
   .projects__grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
     gap: 1.5rem;
+  }
+
+  .project-card--feature,
+  .project-card--wide {
+    grid-column: span 1;
+    grid-row: span 1;
   }
 
   .project-card {

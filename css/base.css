@@ -156,6 +156,15 @@ body::before {
   .bg-glow__orb { animation: none; }
 }
 
+/* ---------- Page Transitions ----------
+   Native cross-document View Transitions. Supported browsers get an
+   automatic crossfade between index.html and project pages; unsupported
+   browsers simply ignore this at-rule and navigate normally — no JS,
+   no fallback branch needed. */
+@view-transition {
+  navigation: auto;
+}
+
 /* ---------- Selection ---------- */
 ::selection {
   background: var(--accent-primary);

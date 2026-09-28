@@ -100,7 +100,7 @@
   transform-style: preserve-3d;
   transition: border-color 0.4s, box-shadow 0.4s, transform 0.2s ease-out;
   cursor: pointer;
-  box-shadow: inset 0 3px 0 0 var(--card-border), 0 24px 55px -30px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 24px 55px -30px rgba(0, 0, 0, 0.65);
 }
 
 /* Editorial index numeral, top-right of every card */
@@ -145,7 +145,7 @@
 
 .project-card:hover {
   border-color: var(--card-hover-border);
-  box-shadow: inset 0 3px 0 0 var(--accent-primary), var(--card-hover-shadow);
+  box-shadow: var(--card-hover-shadow);
 }
 
 .project-card:hover::before {
@@ -257,16 +257,328 @@
 .project-card__decrypt-block {
   position: absolute;
   top: 1.5rem;
-  right: 1.5rem;
+  left: 1.75rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-muted);
   opacity: 0.18;
   transition: opacity 0.4s, color 0.4s;
+  z-index: 3;
 }
 .project-card:hover .project-card__decrypt-block {
   opacity: 0.9;
   color: var(--accent-primary);
+}
+
+/* ---------- Custom Cursor: "Stardust" (fine-pointer devices only) ----------
+   Layers: particle canvas (trail) -> ring (spring, stretches with speed,
+   morphs around targets, becomes a labelled disc on cards) -> core dot.
+   All colour comes from --accent-primary so both themes stay on-palette. */
+html.has-custom-cursor,
+html.has-custom-cursor *:not(input):not(textarea) {
+  cursor: none !important;
+}
+
+html.has-custom-cursor input,
+html.has-custom-cursor textarea {
+  cursor: text !important;
+}
+
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.cursor,
+.cursor__ring,
+.cursor__dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cursor {
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cursor--ready { opacity: 1; }
+.cursor--hidden { opacity: 0; }
+
+.cursor__dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-glow);
+  transition: opacity 0.2s ease, width 0.25s ease, height 0.25s ease, margin 0.25s ease;
+}
+
+.cursor__ring {
+  width: 0;
+  height: 0;
+}
+
+.cursor__shape {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--accent-primary) 65%, transparent);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cursor__label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg-primary);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+}
+
+/* hover: interactive control - ring morphs to wrap the element */
+.cursor[data-state="magnet"] .cursor__shape {
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  border-color: var(--accent-primary);
+}
+.cursor[data-state="magnet"] .cursor__dot { opacity: 0; }
+
+/* hover: large or generic interactive area - simple grow */
+.cursor[data-state="grow"] .cursor__shape {
+  width: 58px; height: 58px; margin: -29px 0 0 -29px;
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  border-color: var(--accent-primary);
+}
+
+/* hover: cards / map - solid disc with a contextual word */
+.cursor[data-state="label"] .cursor__shape {
+  width: 84px; height: 84px; margin: -42px 0 0 -42px;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 10px 34px var(--accent-glow);
+}
+.cursor[data-state="label"] .cursor__label { opacity: 1; transform: scale(1); }
+.cursor[data-state="label"] .cursor__dot { opacity: 0; }
+
+/* text fields / terminal - ring collapses into a caret */
+.cursor[data-state="text"] .cursor__shape {
+  width: 2px; height: 26px; margin: -13px 0 0 -1px;
+  border-radius: 2px;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+.cursor[data-state="text"] .cursor__dot { opacity: 0; }
+
+.cursor--down .cursor__shape { transform: scale(0.82); }
+.cursor[data-state="label"].cursor--down .cursor__shape { transform: scale(0.92); }
+
+/* click shockwave */
+.cursor-pulse {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-primary);
+  pointer-events: none;
+  z-index: 9999;
+  animation: cursor-pulse 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cursor-pulse {
+  from { transform: translate(var(--px), var(--py)) scale(0.6); opacity: 0.9; }
+  to   { transform: translate(var(--px), var(--py)) scale(5.5); opacity: 0; }
+}
+
+/* ---------- Command Palette Trigger (nav) ---------- */
+.cmdk-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: 1.5px solid var(--card-border);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.42rem 0.75rem 0.42rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: all 0.3s ease;
+}
+
+.cmdk-trigger:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.cmdk-trigger__keys {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.cmdk-trigger__keys kbd {
+  font-family: var(--font-mono);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .cmdk-trigger__label { display: none; }
+  .cmdk-trigger { padding: 0.5rem 0.65rem; }
+}
+
+/* ---------- Command Palette Overlay ---------- */
+.cmdk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.cmdk-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.cmdk-locked {
+  overflow: hidden;
+}
+
+.cmdk-panel {
+  width: min(90vw, 560px);
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+  overflow: hidden;
+  transform: translateY(-12px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cmdk-overlay--open .cmdk-panel {
+  transform: translateY(0) scale(1);
+}
+
+.cmdk-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.cmdk-prompt {
+  font-family: var(--font-mono);
+  color: var(--accent-primary);
+  font-size: 1rem;
+}
+
+.cmdk-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.cmdk-input::placeholder {
+  color: var(--text-muted);
+}
+
+.cmdk-esc {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  padding: 0.15rem 0.4rem;
+}
+
+.cmdk-list {
+  list-style: none;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.cmdk-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.cmdk-item--active {
+  background: var(--card-hover-border);
+  background: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+  color: var(--text-primary);
+}
+
+.cmdk-item__hint {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.cmdk-empty {
+  padding: 1.25rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 /* ---------- Terminal Command CLI ---------- */

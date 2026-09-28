@@ -104,6 +104,7 @@
   <script src="js/effects.js" defer></script>
   <script src="js/map-route.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/enhance.js" defer></script>
 </head>
 
 <body>
@@ -128,6 +129,12 @@
       <li><a href="#about">About</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li>
+        <button class="cmdk-trigger" id="cmdk-trigger" type="button" aria-haspopup="dialog" aria-label="Open quick jump menu">
+          <span class="cmdk-trigger__label">Quick Jump</span>
+          <span class="cmdk-trigger__keys"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+        </button>
+      </li>
       <li>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
           <span class="theme-toggle__icon" id="theme-icon">☾</span>
@@ -203,34 +210,39 @@
         <p class="section-label">01 // About Me</p>
         <h2 class="section-title reveal">Background &<br />Focus</h2>
         <p class="reveal">
-          I'm Priyanshu Pratik, an AI & Data Science undergrad at <strong>Gati Shakti Vishwavidyalaya</strong> and an AI
-          Engineering Intern at <strong>BISAG-N</strong>.
-          I focus on building practical engineering systems—whether that's training and quantizing PyTorch models for
-          offline edge inference or building multi-agent reinforcement learning simulators for supply chain networks.
+          I'm Priyanshu — third-year AI & Data Science undergrad at <strong>Gati Shakti Vishwavidyalaya</strong>,
+          currently an AI Engineering Intern at <strong>BISAG-N</strong>. Most of what I build starts from the same
+          itch: I want to see the system actually run, not just describe how it should work.
         </p>
         <p class="reveal">
-          I keep a strong core in data structures and math, maintaining an <strong>8.66 CGPA</strong> and solving
-          <strong>160+ problems on LeetCode</strong>. Right now, I'm also preparing for <strong>GATE 2027 (Data Science
-            & AI)</strong> to push deeper into machine learning and systems research.
+          That's meant quantizing PyTorch models down to run offline on a phone, and building multi-agent
+          reinforcement-learning simulators that argue with each other over supply chain routing. Somewhere in
+          between, I taught myself GLSL because a flight simulator needed better clouds — that instinct to go one
+          layer deeper is basically my whole personality at this point.
         </p>
         <p class="reveal">
-          Before university, I completed <strong>Year 11</strong> at <strong>Soar Valley College, England</strong> —
-          seven Grade 9s at GCSE — before <strong>DPS Harni</strong> (435/500 in Class 12th, 96.6 percentile / 50k
-          rank in JEE Main).
+          I keep a decent head for math and data structures — <strong>8.80 CGPA</strong>, five semesters in — and
+          I'm chipping away at <strong>GATE 2027 (Data Science & AI)</strong> between projects. On the side, I'm
+          <strong>160+ problems deep on LeetCode</strong>, mostly because stopping felt worse than continuing.
+        </p>
+        <p class="reveal">
+          Before university: Year 11 at <strong>Soar Valley College, England</strong> (seven Grade 9s at GCSE), then
+          <strong>DPS Harni</strong> for the rest — 435/500 in Class 12, and a JEE Main run that landed at 96.6
+          percentile.
         </p>
 
         <div class="about__stats">
           <div class="stat-card">
-            <div class="stat-card__value">8.66</div>
+            <div class="stat-card__value" data-count="8.80" data-decimals="2">8.80</div>
             <div class="stat-card__label">CGPA</div>
           </div>
           <div class="stat-card">
-            <div class="stat-card__value">160+</div>
+            <div class="stat-card__value" data-count="160" data-suffix="+">160+</div>
             <div class="stat-card__label">LeetCode Solved</div>
           </div>
           <div class="stat-card">
-            <div class="stat-card__value">AI&DS</div>
-            <div class="stat-card__label">Logistics Track</div>
+            <div class="stat-card__value">3rd Yr</div>
+            <div class="stat-card__label">5th Semester</div>
           </div>
           <div class="stat-card">
             <div class="stat-card__value">GATE '27</div>
@@ -256,7 +268,7 @@
       <div class="projects__grid">
 
         <!-- Card 1: Vector Squadron (Featured) -->
-        <a href="projects/vector-squadron.html" class="project-card reveal">
+        <a href="projects/vector-squadron.html" class="project-card project-card--feature reveal">
           <div class="project-card__visual">
             <canvas id="vector-grid-canvas"></canvas>
           </div>
@@ -278,7 +290,7 @@
         </a>
 
         <!-- Card 2: AeroTwin (Featured) -->
-        <a href="projects/aerotwin.html" class="project-card reveal">
+        <a href="projects/aerotwin.html" class="project-card project-card--wide reveal">
           <div class="project-card__visual">
             <canvas id="radar-canvas"></canvas>
           </div>
@@ -300,7 +312,7 @@
         </a>
 
         <!-- Card 3: DamageLens (Featured) -->
-        <a href="projects/damagelens.html" class="project-card reveal">
+        <a href="projects/damagelens.html" class="project-card project-card--wide reveal">
           <div class="project-card__visual">
             <canvas id="damage-canvas"></canvas>
           </div>
@@ -402,7 +414,7 @@
         </a>
 
         <!-- Card 8: Aura -->
-        <a href="projects/aura.html" class="project-card reveal">
+        <a href="projects/aura.html" class="project-card project-card--wide reveal">
           <div class="project-card__visual">
             <canvas id="aura-canvas"></canvas>
           </div>

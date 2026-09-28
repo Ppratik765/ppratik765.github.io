@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       id: 'gsv',
       coords: [22.2768, 73.1906], // GSV, Vadodara, India
-      tooltip: '<strong>Gati Shakti Vishwavidyalaya</strong><br><span style="color: var(--accent-primary);">B.Tech AI & DS, Transportation & Logistics</span><br>CGPA: 8.5+<br>GATE 2027 DA Aspirant · LeetCode: 160+ Solved'
+      tooltip: '<strong>Gati Shakti Vishwavidyalaya</strong><br><span style="color: var(--accent-primary);">B.Tech AI & DS, Transportation & Logistics</span><br>CGPA: 8.80<br>GATE 2027 DA Aspirant · LeetCode: 160+ Solved'
     }
   ];
 
