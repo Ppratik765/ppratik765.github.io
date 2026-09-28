@@ -35,11 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
     cursor.className = 'cursor';
     cursor.innerHTML =
       '<div class="cursor__ring"><div class="cursor__shape"><span class="cursor__label"></span></div></div>' +
+      '<div class="cursor__tag"><span class="cursor__tag-text"></span></div>' +
       '<div class="cursor__dot"></div>';
     const ring = cursor.querySelector('.cursor__ring');
     const shape = cursor.querySelector('.cursor__shape');
     const label = cursor.querySelector('.cursor__label');
     const dot = cursor.querySelector('.cursor__dot');
+    const tag = cursor.querySelector('.cursor__tag');
+    const tagText = cursor.querySelector('.cursor__tag-text');
 
     let canvas = null, ctx = null, dpr = 1, W = 0, H = 0;
     if (!REDUCE_MOTION) {
@@ -63,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---- state ---- */
     let mx = -200, my = -200;          // pointer
     let rx = -200, ry = -200;          // ring
+    let tgx = -200, tgy = -200;        // follow tag
     let stretch = 0, angle = 0;        // eased deformation
     let visible = false;
     let state = 'idle';
@@ -91,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lab = el.closest('[data-cursor-label]');
       if (lab) return { s: 'label', text: lab.getAttribute('data-cursor-label') };
       const card = el.closest('.project-card');
-      if (card) return { s: 'label', text: 'View' };
+      if (card) return { s: 'frame', el: card, text: 'View' };
       if (el.closest('.map-container')) return { s: 'label', text: 'Drag' };
       const m = el.closest(MAGNET_SEL);
       if (m) {
@@ -104,13 +108,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setState(next) {
+      const wraps = (k) => k === 'magnet' || k === 'frame';
       if (next.s !== state) {
+        const wasWrapping = wraps(state);
         state = next.s;
         cursor.setAttribute('data-state', state);
-        if (state !== 'magnet') { shapeW = shapeH = 0; shapeR = ''; shape.style.width = shape.style.height = shape.style.margin = shape.style.borderRadius = ''; }
+        // leaving wrapped states: hand the shape back to CSS sizing
+        if (!wraps(state)) {
+          shapeW = shapeH = 0; shapeR = '';
+          shape.style.width = shape.style.height = shape.style.margin = shape.style.borderRadius = '';
+        } else if (!wasWrapping) { shapeW = shapeH = 0; shapeR = ''; }
       }
       if (state === 'label' && label.textContent !== next.text) label.textContent = next.text;
-      target = state === 'magnet' ? next.el : null;
+      if (state === 'frame' && tagText.textContent !== next.text) tagText.textContent = next.text;
+      const nextEl = wraps(state) ? next.el : null;
+      if (nextEl !== target) { target = nextEl; shapeR = ''; }   // re-read radius for the new element
     }
 
     function refreshContext() {
@@ -124,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mx = e.clientX; my = e.clientY;
       lastMoveT = performance.now();
       if (!visible) {
-        visible = true; rx = mx; ry = my;
+        visible = true; rx = mx; ry = my; tgx = mx; tgy = my;
         cursor.classList.add('cursor--ready');
         cursor.classList.remove('cursor--hidden');
       }
@@ -190,20 +202,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // where the ring wants to be
       let tx = mx, ty = my;
-      if (state === 'magnet' && target && target.isConnected) {
+      if ((state === 'magnet' || state === 'frame') && target && target.isConnected) {
         const r = target.getBoundingClientRect();
         const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-        tx = cx + (mx - cx) * 0.22;              // magnetic pull toward the pointer
-        ty = cy + (my - cy) * 0.22;
-        const w = Math.round(r.width + 16), h = Math.round(r.height + 12);
-        if (w !== shapeW || h !== shapeH) {
+        const frameMode = state === 'frame';
+        const pull = frameMode ? 0.05 : 0.22;    // cards stay put; small controls lean toward you
+        tx = cx + (mx - cx) * pull;
+        ty = cy + (my - cy) * pull;
+        const padX = frameMode ? 22 : 16, padY = frameMode ? 22 : 12;
+        const w = Math.round(r.width + padX), h = Math.round(r.height + padY);
+        if (Math.abs(w - shapeW) > 1 || Math.abs(h - shapeH) > 1) {
           shapeW = w; shapeH = h;
           shape.style.width = w + 'px'; shape.style.height = h + 'px';
           shape.style.margin = (-h / 2) + 'px 0 0 ' + (-w / 2) + 'px';
         }
         if (!shapeR) {
           const br = parseFloat(getComputedStyle(target).borderTopLeftRadius) || 0;
-          shapeR = Math.min(br + 6, h / 2) + 'px';
+          shapeR = Math.min(br + (frameMode ? 10 : 6), h / 2) + 'px';
           shape.style.borderRadius = shapeR;
         }
       }
@@ -222,6 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const sx = free ? 1 + stretch * 0.55 : 1, sy = free ? 1 - stretch * 0.32 : 1;
       const rot = free ? angle : 0;   // rectangles / discs / caret never rotate
       ring.style.transform = 'translate3d(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px,0) rotate(' + rot.toFixed(3) + 'rad) scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ')';
+
+      // follow tag (lags a touch less than the ring, sits off the pointer's shoulder)
+      const tf = REDUCE_MOTION ? 1 : 1 - Math.exp(-dt / 38);
+      tgx += (mx - tgx) * tf; tgy += (my - tgy) * tf;
+      tag.style.transform = 'translate3d(' + (tgx + 18).toFixed(1) + 'px,' + (tgy + 18).toFixed(1) + 'px,0)';
 
       // stardust: shed while moving fast in free states
       if (ctx) {
@@ -248,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const settled = Math.abs(ox) < 0.1 && Math.abs(oy) < 0.1 && stretch < 0.01 && !particles.length;
-      if (settled && now - lastMoveT > 200 && state !== 'magnet') { raf = 0; return; }
+      if (settled && now - lastMoveT > 200 && state !== 'magnet' && state !== 'frame') { raf = 0; return; }
       raf = requestAnimationFrame(frame);
     }
   })();
