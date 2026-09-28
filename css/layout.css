@@ -599,26 +599,12 @@ html[data-theme="light"] .hero__iframe-container {
   margin-top: 3rem;
 }
 
-/* Bento sizing — the flagship project gets a large square slot, a
-   handful of others run wide, everything else sits at 1x1. Intentional
-   hierarchy instead of a repeating grid of identical tiles. */
-.project-card--feature {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
+/* Bento sizing — two sizes only: 1x1 and the maximum, a 2x1 wide card.
+   Wide cards are placed on purpose (see the DOM order in index.html) so
+   every row of four columns is filled with no gaps. */
 .project-card--wide {
   grid-column: span 2;
   grid-row: span 1;
-}
-
-.project-card--feature .project-card__title {
-  font-size: clamp(1.8rem, 2.4vw, 2.6rem);
-}
-
-.project-card--feature .project-card__desc {
-  font-size: 1.02rem;
-  max-width: 46ch;
 }
 
 @media (max-width: 1024px) {
@@ -627,10 +613,6 @@ html[data-theme="light"] .hero__iframe-container {
     grid-auto-rows: minmax(280px, auto);
   }
 
-  .project-card--feature {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
 
   .project-card--wide {
     grid-column: span 2;
@@ -851,7 +833,6 @@ html[data-theme="light"] .hero__iframe-container {
     gap: 1.5rem;
   }
 
-  .project-card--feature,
   .project-card--wide {
     grid-column: span 1;
     grid-row: span 1;
@@ -994,4 +975,78 @@ html[data-theme="light"] .hero__iframe-container {
     mix-blend-mode: normal !important;
     opacity: 1 !important;
   }
+}
+
+/* ---------- Hero: availability pill ---------- */
+.hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  padding: 0.45rem 0.95rem 0.45rem 0.8rem;
+  margin-bottom: 1.6rem;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+  animation: hero-status-in 0.9s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero__status-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+}
+
+.hero__status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-primary);
+  opacity: 0;
+  animation: hero-status-ping 2.4s ease-out infinite;
+}
+
+@keyframes hero-status-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes hero-status-ping {
+  0%   { transform: scale(0.6); opacity: 0.85; }
+  80%, 100% { transform: scale(2.1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__status, .hero__status-dot::after { animation: none; }
+}
+
+/* ---------- Hero: lightweight poster (small screens, reduced motion, data-saver) ---------- */
+.hero__iframe-container--poster {
+  opacity: 1;
+  mix-blend-mode: normal;
+  background:
+    radial-gradient(40% 55% at 68% 44%, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent 70%),
+    radial-gradient(30% 40% at 22% 78%, color-mix(in srgb, var(--accent-primary) 10%, transparent), transparent 70%),
+    radial-gradient(1.5px 1.5px at 12% 22%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1.5px 1.5px at 28% 64%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 44% 18%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 57% 82%, rgba(255, 255, 255, 0.45), transparent 60%),
+    radial-gradient(1px 1px at 73% 30%, rgba(255, 255, 255, 0.7), transparent 60%),
+    radial-gradient(1.5px 1.5px at 86% 58%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 92% 12%, rgba(255, 255, 255, 0.6), transparent 60%),
+    var(--bg-primary);
+}
+
+.hero__iframe-container--poster .hero__iframe { display: none; }
+
+/* ---------- Nav: resume link ---------- */
+.nav__links a.nav__resume {
+  color: var(--accent-primary);
 }

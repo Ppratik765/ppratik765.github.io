@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /vendor/
 
 Sitemap: https://ppratik765.github.io/sitemap.xml

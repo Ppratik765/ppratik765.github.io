@@ -3,32 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DamageLens — Project Detail</title>
+  <title>DamageLens — Post-Disaster Damage AI | Priyanshu Pratik</title>
+  <meta name="description" content="DamageLens: a Siamese U-Net trained on xBD satellite imagery classifies building damage into four severity tiers, shown on an interactive geospatial map." />
+  <meta name="keywords" content="building damage assessment, xBD dataset, Siamese U-Net, disaster response, satellite imagery, Next.js, React-Leaflet, Priyanshu Pratik" />
+  <meta name="author" content="Priyanshu Pratik" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#000814" />
   <link rel="canonical" href="https://ppratik765.github.io/projects/damagelens.html" />
-  <link rel="icon" type="image/jpeg" href="../data/favicon.jpeg" />
-  <link rel="shortcut icon" type="image/jpeg" href="../data/favicon.jpeg" />
-  <meta name="description" content="Deep learning building damage assessment from post-disaster satellite imagery, classified into four severity tiers and visualized on an interactive geospatial map." />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../data/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../data/apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+
   <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Priyanshu Pratik — Portfolio" />
+  <meta property="og:locale" content="en_US" />
   <meta property="og:url" content="https://ppratik765.github.io/projects/damagelens.html" />
-  <meta property="og:title" content="DamageLens — Priyanshu Pratik" />
-  <meta property="og:description" content="Deep learning building damage assessment from post-disaster satellite imagery, classified into four severity tiers and visualized on an interactive geospatial map." />
-  <meta property="og:image" content="https://ppratik765.github.io/data/watermark.png" />
+  <meta property="og:title" content="DamageLens — Post-Disaster Damage AI | Priyanshu Pratik" />
+  <meta property="og:description" content="DamageLens: a Siamese U-Net trained on xBD satellite imagery classifies building damage into four severity tiers, shown on an interactive geospatial map." />
+  <meta property="og:image" content="https://ppratik765.github.io/data/og/damagelens.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="DamageLens — project by Priyanshu Pratik" />
+  <meta property="article:author" content="Priyanshu Pratik" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DamageLens — Post-Disaster Damage AI | Priyanshu Pratik" />
+  <meta name="twitter:description" content="DamageLens: a Siamese U-Net trained on xBD satellite imagery classifies building damage into four severity tiers, shown on an interactive geospatial map." />
+  <meta name="twitter:image" content="https://ppratik765.github.io/data/og/damagelens.jpg" />
+  <meta name="twitter:image:alt" content="DamageLens — project by Priyanshu Pratik" />
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "DamageLens",
-    "applicationCategory": "GeospatialApplication",
-    "operatingSystem": "Web",
-    "description": "Deep learning building damage assessment from post-disaster satellite imagery, classified into four severity tiers and visualized on an interactive geospatial map.",
-    "author": { "@type": "Person", "name": "Priyanshu Pratik" }
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://ppratik765.github.io/projects/damagelens.html#app",
+        "name": "DamageLens",
+        "description": "DamageLens: a Siamese U-Net trained on xBD satellite imagery classifies building damage into four severity tiers, shown on an interactive geospatial map.",
+        "applicationCategory": "GeospatialApplication",
+        "operatingSystem": "Web",
+        "url": "https://ppratik765.github.io/projects/damagelens.html",
+        "image": "https://ppratik765.github.io/data/og/damagelens.jpg",
+        "keywords": "building damage assessment, xBD dataset, Siamese U-Net, disaster response, satellite imagery, Next.js, React-Leaflet, Priyanshu Pratik",
+        "isAccessibleForFree": true,
+        "author": {
+          "@type": "Person",
+          "@id": "https://ppratik765.github.io/#person",
+          "name": "Priyanshu Pratik",
+          "url": "https://ppratik765.github.io/"
+        },
+        "sameAs": [
+          "https://github.com/Ppratik765/Building-Damage-Assessment-from-Post-Disaster-Satellite-Imagery",
+          "https://damagelens.vercel.app"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://ppratik765.github.io/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Projects",
+            "item": "https://ppratik765.github.io/#projects"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "DamageLens",
+            "item": "https://ppratik765.github.io/projects/damagelens.html"
+          }
+        ]
+      }
+    ]
   }
   </script>
 
+  <!-- Prevent FOUC by applying theme early -->
+  <script>
+    (function () {
+      var savedTheme = localStorage.getItem('portfolio-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+
   <!-- Animation watchdog: if GSAP hasn't wired up scroll reveals within
-       2.2s (blocked CDN, slow network, etc.), fall back to showing all
-       content immediately via the .no-anim CSS rule in base.css. -->
+       2.2s, fall back to showing all content immediately via .no-anim. -->
   <script>
     (function () {
       window.__animFallback = setTimeout(function () {
@@ -53,8 +121,8 @@
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
 
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <!-- GSAP (self-hosted, pinned 3.12.5) -->
+  <script src="../vendor/gsap/gsap.min.js" defer></script>
 
   <!-- Modular Scripts -->
   <script src="../js/effects.js" defer></script>
@@ -81,6 +149,7 @@
       <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="../data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf" class="nav__resume">Resume <span aria-hidden="true">&#8595;</span></a></li>
       <li>
         <button class="cmdk-trigger" id="cmdk-trigger" type="button" aria-haspopup="dialog" aria-label="Open quick jump menu">
           <span class="cmdk-trigger__label">Quick Jump</span>
@@ -104,6 +173,9 @@
   <!-- ========== Project Details ========== -->
   <main class="project-details">
     <header class="project-details__header">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../index.html#projects">Projects</a><span aria-hidden="true">/</span><span aria-current="page">DamageLens</span>
+      </nav>
       <p class="section-label">02 // Project Focus</p>
       <h1 class="project-details__title">DamageLens</h1>
 
@@ -127,6 +199,27 @@
         <a href="https://damagelens.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Live Demo</a>
       </div>
     </header>
+
+    <div class="project-stats" role="group" aria-label="At a glance">
+        <div class="project-stat">
+          <span class="project-stat__value">4</span>
+          <span class="project-stat__label">building damage severity tiers</span>
+        </div>
+        <div class="project-stat">
+          <span class="project-stat__value">xBD</span>
+          <span class="project-stat__label">post-disaster satellite imagery dataset</span>
+        </div>
+        <div class="project-stat">
+          <span class="project-stat__value">2</span>
+          <span class="project-stat__label">images per site: before and after, swipe to compare</span>
+        </div>
+    </div>
+
+    <figure class="project-media" data-media="damagelens" hidden>
+      <div class="project-media__frame"></div>
+      <figcaption class="project-media__caption">Demo · DamageLens</figcaption>
+    </figure>
+
 
     <section class="project-details__desc-section" style="min-height: auto; padding: 0; margin-bottom: 3.5rem;">
       <div>
@@ -157,8 +250,19 @@
 
     <!-- Embedded Live Iframe -->
     <div class="project-details__iframe-container">
-      <iframe class="project-details__iframe" src="https://damagelens.vercel.app" title="DamageLens Live View"></iframe>
+      <iframe class="project-details__iframe" src="https://damagelens.vercel.app" title="DamageLens Live View" loading="lazy"></iframe>
     </div>
+  
+    <nav class="project-pager" aria-label="More projects">
+      <a class="project-pager__link project-pager__link--prev" href="beyond-the-apex.html" rel="prev">
+        <span class="project-pager__dir">&larr; Previous</span>
+        <span class="project-pager__name">Beyond the Apex</span>
+      </a>
+      <a class="project-pager__link project-pager__link--next" href="f1-monte-carlo.html" rel="next">
+        <span class="project-pager__dir">Next &rarr;</span>
+        <span class="project-pager__name">F1 Monte Carlo Simulator</span>
+      </a>
+    </nav>
   </main>
 
   <!-- ========== Footer ========== -->

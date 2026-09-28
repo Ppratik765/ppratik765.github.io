@@ -13,8 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.matchMedia('(pointer: fine)').matches &&
     !window.matchMedia('(hover: none)').matches);
 
+  const rootMeta = document.querySelector('meta[name="site-root"]');
   const inProjectDir = /\/projects\//.test(location.pathname);
-  const root = inProjectDir ? '../' : '';
+  const root = rootMeta ? rootMeta.content : (inProjectDir ? '../' : '');
 
   /* ----------------------------------------------------------
      1. CUSTOM CURSOR — "Stardust"
@@ -282,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function downloadResume() {
       const a = document.createElement('a');
       a.href = root + 'data/Priyanshu_Pratik_Resume.pdf';
-      a.download = 'Priyanshu_Resume.pdf';
+      a.download = 'Priyanshu_Pratik_Resume.pdf';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -294,13 +295,19 @@ document.addEventListener('DOMContentLoaded', () => {
       { label: 'Contact / Terminal', hint: 'Section', keywords: 'contact terminal cli email', action: () => go(root + 'index.html#contact') },
       { label: 'Vector Squadron', hint: 'Project', keywords: 'rust wasm three.js space flight sim game', action: () => go(root + 'projects/vector-squadron.html') },
       { label: 'AeroTwin', hint: 'Project', keywords: 'digital twin airport atc simulation', action: () => go(root + 'projects/aerotwin.html') },
-      { label: 'DamageLens', hint: 'Project', keywords: 'deep learning satellite disaster', action: () => go(root + 'projects/damagelens.html') },
-      { label: 'Waveglider Ocean Simulation', hint: 'Project', keywords: 'webgl gerstner waves ocean', action: () => go(root + 'projects/waveglider.html') },
+      { label: '3D ITS Digital Twin', hint: 'Project', keywords: 'traffic cctv yolo bytetrack segformer homography its transport', action: () => go(root + 'projects/its-digital-twin.html') },
+      { label: 'Ambulance Corridor', hint: 'Project', keywords: 'ambulance siren sensor fusion signal preemption its', action: () => go(root + 'projects/ambulance-corridor.html') },
+      { label: 'Manganese Ore Detection', hint: 'Project', keywords: 'manganese sih hackathon moil satellite sentinel unet xgboost mining', action: () => go(root + 'projects/manganese-ore.html') },
+      { label: 'Agentic Supply Chain', hint: 'Project', keywords: 'langgraph multi-agent supply chain beer game', action: () => go(root + 'projects/agentic-supply.html') },
       { label: 'Beyond the Apex', hint: 'Project', keywords: 'f1 telemetry fastf1 d3', action: () => go(root + 'projects/beyond-the-apex.html') },
-      { label: 'Agentic Supply Chain', hint: 'Project', keywords: 'langgraph multi-agent supply chain', action: () => go(root + 'projects/agentic-supply.html') },
+      { label: 'DamageLens', hint: 'Project', keywords: 'deep learning satellite disaster xbd unet', action: () => go(root + 'projects/damagelens.html') },
+      { label: 'F1 Monte Carlo Simulator', hint: 'Project', keywords: 'f1 monte carlo simulation race prediction forecast', action: () => go(root + 'projects/f1-monte-carlo.html') },
+      { label: 'WaveDrop', hint: 'Project', keywords: 'air-gapped qr file transfer webrtc fountain codes', action: () => go(root + 'projects/wavedrop.html') },
+      { label: 'Waveglider Ocean', hint: 'Project', keywords: 'webgl gerstner waves ocean', action: () => go(root + 'projects/waveglider.html') },
       { label: 'LocalPDF Pro', hint: 'Project', keywords: 'wasm pdf privacy offline', action: () => go(root + 'projects/localpdf-pro.html') },
-      { label: 'Aura', hint: 'Project', keywords: 'android kotlin fft audio fingerprint', action: () => go(root + 'projects/aura.html') },
-      { label: 'PulmoSense', hint: 'Project', keywords: 'pytorch tflite medical grad-cam', action: () => go(root + 'projects/pulmosense.html') },
+      { label: 'Aura', hint: 'Project', keywords: 'android kotlin fft audio fingerprint music', action: () => go(root + 'projects/aura.html') },
+      { label: 'PulmoSense', hint: 'Project', keywords: 'respiratory lung audio tflite medical', action: () => go(root + 'projects/pulmosense.html') },
+      { label: 'FloraLens', hint: 'Project', keywords: 'plant disease android tflite mobilenet', action: () => go(root + 'projects/floralens.html') },
       { label: 'Retro Arcade Suite', hint: 'Project', keywords: 'python pygame tkinter games', action: () => go(root + 'projects/retro-arcade.html') },
       { label: 'Download Resume', hint: 'Action', keywords: 'cv pdf download resume', action: downloadResume },
       { label: 'Toggle Theme', hint: 'Action', keywords: 'dark light theme mode', action: () => document.getElementById('theme-toggle') && document.getElementById('theme-toggle').click() },
@@ -414,6 +421,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (trigger) trigger.addEventListener('click', open);
+  })();
+
+  /* ----------------------------------------------------------
+     3. PROJECT DEMO MEDIA
+        Drop a clip or screenshot into data/media/ named after the
+        project (e.g. data/media/aerotwin.mp4 / .webm / .webp / .png /
+        .jpg). The figure stays hidden until a file actually exists,
+        so pages never show a broken or empty box.
+  ---------------------------------------------------------- */
+  (function initProjectMedia() {
+    const fig = document.querySelector('.project-media[data-media]');
+    if (!fig) return;
+    const slug = fig.getAttribute('data-media');
+    const frame = fig.querySelector('.project-media__frame');
+    const base = root + 'data/media/' + slug + '.';
+
+    function show(node) { frame.appendChild(node); fig.hidden = false; }
+
+    function tryImage(exts) {
+      if (!exts.length) return;
+      const img = new Image();
+      img.alt = fig.querySelector('figcaption') ? fig.querySelector('figcaption').textContent : slug;
+      img.decoding = 'async';
+      img.onload = () => show(img);
+      img.onerror = () => tryImage(exts.slice(1));
+      img.src = base + exts[0];
+    }
+
+    function tryVideo() {
+      const v = document.createElement('video');
+      v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
+      v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+      v.controls = false;
+      let settled = false;
+      v.addEventListener('loadeddata', () => {
+        settled = true; show(v);
+        if (REDUCE_MOTION) { v.controls = true; return; }
+        const io = new IntersectionObserver((es) => es.forEach((e) => { e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }), { threshold: 0.25 });
+        io.observe(v);
+      });
+      const fail = () => { if (!settled) { settled = true; tryImage(['webp', 'png', 'jpg']); } };
+      ['mp4', 'webm'].forEach((ext, i, arr) => {
+        const src = document.createElement('source');
+        src.src = base + ext; src.type = 'video/' + ext;
+        if (i === arr.length - 1) src.addEventListener('error', fail);
+        v.appendChild(src);
+      });
+      v.load();
+    }
+    tryVideo();
+  })();
+
+  /* ----------------------------------------------------------
+     4. HERO GAME LIFECYCLE
+        The Rust/WASM game keeps a GPU busy. Once the hero has been
+        off-screen for a few seconds the iframe is unloaded, and it is
+        reloaded (with the current theme) when you scroll back up.
+  ---------------------------------------------------------- */
+  (function initHeroLifecycle() {
+    const frame = document.getElementById('hero-iframe');
+    const hero = document.getElementById('hero');
+    if (!frame || !hero || frame.dataset.mode !== 'live' || !('IntersectionObserver' in window)) return;
+    let timer = null;
+
+    function unload() {
+      if (frame.dataset.unloaded === 'true') return;
+      frame.dataset.unloaded = 'true';
+      frame.classList.remove('is-loaded');
+      frame.src = 'about:blank';
+    }
+    function reload() {
+      if (frame.dataset.unloaded !== 'true') return;
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      frame.dataset.unloaded = 'false';
+      frame.src = frame.dataset.base + theme;
+    }
+
+    new IntersectionObserver((entries) => {
+      const visible = entries[0].isIntersecting;
+      clearTimeout(timer);
+      if (visible) reload();
+      else timer = setTimeout(unload, 4000);
+    }, { rootMargin: '25% 0px 25% 0px' }).observe(hero);
   })();
 
 });

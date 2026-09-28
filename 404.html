@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page not found | Priyanshu Pratik</title>
+  <meta name="description" content="This page could not be found. Head back to Priyanshu Pratik's portfolio." />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#000814" />
+  <meta name="site-root" content="/" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/data/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/data/apple-touch-icon.png" />
+  <script>
+    (function () {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <script src="/js/main.js" defer></script>
+  <script src="/js/enhance.js" defer></script>
+</head>
+<body>
+
+  <!-- Ambient background -->
+  <div class="bg-glow" aria-hidden="true">
+    <span class="bg-glow__orb bg-glow__orb--1"></span>
+    <span class="bg-glow__orb bg-glow__orb--2"></span>
+    <span class="bg-glow__orb bg-glow__orb--3"></span>
+  </div>
+
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <!-- ========== Navigation ========== -->
+  <nav class="nav" id="nav">
+    <a href="/" class="nav__logo">← PP</a>
+    <div class="nav__scrim"></div>
+    <ul class="nav__links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#contact">Contact</a></li>
+      <li><a href="/data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf" class="nav__resume">Resume <span aria-hidden="true">&#8595;</span></a></li>
+      <li>
+        <button class="cmdk-trigger" id="cmdk-trigger" type="button" aria-haspopup="dialog" aria-label="Open quick jump menu">
+          <span class="cmdk-trigger__label">Quick Jump</span>
+          <span class="cmdk-trigger__keys"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+        </button>
+      </li>
+      <li>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-toggle__icon" id="theme-icon">☾</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </li>
+    </ul>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
+  </nav>
+
+  <main class="notfound">
+    <p class="section-label">// error</p>
+    <h1 class="notfound__code">404</h1>
+    <p class="notfound__lead">That route doesn't exist. The page may have moved, or the link is off by a character.</p>
+
+    <div class="notfound__term" aria-hidden="true">
+      <div><span class="notfound__prompt">$</span> cd <span id="nf-path">/unknown</span></div>
+      <div class="notfound__err">bash: no such route — returning you to a known location</div>
+    </div>
+
+    <div class="notfound__actions">
+      <a href="/" class="btn btn--primary">Back to Home</a>
+      <a href="/#projects" class="btn btn--ghost">Browse Projects</a>
+      <a href="/data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf" class="btn btn--ghost btn--download">Resume <span aria-hidden="true">&#8595;</span></a>
+    </div>
+    <p class="notfound__hint">Tip: press <kbd>Ctrl</kbd> / <kbd>&#8984;</kbd> + <kbd>K</kbd> to jump anywhere.</p>
+  </main>
+  <script>document.getElementById('nf-path').textContent = decodeURIComponent(location.pathname).slice(0, 60) || '/';</script>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="footer__left">
+      © 2026 Priyanshu Pratik
+    </div>
+    <div class="footer__right">
+      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+        DEPLOYMENT: OPERATIONAL
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

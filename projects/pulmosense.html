@@ -3,32 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PulmoSense AI — Project Detail</title>
+  <title>PulmoSense — Offline Respiratory Screening | Priyanshu Pratik</title>
+  <meta name="description" content="PulmoSense: an offline Android app that screens for respiratory conditions from 20 seconds of breathing audio using log-Mel spectrograms and a TFLite model." />
+  <meta name="keywords" content="respiratory disease detection, lung sound classification, TensorFlow Lite, Jetpack Compose, edge AI, mel spectrogram, Priyanshu Pratik" />
+  <meta name="author" content="Priyanshu Pratik" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#000814" />
   <link rel="canonical" href="https://ppratik765.github.io/projects/pulmosense.html" />
-  <link rel="icon" type="image/jpeg" href="../data/favicon.jpeg" />
-  <link rel="shortcut icon" type="image/jpeg" href="../data/favicon.jpeg" />
-  <meta name="description" content="Deep learning diagnostic tool for early detection of respiratory abnormalities." />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../data/favicon-32.png" />
+  <link rel="apple-touch-icon" href="../data/apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+
   <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Priyanshu Pratik — Portfolio" />
+  <meta property="og:locale" content="en_US" />
   <meta property="og:url" content="https://ppratik765.github.io/projects/pulmosense.html" />
-  <meta property="og:title" content="PulmoSense AI — Priyanshu Pratik" />
-  <meta property="og:description" content="Deep learning diagnostic tool for early detection of respiratory abnormalities." />
-  <meta property="og:image" content="https://ppratik765.github.io/data/watermark.png" />
+  <meta property="og:title" content="PulmoSense — Offline Respiratory Screening | Priyanshu Pratik" />
+  <meta property="og:description" content="PulmoSense: an offline Android app that screens for respiratory conditions from 20 seconds of breathing audio using log-Mel spectrograms and a TFLite model." />
+  <meta property="og:image" content="https://ppratik765.github.io/data/og/pulmosense.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="PulmoSense — project by Priyanshu Pratik" />
+  <meta property="article:author" content="Priyanshu Pratik" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PulmoSense — Offline Respiratory Screening | Priyanshu Pratik" />
+  <meta name="twitter:description" content="PulmoSense: an offline Android app that screens for respiratory conditions from 20 seconds of breathing audio using log-Mel spectrograms and a TFLite model." />
+  <meta name="twitter:image" content="https://ppratik765.github.io/data/og/pulmosense.jpg" />
+  <meta name="twitter:image:alt" content="PulmoSense — project by Priyanshu Pratik" />
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "PulmoSense AI",
-    "applicationCategory": "MedicalApplication",
-    "operatingSystem": "Web",
-    "description": "Deep learning diagnostic tool for early detection of respiratory abnormalities.",
-    "author": { "@type": "Person", "name": "Priyanshu Pratik" }
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://ppratik765.github.io/projects/pulmosense.html#app",
+        "name": "PulmoSense",
+        "description": "PulmoSense: an offline Android app that screens for respiratory conditions from 20 seconds of breathing audio using log-Mel spectrograms and a TFLite model.",
+        "applicationCategory": "MedicalApplication",
+        "operatingSystem": "Android",
+        "url": "https://ppratik765.github.io/projects/pulmosense.html",
+        "image": "https://ppratik765.github.io/data/og/pulmosense.jpg",
+        "keywords": "respiratory disease detection, lung sound classification, TensorFlow Lite, Jetpack Compose, edge AI, mel spectrogram, Priyanshu Pratik",
+        "isAccessibleForFree": true,
+        "author": {
+          "@type": "Person",
+          "@id": "https://ppratik765.github.io/#person",
+          "name": "Priyanshu Pratik",
+          "url": "https://ppratik765.github.io/"
+        },
+        "sameAs": [
+          "https://github.com/Ppratik765/PulmoSense"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://ppratik765.github.io/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Projects",
+            "item": "https://ppratik765.github.io/#projects"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "PulmoSense",
+            "item": "https://ppratik765.github.io/projects/pulmosense.html"
+          }
+        ]
+      }
+    ]
   }
   </script>
-  
+
+  <!-- Prevent FOUC by applying theme early -->
+  <script>
+    (function () {
+      var savedTheme = localStorage.getItem('portfolio-theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+
   <!-- Animation watchdog: if GSAP hasn't wired up scroll reveals within
-       2.2s (blocked CDN, slow network, etc.), fall back to showing all
-       content immediately via the .no-anim CSS rule in base.css. -->
+       2.2s, fall back to showing all content immediately via .no-anim. -->
   <script>
     (function () {
       window.__animFallback = setTimeout(function () {
@@ -53,9 +120,9 @@
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
 
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  
+  <!-- GSAP (self-hosted, pinned 3.12.5) -->
+  <script src="../vendor/gsap/gsap.min.js" defer></script>
+
   <!-- Modular Scripts -->
   <script src="../js/effects.js" defer></script>
   <script src="../js/main.js" defer></script>
@@ -81,6 +148,7 @@
       <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="../data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf" class="nav__resume">Resume <span aria-hidden="true">&#8595;</span></a></li>
       <li>
         <button class="cmdk-trigger" id="cmdk-trigger" type="button" aria-haspopup="dialog" aria-label="Open quick jump menu">
           <span class="cmdk-trigger__label">Quick Jump</span>
@@ -104,6 +172,9 @@
   <!-- ========== Project Details ========== -->
   <main class="project-details">
     <header class="project-details__header">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../index.html#projects">Projects</a><span aria-hidden="true">/</span><span aria-current="page">PulmoSense</span>
+      </nav>
       <p class="section-label">02 // Project Focus</p>
       <h1 class="project-details__title">PulmoSense</h1>
       
@@ -114,11 +185,11 @@
         </div>
         <div class="meta-item">
           <span class="meta-item__label">Core Stack</span>
-          <span class="meta-item__value">Python, PyTorch, CNN architectures, Grad-CAM</span>
+          <span class="meta-item__value">Python, MobileNetV3, TensorFlow Lite, Kotlin (Jetpack Compose)</span>
         </div>
         <div class="meta-item">
           <span class="meta-item__label">Data Layer</span>
-          <span class="meta-item__value">Chest X-Ray radiographs (pneumonia / healthy classification)</span>
+          <span class="meta-item__value">ICBHI respiratory sound recordings, 8 diagnostic classes</span>
         </div>
       </div>
 
@@ -127,16 +198,40 @@
       </div>
     </header>
 
+    <div class="project-stats" role="group" aria-label="At a glance">
+        <div class="project-stat">
+          <span class="project-stat__value">96.99%</span>
+          <span class="project-stat__label">reported accuracy across 8 respiratory classes</span>
+        </div>
+        <div class="project-stat">
+          <span class="project-stat__value">10 MB</span>
+          <span class="project-stat__label">quantised TFLite model, fully offline</span>
+        </div>
+        <div class="project-stat">
+          <span class="project-stat__value">97.01%</span>
+          <span class="project-stat__label">reported macro F1-score</span>
+        </div>
+    </div>
+
+    <figure class="project-media" data-media="pulmosense" hidden>
+      <div class="project-media__frame"></div>
+      <figcaption class="project-media__caption">Demo · PulmoSense</figcaption>
+    </figure>
+
+
     <section class="project-details__desc-section" style="min-height: auto; padding: 0; margin-bottom: 3.5rem;">
       <div>
         <h3>Purpose & Necessity</h3>
         <p>
-          Diagnosing lung diseases quickly and accurately from chest radiographs requires deep specialist reviews. In rural or under-resourced medical facilities, clinical radiograph backlogs delay triage times. PulmoSense provides automated assistance by feeding scan files to a high-accuracy Convolutional Neural Network (CNN) to predict classifications in seconds.
+          Respiratory conditions such as COPD, asthma and pneumonia are hard to screen for where specialist equipment and pulmonologists are scarce, and stethoscope auscultation is subjective. PulmoSense moves the screening onto the phone: it works fully offline, so patient audio never leaves the device and rural clinics without connectivity can still use it.
         </p>
         
         <h3>Key Technical Implementation</h3>
         <p>
-          PulmoSense employs PyTorch to train deep convolutional architectures (ResNet & Custom CNN models). Visual explanations are mapped using Grad-CAM, generating heatmaps highlighting anomalous areas directly onto the predicted output matrix to assist clinicians in their review workflow.
+          The app guides the user through a 20-second breathing exercise while recording 16 kHz audio, splits it into four overlapping 5-second chunks, and converts each into a 128-band log-Mel spectrogram (a 128 x 157 x 3 tensor). A quantised MobileNetV3 model in TensorFlow Lite classifies every chunk and the softmax outputs are averaged into a single diagnostic confidence.
+        </p>
+        <p>
+          The model was fine-tuned on the ICBHI respiratory sound dataset with class weights capped at 5.0 to counter its heavy COPD imbalance, and reports 96.99% accuracy, 97.11% macro precision, 96.91% recall and 97.01% F1 on a held-out set. The Jetpack Compose app packages the roughly 10 MB model for fully offline use.
         </p>
       </div>
     </section>
@@ -151,6 +246,17 @@
         </div>
       </div>
     </div>
+  
+    <nav class="project-pager" aria-label="More projects">
+      <a class="project-pager__link project-pager__link--prev" href="aura.html" rel="prev">
+        <span class="project-pager__dir">&larr; Previous</span>
+        <span class="project-pager__name">Aura</span>
+      </a>
+      <a class="project-pager__link project-pager__link--next" href="floralens.html" rel="next">
+        <span class="project-pager__dir">Next &rarr;</span>
+        <span class="project-pager__name">FloraLens</span>
+      </a>
+    </nav>
   </main>
 
   <!-- ========== Footer ========== -->

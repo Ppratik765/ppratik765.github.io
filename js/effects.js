@@ -856,4 +856,350 @@ document.addEventListener('DOMContentLoaded', () => {
     runCanvasLoop(card, animate);
   })();
 
+  /* ----------------------------------------------------------
+     3. NEWER CARD VISUALIZATIONS
+        (ITS twin, ambulance fusion, F1 Monte Carlo, WaveDrop,
+         manganese satellite scan, FloraLens leaf scan)
+  ---------------------------------------------------------- */
+  function accentRGB() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? '113, 97, 239' : '255, 195, 0';
+  }
+  function fitCanvas(canvas, card) {
+    if (canvas.width !== card.clientWidth || canvas.height !== card.clientHeight) {
+      canvas.width = card.clientWidth;
+      canvas.height = card.clientHeight;
+    }
+  }
+  function hoverState(card) {
+    const st = { on: false };
+    card.addEventListener('mouseenter', () => { st.on = true; });
+    card.addEventListener('mouseleave', () => { st.on = false; });
+    return st;
+  }
+
+  // --- 3D ITS Digital Twin: tracked vehicles on a perspective road + BEV inset ---
+  (function initITSTwin() {
+    const canvas = document.getElementById('its-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    const hv = hoverState(card);
+    const LANES = 4;
+    const cars = Array.from({ length: 10 }, (_, i) => ({
+      lane: i % LANES, t: Math.random(), v: 0.0028 + Math.random() * 0.003,
+      id: 12 + i * 7, truck: i % 4 === 0,
+    }));
+    let time = 0;
+    const laneC = (lane) => (lane + 0.5 - LANES / 2) / (LANES / 2);
+    function proj(off, t, w, h) {
+      const e = t * t;
+      return { x: w * 0.5 + off * w * 0.5 * e, y: h * 0.1 + h * 0.92 * e, s: 0.12 + e * 0.95 };
+    }
+    function animate() {
+      fitCanvas(canvas, card);
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const A = accentRGB();
+      time += 1;
+      ctx.lineWidth = 1;
+      for (let l = 0; l <= LANES; l++) {
+        const off = (l - LANES / 2) / (LANES / 2);
+        ctx.strokeStyle = `rgba(${A}, 0.2)`;
+        ctx.beginPath(); ctx.moveTo(w * 0.5, h * 0.1); ctx.lineTo(w * 0.5 + off * w * 0.5, h * 1.02); ctx.stroke();
+      }
+      for (let k = 0; k < 9; k++) {
+        const t = ((k / 9) + time * 0.0018 * (hv.on ? 2 : 1)) % 1;
+        const y = h * 0.1 + h * 0.92 * t * t;
+        ctx.strokeStyle = `rgba(${A}, ${0.04 + t * 0.09})`;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+      cars.sort((a, b) => a.t - b.t);
+      const k = w / 640;
+      cars.forEach((c) => {
+        c.t += c.v * (hv.on ? 2.2 : 1);
+        if (c.t > 1.06) { c.t = 0.03; c.lane = (Math.random() * LANES) | 0; }
+        const p = proj(laneC(c.lane), c.t, w, h);
+        const tail = proj(laneC(c.lane), Math.max(0, c.t - 0.07), w, h);
+        const bw = (c.truck ? 66 : 46) * p.s * Math.max(k, 0.7), bh = (c.truck ? 46 : 30) * p.s * Math.max(k, 0.7);
+        ctx.strokeStyle = `rgba(${A}, ${0.12 + p.s * 0.3})`;
+        ctx.beginPath(); ctx.moveTo(tail.x, tail.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+        ctx.fillStyle = `rgba(${A}, ${0.05 + p.s * 0.08})`;
+        ctx.fillRect(p.x - bw / 2, p.y - bh, bw, bh);
+        ctx.strokeStyle = `rgba(${A}, ${0.35 + p.s * 0.5})`;
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(p.x - bw / 2, p.y - bh, bw, bh);
+        ctx.lineWidth = 1;
+        if (p.s > 0.5) {
+          ctx.fillStyle = `rgba(${A}, 0.9)`;
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillText('#' + c.id, p.x - bw / 2 + 3, p.y - bh - 4);
+        }
+      });
+      // bird's-eye inset (homography view) on hover
+      if (hv.on) {
+        const bx = w * 0.74, by = h * 0.12, bw2 = w * 0.2, bh2 = h * 0.34;
+        ctx.strokeStyle = `rgba(${A}, 0.6)`;
+        ctx.strokeRect(bx, by, bw2, bh2);
+        for (let l = 1; l < LANES; l++) { ctx.beginPath(); ctx.moveTo(bx + bw2 * l / LANES, by); ctx.lineTo(bx + bw2 * l / LANES, by + bh2); ctx.strokeStyle = `rgba(${A}, 0.2)`; ctx.stroke(); }
+        cars.forEach((c) => {
+          ctx.fillStyle = `rgba(${A}, 0.95)`;
+          ctx.fillRect(bx + bw2 * (c.lane + 0.5) / LANES - 2.5, by + bh2 * (1 - Math.min(c.t, 1)) - 4, 5, 8);
+        });
+      }
+    }
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- Ambulance Corridor: scrolling Mel-spectrogram, siren sweep, signal preemption ---
+  (function initAmbulanceFusion() {
+    const canvas = document.getElementById('ambulance-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    const hv = hoverState(card);
+    const ROWS = 18;
+    const cols = [];
+    let time = 0, fusion = 0;
+    function animate() {
+      fitCanvas(canvas, card);
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const A = accentRGB();
+      time += hv.on ? 0.09 : 0.035;
+      const cw = 7, maxCols = Math.ceil(w / cw) + 1;
+      // new column: noise floor + a wailing siren ridge
+      const center = ROWS * 0.5 + Math.sin(time * 1.3) * ROWS * 0.32;
+      const col = [];
+      for (let r = 0; r < ROWS; r++) {
+        const d = Math.abs(r - center);
+        const siren = Math.exp(-d * d / 2.2) * (0.55 + 0.45 * Math.sin(time * 3.1 + r * 0.2));
+        col.push(Math.min(1, Math.random() * 0.16 + siren + (r < 4 ? 0.06 : 0)));
+      }
+      cols.push(col);
+      while (cols.length > maxCols) cols.shift();
+      const top = h * 0.08, rh = (h * 0.5) / ROWS;
+      for (let i = 0; i < cols.length; i++) {
+        const x = w - (cols.length - i) * cw;
+        for (let r = 0; r < ROWS; r++) {
+          const v = cols[i][r];
+          if (v < 0.12) continue;
+          ctx.fillStyle = `rgba(${A}, ${Math.min(0.95, v * 0.9)})`;
+          ctx.fillRect(x, top + (ROWS - 1 - r) * rh, cw - 1, rh - 1);
+        }
+      }
+      // fusion meter + signal head
+      const target = hv.on ? 1 : 0.28 + 0.2 * Math.sin(time * 0.7);
+      fusion += (target - fusion) * 0.05;
+      const my = top + h * 0.5 + 12;
+      ctx.strokeStyle = `rgba(${A}, 0.35)`;
+      ctx.strokeRect(w * 0.08, my, w * 0.4, 6);
+      ctx.fillStyle = `rgba(${A}, 0.85)`;
+      ctx.fillRect(w * 0.08, my, w * 0.4 * fusion, 6);
+      const thr = w * 0.08 + w * 0.4 * 0.75;
+      ctx.fillStyle = `rgba(${A}, 0.8)`;
+      ctx.fillRect(thr - 1, my - 4, 2, 14);
+      const go = fusion > 0.75;
+      const lx = w * 0.56, ly = my - 4;
+      ctx.fillStyle = go ? 'rgba(90, 90, 90, 0.5)' : 'rgba(255, 90, 80, 0.9)'; ctx.beginPath(); ctx.arc(lx, ly + 5, 4, 0, 6.283); ctx.fill();
+      ctx.fillStyle = go ? 'rgba(70, 230, 140, 0.95)' : 'rgba(90, 90, 90, 0.5)'; ctx.beginPath(); ctx.arc(lx + 14, ly + 5, 4, 0, 6.283); ctx.fill();
+    }
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- F1 Monte Carlo: simulated finishes rain down and pile up into a distribution ---
+  (function initMonteCarlo() {
+    const canvas = document.getElementById('f1sim-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    const hv = hoverState(card);
+    const BINS = 12;
+    const counts = new Array(BINS).fill(0);
+    const drops = [];
+    // skewed finishing distribution: front-runners more likely, long tail
+    const weights = Array.from({ length: BINS }, (_, i) => Math.exp(-i * 0.32) + (i === BINS - 1 ? 0.18 : 0.02));
+    const total = weights.reduce((a, b) => a + b, 0);
+    function pick() {
+      let r = Math.random() * total;
+      for (let i = 0; i < BINS; i++) { r -= weights[i]; if (r <= 0) return i; }
+      return BINS - 1;
+    }
+    function animate() {
+      fitCanvas(canvas, card);
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const A = accentRGB();
+      const left = w * 0.06, span = w * 0.88, bw = span / BINS;
+      const base = h * 0.6, maxH = h * 0.5;
+      const rate = hv.on ? 5 : 2;
+      for (let n = 0; n < rate; n++) {
+        const bin = pick();
+        drops.push({ x: left + (bin + 0.5) * bw + (Math.random() - 0.5) * bw * 0.5, y: 0, bin, v: 4 + Math.random() * 3 });
+      }
+      for (let i = drops.length - 1; i >= 0; i--) {
+        const d = drops[i];
+        d.y += d.v;
+        const topY = base - (counts[d.bin] / 40) * maxH;
+        ctx.fillStyle = `rgba(${A}, 0.85)`;
+        ctx.fillRect(d.x - 1.5, d.y - 3, 3, 3);
+        if (d.y >= topY) {
+          counts[d.bin] += 1;
+          drops.splice(i, 1);
+          if (counts[d.bin] > 40) for (let j = 0; j < BINS; j++) counts[j] *= 0.55;
+        }
+      }
+      for (let i = 0; i < BINS; i++) {
+        const bh = (counts[i] / 40) * maxH;
+        ctx.fillStyle = `rgba(${A}, ${i === 0 ? 0.55 : 0.32})`;
+        ctx.fillRect(left + i * bw + 2, base - bh, bw - 4, bh);
+      }
+      ctx.fillStyle = `rgba(${A}, 0.4)`;
+      ctx.fillRect(left, base + 1, span, 1);
+    }
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- WaveDrop: an animated QR-style matrix carrying fresh droplets every frame ---
+  (function initWaveDrop() {
+    const canvas = document.getElementById('wavedrop-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    const hv = hoverState(card);
+    const N = 21;
+    const bits = Array.from({ length: N * N }, () => Math.random() < 0.5);
+    let time = 0, scan = 0;
+    const inFinder = (x, y) => (x < 7 && y < 7) || (x >= N - 7 && y < 7) || (x < 7 && y >= N - 7);
+    function animate() {
+      fitCanvas(canvas, card);
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const A = accentRGB();
+      time += 1;
+      const flips = hv.on ? 40 : 10;
+      for (let i = 0; i < flips; i++) bits[(Math.random() * bits.length) | 0] = Math.random() < 0.5;
+      const size = Math.min(w * 0.5, h * 0.6), cell = size / N;
+      const ox = w * 0.72 - size / 2, oy = h * 0.4 - size / 2;
+      for (let y = 0; y < N; y++) {
+        for (let x = 0; x < N; x++) {
+          let on;
+          if (inFinder(x, y)) {
+            const fx = x % (N - 7 >= 7 ? N - 7 : 7), lx = x >= N - 7 ? x - (N - 7) : x, ly = y >= N - 7 ? y - (N - 7) : y;
+            on = lx === 0 || lx === 6 || ly === 0 || ly === 6 || (lx >= 2 && lx <= 4 && ly >= 2 && ly <= 4);
+          } else on = bits[y * N + x];
+          if (!on) continue;
+          ctx.fillStyle = `rgba(${A}, ${inFinder(x, y) ? 0.9 : 0.7})`;
+          ctx.fillRect(ox + x * cell + 0.5, oy + y * cell + 0.5, cell - 1, cell - 1);
+        }
+      }
+      // camera scan bracket + sweep
+      scan = (scan + (hv.on ? 0.02 : 0.008)) % 1;
+      const sy = oy + size * scan;
+      const g = ctx.createLinearGradient(0, sy - 12, 0, sy + 2);
+      g.addColorStop(0, `rgba(${A}, 0)`); g.addColorStop(1, `rgba(${A}, 0.35)`);
+      ctx.fillStyle = g; ctx.fillRect(ox, sy - 12, size, 14);
+      ctx.strokeStyle = `rgba(${A}, 0.95)`; ctx.lineWidth = 2;
+      const m = 8, L = 16, x0 = ox - m, y0 = oy - m, x1 = ox + size + m, y1 = oy + size + m;
+      ctx.beginPath();
+      ctx.moveTo(x0, y0 + L); ctx.lineTo(x0, y0); ctx.lineTo(x0 + L, y0);
+      ctx.moveTo(x1 - L, y0); ctx.lineTo(x1, y0); ctx.lineTo(x1, y0 + L);
+      ctx.moveTo(x0, y1 - L); ctx.lineTo(x0, y1); ctx.lineTo(x0 + L, y1);
+      ctx.moveTo(x1 - L, y1); ctx.lineTo(x1, y1); ctx.lineTo(x1, y1 - L);
+      ctx.stroke(); ctx.lineWidth = 1;
+    }
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- Manganese: satellite tile with a drifting prospectivity field and scan reticle ---
+  (function initManganeseScan() {
+    const canvas = document.getElementById('manganese-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    const hv = hoverState(card);
+    let time = 0;
+    const field = (x, y, t) =>
+      0.5 + 0.28 * Math.sin(x * 0.55 + t * 0.6) * Math.cos(y * 0.7 - t * 0.4) +
+      0.22 * Math.sin((x + y) * 0.32 + t * 0.35);
+    function animate() {
+      fitCanvas(canvas, card);
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const A = accentRGB();
+      time += hv.on ? 0.05 : 0.02;
+      const cols = 22, cell = w / cols, rows = Math.ceil((h * 0.62) / cell);
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const v = field(x, y, time);
+          const hot = v > 0.68;
+          ctx.fillStyle = hot ? `rgba(${A}, ${0.22 + (v - 0.68) * 2.2})` : `rgba(${A}, ${0.035 + v * 0.05})`;
+          ctx.fillRect(x * cell + 1, y * cell + 1, cell - 2, cell - 2);
+          if (hot && hv.on) { ctx.strokeStyle = `rgba(${A}, 0.7)`; ctx.strokeRect(x * cell + 1.5, y * cell + 1.5, cell - 3, cell - 3); }
+        }
+      }
+      const rx = w * (0.5 + 0.34 * Math.sin(time * 0.9)), ry = h * (0.24 + 0.12 * Math.cos(time * 1.3));
+      ctx.strokeStyle = `rgba(${A}, 0.95)`; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(rx, ry, 16, 0, 6.283); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(rx - 26, ry); ctx.lineTo(rx - 8, ry); ctx.moveTo(rx + 8, ry); ctx.lineTo(rx + 26, ry);
+      ctx.moveTo(rx, ry - 26); ctx.lineTo(rx, ry - 8); ctx.moveTo(rx, ry + 8); ctx.lineTo(rx, ry + 26);
+      ctx.stroke(); ctx.lineWidth = 1;
+    }
+    runCanvasLoop(card, animate);
+  })();
+
+  // --- FloraLens: a scanned leaf with veins lighting up under the scan line ---
+  (function initFloraScan() {
+    const canvas = document.getElementById('flora-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const card = canvas.closest('.project-card');
+    const hv = hoverState(card);
+    let scan = 0, lock = 0;
+    function leafPath(cx, cy, L, W) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + L / 2);
+      ctx.bezierCurveTo(cx + W, cy + L * 0.25, cx + W * 0.85, cy - L * 0.3, cx, cy - L / 2);
+      ctx.bezierCurveTo(cx - W * 0.85, cy - L * 0.3, cx - W, cy + L * 0.25, cx, cy + L / 2);
+      ctx.closePath();
+    }
+    function animate() {
+      fitCanvas(canvas, card);
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const A = accentRGB();
+      const cx = w * 0.72, cy = h * 0.38, L = Math.min(h * 0.62, w * 0.5), W = L * 0.36;
+      scan = (scan + (hv.on ? 0.012 : 0.005)) % 1;
+      lock += ((hv.on ? 1 : 0.35) - lock) * 0.06;
+      leafPath(cx, cy, L, W);
+      ctx.fillStyle = `rgba(${A}, 0.08)`; ctx.fill();
+      ctx.strokeStyle = `rgba(${A}, 0.7)`; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.save();
+      leafPath(cx, cy, L, W); ctx.clip();
+      ctx.strokeStyle = `rgba(${A}, 0.55)`; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx, cy + L / 2); ctx.lineTo(cx, cy - L / 2); ctx.stroke();
+      for (let i = 1; i <= 6; i++) {
+        const vy = cy + L / 2 - (L * i) / 7.2;
+        ctx.beginPath(); ctx.moveTo(cx, vy); ctx.lineTo(cx + W, vy - L * 0.12); ctx.moveTo(cx, vy); ctx.lineTo(cx - W, vy - L * 0.12); ctx.stroke();
+      }
+      const sy = cy - L / 2 + L * scan;
+      const g = ctx.createLinearGradient(0, sy - 26, 0, sy);
+      g.addColorStop(0, `rgba(${A}, 0)`); g.addColorStop(1, `rgba(${A}, 0.5)`);
+      ctx.fillStyle = g; ctx.fillRect(cx - W - 4, sy - 26, W * 2 + 8, 26);
+      ctx.restore();
+      ctx.strokeStyle = `rgba(${A}, ${0.5 + 0.5 * lock})`; ctx.lineWidth = 2;
+      const pad = 14 + (1 - lock) * 22, bx0 = cx - W - pad, bx1 = cx + W + pad, by0 = cy - L / 2 - pad, by1 = cy + L / 2 + pad, s = 14;
+      ctx.beginPath();
+      ctx.moveTo(bx0, by0 + s); ctx.lineTo(bx0, by0); ctx.lineTo(bx0 + s, by0);
+      ctx.moveTo(bx1 - s, by0); ctx.lineTo(bx1, by0); ctx.lineTo(bx1, by0 + s);
+      ctx.moveTo(bx0, by1 - s); ctx.lineTo(bx0, by1); ctx.lineTo(bx0 + s, by1);
+      ctx.moveTo(bx1 - s, by1); ctx.lineTo(bx1, by1); ctx.lineTo(bx1, by1 - s);
+      ctx.stroke(); ctx.lineWidth = 1;
+      // scan progress bar
+      ctx.strokeStyle = `rgba(${A}, 0.35)`; ctx.strokeRect(w * 0.08, h * 0.66, w * 0.3, 5);
+      ctx.fillStyle = `rgba(${A}, 0.85)`; ctx.fillRect(w * 0.08, h * 0.66, w * 0.3 * scan, 5);
+    }
+    runCanvasLoop(card, animate);
+  })();
+
 });
