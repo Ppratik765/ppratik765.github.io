@@ -176,15 +176,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function closeAllTooltips() { markers.forEach((m) => m.closeTooltip()); }
 
+  // Tell the page which stop the tour is on (-1 = world view) so the About
+  // timeline can follow along. Purely additive: nothing depends on it.
+  function announce(index) {
+    window.dispatchEvent(new CustomEvent('about:stop', { detail: { index } }));
+  }
+  let mapVisible = false;
+  let resumeTimer = 0;
+
   async function runSequence(token) {
     map.invalidateSize();
     map.stop();
     closeAllTooltips();
     map.setView(WORLD_VIEW, 3, { animate: false });   // always begin from the same frame
+    announce(-1);
     if (!(await wait(500, token))) return;
 
     while (true) {
       // Phase 1: England — Soar Valley College
+      announce(0);
       map.flyTo(LOCATIONS[0].coords, 6, { duration: 2.0 });
       if (!(await wait(2500, token))) return;
       markers[0].openTooltip();
@@ -192,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
       markers[0].closeTooltip();
 
       // Phase 2: Intercontinental flight to Vadodara
+      announce(1);
       map.flyTo(LOCATIONS[1].coords, 12, { duration: 3.5 });
       if (!(await wait(4000, token))) return;
       markers[1].openTooltip();
@@ -199,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
       markers[1].closeTooltip();
 
       // Phase 3: Across Vadodara to GSV
+      announce(2);
       map.flyTo(LOCATIONS[2].coords, 14, { duration: 2.0 });
       if (!(await wait(2500, token))) return;
       markers[2].openTooltip();
@@ -206,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
       markers[2].closeTooltip();
 
       // Phase 4: Back out to the world view, then loop from England again
+      announce(-1);
       map.flyTo(WORLD_VIEW, 3, { duration: 3.0 });
       if (!(await wait(4000, token))) return;
     }
@@ -224,7 +237,22 @@ document.addEventListener('DOMContentLoaded', () => {
     isHovered = false;
     map.stop();
     closeAllTooltips();
+    announce(-1);
   }
+
+  // Timeline click -> fly to that stop, then hand control back to the tour.
+  window.addEventListener('about:goto', (e) => {
+    const i = e.detail && e.detail.index;
+    if (typeof i !== 'number' || !LOCATIONS[i]) return;
+    stopTour();
+    clearTimeout(resumeTimer);
+    map.invalidateSize();
+    announce(i);
+    const zoom = i === 0 ? 6 : (i === 1 ? 12 : 14);
+    map.flyTo(LOCATIONS[i].coords, zoom, { duration: 1.8 });
+    setTimeout(() => markers[i] && markers[i].openTooltip(), 1900);
+    resumeTimer = setTimeout(() => { if (mapVisible && !running) startTour(); }, 9000);
+  });
 
   // Allow manual control
   map.on('mousedown', () => { isHovered = true; });
@@ -235,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('IntersectionObserver' in window) {
     new IntersectionObserver((entries) => {
       const ratio = entries[0].intersectionRatio;
+      mapVisible = entries[0].isIntersecting && ratio >= 0.1;
       if (entries[0].isIntersecting && ratio >= 0.4) startTour();
       else if (!entries[0].isIntersecting || ratio < 0.1) stopTour();
     }, { threshold: [0, 0.1, 0.4] }).observe(mapContainer);

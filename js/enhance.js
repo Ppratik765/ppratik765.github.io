@@ -25,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
         - over controls the ring morphs to wrap the element (with a
           slight magnetic pull); over cards / the map it becomes a
           labelled disc; over inputs it collapses into a caret
-        - fast movement sheds tiny gold stardust; clicks send a shockwave
+        - only genuinely fast flicks shed a few specks of gold stardust;
+          clicks send a shockwave
+        - an alternative "Reticle" skin (corner brackets + live coordinates)
+          lives behind ⌘K → "Cursor style" and is remembered per browser
         - touch / coarse pointers never see any of this
   ---------------------------------------------------------- */
   (function initCursor() {
@@ -37,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cursor.innerHTML =
       '<div class="cursor__ring"><div class="cursor__shape"><span class="cursor__label"></span></div></div>' +
       '<div class="cursor__tag"><span class="cursor__tag-text"></span></div>' +
+      '<div class="cursor__coords" aria-hidden="true"></div>' +
       '<div class="cursor__dot"></div>';
     const ring = cursor.querySelector('.cursor__ring');
     const shape = cursor.querySelector('.cursor__shape');
@@ -44,6 +48,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const dot = cursor.querySelector('.cursor__dot');
     const tag = cursor.querySelector('.cursor__tag');
     const tagText = cursor.querySelector('.cursor__tag-text');
+    const coords = cursor.querySelector('.cursor__coords');
+
+    /* ---- skin: "stardust" (default) or "reticle" ---- */
+    const STYLE_KEY = 'portfolio-cursor';
+    function readStyle() {
+      try { return localStorage.getItem(STYLE_KEY) === 'reticle' ? 'reticle' : 'stardust'; } catch (e) { return 'stardust'; }
+    }
+    function setStyle(next) {
+      const v = next === 'reticle' ? 'reticle' : 'stardust';
+      document.documentElement.setAttribute('data-cursor-style', v);
+      try { localStorage.setItem(STYLE_KEY, v); } catch (e) { /* private mode */ }
+      shapeW = shapeH = 0; shapeR = '';       // let the shape re-measure under the new skin
+      particles.length = 0;
+    }
+    window.addEventListener('portfolio:cursor-style', (e) => setStyle(e.detail));
 
     let canvas = null, ctx = null, dpr = 1, W = 0, H = 0;
     if (!REDUCE_MOTION) {
@@ -76,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let last = 0, raf = 0, lastMoveT = 0;
     const particles = [];
     let palette = { accent: '#ffc300', alt: '#ffd60a', light: false };
+    document.documentElement.setAttribute('data-cursor-style', readStyle());
 
     function readPalette() {
       const cs = getComputedStyle(root);
@@ -156,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.pointerType && e.pointerType !== 'mouse') return;
       cursor.classList.add('cursor--down');
       shockwave(e.clientX, e.clientY);
-      if (!REDUCE_MOTION) burst(e.clientX, e.clientY);
+      if (!REDUCE_MOTION && document.documentElement.getAttribute('data-cursor-style') !== 'reticle') burst(e.clientX, e.clientY);
     });
     window.addEventListener('pointerup', () => cursor.classList.remove('cursor--down'));
 
@@ -171,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---- stardust ---- */
     function emit(x, y, vx, vy, n) {
-      for (let i = 0; i < n && particles.length < 90; i++) {
+      for (let i = 0; i < n && particles.length < 44; i++) {
         const a = Math.random() * Math.PI * 2;
         const sp = Math.random() * 0.35;
         particles.push({
@@ -179,15 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
           y: y + (Math.random() - 0.5) * 6,
           vx: -vx * 0.04 + Math.cos(a) * sp,
           vy: -vy * 0.04 + Math.sin(a) * sp,
-          r: 1 + Math.random() * 1.9,
-          life: 0, max: 700 + Math.random() * 700,
+          r: 0.8 + Math.random() * 1.3,
+          life: 0, max: 480 + Math.random() * 520,
           alt: Math.random() < 0.3,
         });
       }
     }
     function burst(x, y) {
-      for (let i = 0; i < 12 && particles.length < 90; i++) {
-        const a = (i / 12) * Math.PI * 2 + Math.random() * 0.4;
+      for (let i = 0; i < 8 && particles.length < 44; i++) {
+        const a = (i / 8) * Math.PI * 2 + Math.random() * 0.4;
         const sp = 0.08 + Math.random() * 0.18;
         particles.push({ x, y, vx: Math.cos(a) * sp * 6, vy: Math.sin(a) * sp * 6,
           r: 0.8 + Math.random() * 1.6, life: 0, max: 500 + Math.random() * 400, alt: i % 3 === 0 });
@@ -231,25 +251,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // stretch along travel direction (only in the free-roaming states)
       const free = state === 'idle' || state === 'grow';
+      const reticle = root.getAttribute('data-cursor-style') === 'reticle';
       const speed = Math.hypot(ox, oy);
-      const want = free && !REDUCE_MOTION ? Math.min(speed / 90, 1) : 0;
+      const want = free && !reticle && !REDUCE_MOTION ? Math.min(speed / 90, 1) : 0;
       stretch += (want - stretch) * (1 - Math.exp(-dt / 70));
       if (speed > 2) angle = Math.atan2(oy, ox);
       const sx = free ? 1 + stretch * 0.55 : 1, sy = free ? 1 - stretch * 0.32 : 1;
-      const rot = free ? angle : 0;   // rectangles / discs / caret never rotate
+      const rot = free && !reticle ? angle : 0;   // rectangles / discs / caret never rotate
       ring.style.transform = 'translate3d(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px,0) rotate(' + rot.toFixed(3) + 'rad) scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ')';
 
       // follow tag (lags a touch less than the ring, sits off the pointer's shoulder)
       const tf = REDUCE_MOTION ? 1 : 1 - Math.exp(-dt / 38);
       tgx += (mx - tgx) * tf; tgy += (my - tgy) * tf;
       tag.style.transform = 'translate3d(' + (tgx + 18).toFixed(1) + 'px,' + (tgy + 18).toFixed(1) + 'px,0)';
+      if (reticle) {
+        coords.style.transform = 'translate3d(' + (tgx + 22).toFixed(1) + 'px,' + (tgy + 20).toFixed(1) + 'px,0)';
+        const txt = 'X ' + String(Math.round(mx)).padStart(4, '0') + '\nY ' + String(Math.round(my)).padStart(4, '0');
+        if (coords.textContent !== txt) coords.textContent = txt;
+      }
 
       // stardust: shed while moving fast in free states
       if (ctx) {
         const pv = Math.hypot(mx - rx, my - ry);
-        if (visible && free && pv > 10) emit(mx, my, mx - rx, my - ry, pv > 60 ? 3 : 2);
+        if (visible && free && !reticle && pv > 34) emit(mx, my, mx - rx, my - ry, pv > 90 ? 2 : 1);
 
         ctx.clearRect(0, 0, W, H);
+        if (reticle) particles.length = 0;
         ctx.globalCompositeOperation = palette.light ? 'source-over' : 'lighter';
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
@@ -260,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
           p.x += p.vx * dt * 0.06 * 16; p.y += p.vy * dt * 0.06 * 16;
           const rr = p.r * (0.4 + k * 0.6);
           ctx.fillStyle = p.alt ? palette.alt : palette.accent;
-          ctx.globalAlpha = k * 0.16;                       // soft halo
+          ctx.globalAlpha = k * 0.1;                        // soft halo
           ctx.beginPath(); ctx.arc(p.x, p.y, rr * 3.2, 0, Math.PI * 2); ctx.fill();
           ctx.globalAlpha = Math.min(1, k * 1.3);            // bright core
           ctx.beginPath(); ctx.arc(p.x, p.y, rr, 0, Math.PI * 2); ctx.fill();
@@ -310,6 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
       { label: 'FloraLens', hint: 'Project', keywords: 'plant disease android tflite mobilenet', action: () => go(root + 'projects/floralens.html') },
       { label: 'Retro Arcade Suite', hint: 'Project', keywords: 'python pygame tkinter games', action: () => go(root + 'projects/retro-arcade.html') },
       { label: 'Download Resume', hint: 'Action', keywords: 'cv pdf download resume', action: downloadResume },
+      ...(FINE_POINTER ? [{
+        get label() { return 'Cursor style: switch to ' + (document.documentElement.getAttribute('data-cursor-style') === 'reticle' ? 'Stardust' : 'Reticle'); },
+        hint: 'Action', keywords: 'cursor pointer style reticle stardust mouse',
+        action: () => window.dispatchEvent(new CustomEvent('portfolio:cursor-style',
+          { detail: document.documentElement.getAttribute('data-cursor-style') === 'reticle' ? 'stardust' : 'reticle' }))
+      }] : []),
       { label: 'Toggle Theme', hint: 'Action', keywords: 'dark light theme mode', action: () => document.getElementById('theme-toggle') && document.getElementById('theme-toggle').click() },
       { label: 'Email Priyanshu', hint: 'Contact', keywords: 'email mail gmail', action: () => window.location.href = 'mailto:priyanshupratik07@gmail.com' },
       { label: 'GitHub', hint: 'Contact', keywords: 'github code source', action: () => window.open('https://github.com/ppratik765', '_blank', 'noopener') },

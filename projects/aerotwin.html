@@ -10,6 +10,7 @@
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#000814" />
   <link rel="canonical" href="https://ppratik765.github.io/projects/aerotwin.html" />
+  <link rel="icon" type="image/svg+xml" href="../data/logo.svg" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="../data/favicon-32.png" />
   <link rel="apple-touch-icon" href="../data/apple-touch-icon.png" />
@@ -111,11 +112,12 @@
     </style>
   </noscript>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
+  
   <!-- Modular Stylesheets -->
+  <!-- Fonts (self-hosted) -->
+  <link rel="preload" href="../fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../css/fonts.css" />
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
@@ -142,7 +144,7 @@
 
   <!-- ========== Navigation ========== -->
   <nav class="nav" id="nav">
-    <a href="../index.html" class="nav__logo">← PP</a>
+    <a href="../index.html" class="nav__logo nav__logo--back" aria-label="Back to home"><span class="nav__back" aria-hidden="true">&larr;</span><span class="logo-mark" aria-hidden="true"><span>P</span><span>P</span></span></a>
     <div class="nav__scrim"></div>
     <ul class="nav__links">
       <li><a href="../index.html#about">About</a></li>

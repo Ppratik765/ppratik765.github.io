@@ -11,6 +11,7 @@
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#000814" />
   <link rel="canonical" href="https://ppratik765.github.io/" />
+  <link rel="icon" type="image/svg+xml" href="data/logo.svg" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="data/favicon-32.png" />
   <link rel="apple-touch-icon" href="data/apple-touch-icon.png" />
@@ -233,10 +234,7 @@
     </style>
   </noscript>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
+  
   <!-- Warm the connection to the hero game's origin as early as possible,
        so the actual iframe request (fired below) doesn't pay the DNS/TLS
        handshake cost on top of the page load. -->
@@ -244,6 +242,10 @@
   <link rel="dns-prefetch" href="https://vector-squadron-portfolio.vercel.app" />
 
   <!-- Modular Stylesheets -->
+  <!-- Fonts (self-hosted) -->
+  <link rel="preload" href="fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -262,6 +264,7 @@
   <script src="js/map-route.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/enhance.js" defer></script>
+  <script src="js/polish.js" defer></script>
 </head>
 
 <body>
@@ -278,7 +281,7 @@
 
   <!-- ========== Navigation ========== -->
   <nav class="nav" id="nav">
-    <a href="#" class="nav__logo"><img src="data/watermark.png" alt="Priyanshu Pratik logo" class="nav__logo-img"></a>
+    <a href="#" class="nav__logo" aria-label="Priyanshu Pratik — back to top"><span class="logo-mark" aria-hidden="true"><span>P</span><span>P</span></span></a>
     <div class="nav__scrim"></div>
     <ul class="nav__links">
       <li><a href="#about">About</a></li>
@@ -352,6 +355,12 @@
       </div>
     </div>
 
+    <!-- Scroll cue (faded in / out by js/polish.js) -->
+    <div class="hero__scroll-hint" id="hero-scroll-hint" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+
     <!-- Take Control Floating Action Button -->
     <div class="hero__control-btn">
       <a class="control-btn" href="https://vector-squadron.vercel.app/" target="_blank" rel="noopener noreferrer">
@@ -361,13 +370,14 @@
     </div>
   </section>
 
-  <!-- ========== Section 2: About Me (Pathfinding Map) ========== -->
+  <!-- ========== Section 2: About Me (Pathfinding Map + Path timeline) ========== -->
   <section id="about">
     <div class="about">
+      <div class="about__cols">
       <div class="about__text">
         <p class="section-label">01 // About Me</p>
         <h2 class="section-title reveal">Background &<br />Focus</h2>
-        <p class="reveal">
+        <p class="about__lede reveal">
           I'm Priyanshu — third-year AI & Data Science undergrad at <strong>Gati Shakti Vishwavidyalaya</strong>,
           with an AI engineering internship at <strong>BISAG-N</strong> behind me. Most of what I build starts from the same
           itch: I want to see the system actually run, not just describe how it should work.
@@ -388,31 +398,64 @@
           <strong>DPS Harni</strong> for the rest — 435/500 in Class 12, and a JEE Main run that landed at 96.6
           percentile.
         </p>
-
-        <div class="about__stats">
-          <div class="stat-card">
-            <div class="stat-card__value" data-count="8.80" data-decimals="2">8.80</div>
-            <div class="stat-card__label">CGPA</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card__value" data-count="160" data-suffix="+">160+</div>
-            <div class="stat-card__label">LeetCode Solved</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card__value">3rd Yr</div>
-            <div class="stat-card__label">5th Semester</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card__value">GATE '27</div>
-            <div class="stat-card__label">DA Aspirant</div>
-          </div>
-        </div>
       </div>
 
-      <!-- Leaflet Looping Pathfinding Map Visualizer -->
+      <!-- Leaflet tour + a path timeline that follows it -->
       <div class="about__visual reveal">
         <div class="map-container" id="map-leaflet">
           <!-- Leaflet injects canvas/tiles here -->
+        </div>
+
+        <ol class="path" id="path-timeline" aria-label="Education and experience, in order">
+          <li class="path__item" data-stop="0">
+            <button type="button" class="path__btn" data-stop="0" data-cursor-label="Fly there">
+              <span class="path__node" aria-hidden="true"></span>
+              <span class="path__name">Soar Valley College</span>
+              <span class="path__meta">Leicester, England · Year 11 · seven Grade 9s at GCSE</span>
+            </button>
+          </li>
+          <li class="path__item" data-stop="1">
+            <button type="button" class="path__btn" data-stop="1" data-cursor-label="Fly there">
+              <span class="path__node" aria-hidden="true"></span>
+              <span class="path__name">DPS Harni</span>
+              <span class="path__meta">Vadodara · Class 12: 435/500 · JEE Main 96.6 percentile</span>
+            </button>
+          </li>
+          <li class="path__item" data-stop="2">
+            <button type="button" class="path__btn" data-stop="2" data-cursor-label="Fly there">
+              <span class="path__node" aria-hidden="true"></span>
+              <span class="path__name">Gati Shakti Vishwavidyalaya</span>
+              <span class="path__meta">B.Tech, AI & Data Science · 8.80 CGPA</span>
+            </button>
+          </li>
+          <li class="path__item path__item--static">
+            <div class="path__btn">
+              <span class="path__node" aria-hidden="true"></span>
+              <span class="path__name">BISAG-N</span>
+              <span class="path__meta">Gandhinagar · AI engineering internship</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      </div><!-- /about__cols -->
+
+      <div class="about__stats">
+        <div class="stat-card">
+          <div class="stat-card__value" data-count="8.80" data-decimals="2">8.80</div>
+          <div class="stat-card__label">CGPA</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value" data-count="160" data-suffix="+">160+</div>
+          <div class="stat-card__label">LeetCode Solved</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">3rd Yr</div>
+          <div class="stat-card__label">5th Semester</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">GATE '27</div>
+          <div class="stat-card__label">DA Aspirant</div>
         </div>
       </div>
     </div>
@@ -423,7 +466,7 @@
     <div class="projects">
       <p class="section-label">02 // Project Showcase</p>
       <h2 class="section-title reveal">The Showcase Grid</h2>
-      <div class="projects__grid">
+      <div class="projects__grid" id="projects-grid">
 
         <!-- 01 · Vector Squadron -->
         <a href="projects/vector-squadron.html" class="project-card project-card--wide reveal">
@@ -750,6 +793,15 @@
           </div>
         </a>
 
+      </div>
+
+      <!-- Phones only: the grid is cut to the first 7 projects (see js/polish.js) -->
+      <div class="projects__more" id="projects-more" hidden>
+        <p class="projects__more-count" id="projects-more-count" aria-live="polite"></p>
+        <button type="button" class="btn btn--ghost projects__more-btn" id="projects-more-btn" aria-expanded="false" aria-controls="projects-grid">
+          <span id="projects-more-label">Show more projects</span>
+          <span class="projects__more-icon" aria-hidden="true">&#8595;</span>
+        </button>
       </div>
     </div>
   </section>

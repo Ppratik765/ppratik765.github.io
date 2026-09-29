@@ -85,12 +85,12 @@
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 18px;
-  padding: 2.5rem;
+  padding: 2.1rem;
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  min-height: 340px;
+  min-height: 360px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -187,17 +187,51 @@
 
 .project-card__title {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.6rem;
   color: var(--text-primary);
 }
 
 .project-card__desc {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  line-height: 1.62;
+  margin-bottom: 1.25rem;
+  /* the full story lives on the project page — cards only tease it */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+}
+
+.project-card--wide .project-card__desc {
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+/* Text-safe scrim: the live canvases stay visible up top but never sit
+   behind the words. It relaxes on hover so the animation can breathe. */
+.project-card__visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--bg-primary) 88%, transparent) 0%,
+    color-mix(in srgb, var(--bg-primary) 62%, transparent) 42%,
+    color-mix(in srgb, var(--bg-primary) 6%, transparent) 78%,
+    transparent 100%
+  );
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.project-card:hover .project-card__visual::after {
+  opacity: 0.4;
 }
 
 .project-card__tech {
@@ -1103,4 +1137,134 @@ body.cmdk-locked {
 @media (max-width: 600px) {
   .project-pager { grid-template-columns: 1fr; }
   .project-pager__link--next { text-align: left; }
+}
+
+
+/* ============================================================
+   CURSOR VARIANT: "Reticle"  (⌘K → "Cursor style")
+   An instrument-style alternative to Stardust: corner brackets that
+   snap to whatever you point at, plus a live coordinate readout.
+   Same state machine as Stardust — only the skin changes.
+   ============================================================ */
+html[data-cursor-style="reticle"] .cursor__dot {
+  width: 4px; height: 4px; margin: -2px 0 0 -2px;
+  border-radius: 1px;
+  box-shadow: none;
+}
+
+/* The Stardust states restyle the shape's border / background / shadow, so the
+   Reticle keeps its brackets on pseudo-elements the states never touch. */
+html[data-cursor-style="reticle"] .cursor__shape {
+  width: 30px; height: 30px; margin: -15px 0 0 -15px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-cursor-style="reticle"] .cursor__shape::before,
+html[data-cursor-style="reticle"] .cursor__shape::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* corner brackets: 8 hairlines, two per corner */
+html[data-cursor-style="reticle"] .cursor__shape::before {
+  --c: var(--accent-primary);
+  --t: 1.5px;
+  --l: 9px;
+  background-image:
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c));
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
+  background-size:
+    var(--l) var(--t), var(--t) var(--l),
+    var(--l) var(--t), var(--t) var(--l),
+    var(--l) var(--t), var(--t) var(--l),
+    var(--l) var(--t), var(--t) var(--l);
+  transition: opacity 0.25s ease;
+}
+
+/* soft tint inside the frame while snapped to something */
+html[data-cursor-style="reticle"] .cursor__shape::after {
+  background: var(--accent-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+html[data-cursor-style="reticle"] .cursor[data-state="magnet"] .cursor__shape::before { --l: 8px; }
+html[data-cursor-style="reticle"] .cursor[data-state="magnet"] .cursor__shape::after { opacity: 0.07; }
+
+html[data-cursor-style="reticle"] .cursor[data-state="frame"] .cursor__shape::before { --l: 18px; --t: 2px; }
+html[data-cursor-style="reticle"] .cursor[data-state="frame"] .cursor__shape::after { opacity: 0.035; }
+
+html[data-cursor-style="reticle"] .cursor[data-state="grow"] .cursor__shape {
+  width: 46px; height: 46px; margin: -23px 0 0 -23px;
+}
+html[data-cursor-style="reticle"] .cursor[data-state="grow"] .cursor__shape::before { --l: 11px; }
+
+html[data-cursor-style="reticle"] .cursor[data-state="label"] .cursor__shape {
+  width: 86px; height: 86px; margin: -43px 0 0 -43px;
+}
+html[data-cursor-style="reticle"] .cursor[data-state="label"] .cursor__shape::before { --l: 14px; }
+html[data-cursor-style="reticle"] .cursor[data-state="label"] .cursor__shape::after { opacity: 0.09; }
+
+/* text fields: a plain caret instead of brackets */
+html[data-cursor-style="reticle"] .cursor[data-state="text"] .cursor__shape {
+  width: 2px; height: 26px; margin: -13px 0 0 -1px;
+}
+html[data-cursor-style="reticle"] .cursor[data-state="text"] .cursor__shape::before { opacity: 0; }
+html[data-cursor-style="reticle"] .cursor[data-state="text"] .cursor__shape::after { opacity: 1; }
+
+html[data-cursor-style="reticle"] .cursor--down .cursor__shape { transform: scale(0.8); }
+
+html[data-cursor-style="reticle"] .cursor__label,
+html[data-cursor-style="reticle"] .cursor__tag-text {
+  color: var(--accent-primary);
+}
+
+html[data-cursor-style="reticle"] .cursor__tag-text {
+  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  border-radius: 3px;
+  box-shadow: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+html[data-cursor-style="reticle"] .cursor-pulse {
+  border-radius: 2px;
+  animation-name: cursor-pulse-square;
+}
+
+@keyframes cursor-pulse-square {
+  from { transform: translate(var(--px), var(--py)) scale(0.6) rotate(0deg); opacity: 0.9; }
+  to   { transform: translate(var(--px), var(--py)) scale(4.5) rotate(45deg); opacity: 0; }
+}
+
+.cursor__coords {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  white-space: pre;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+html[data-cursor-style="reticle"] .cursor[data-state="idle"] .cursor__coords,
+html[data-cursor-style="reticle"] .cursor[data-state="grow"] .cursor__coords {
+  opacity: 0.85;
 }

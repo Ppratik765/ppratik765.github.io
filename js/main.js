@@ -557,251 +557,365 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!outputArea || !buttons.length) return;
 
-    // Optional interactivity for the input if it exists
-    if (hiddenInput && inputEcho) {
-      termBody.addEventListener('click', () => {
-        hiddenInput.focus();
-      });
+    /* ---- constants & state ---- */
+    const PROMPT = 'visitor@portfolio:~$';
+    const RESUME_URL = 'data/Priyanshu_Pratik_Resume.pdf';
+    const RESUME_NAME = 'Priyanshu_Pratik_Resume.pdf';
+    const COMMANDS = ['about', 'clear', 'date', 'email', 'github', 'help', 'linkedin', 'ls', 'open', 'ping', 'projects', 'resume', 'status', 'theme', 'whoami'];
+    const history = [];
+    let histIdx = 0;
+    let draft = '';
+    let busy = false;
 
-      hiddenInput.addEventListener('input', (e) => {
-        inputEcho.textContent = e.target.value;
-      });
-
-      hiddenInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          const rawCommand = hiddenInput.value.trim();
-          hiddenInput.value = '';
-          inputEcho.textContent = '';
-          if (rawCommand) {
-            processRawCommand(rawCommand);
-          }
-        }
-      });
+    // Project index, read from the cards so it never drifts from the grid.
+    function getProjects() {
+      return Array.from(document.querySelectorAll('.project-card')).map((card) => {
+        const href = card.getAttribute('href') || '';
+        const slug = (href.match(/projects\/([^/.]+)\.html/) || [])[1] || '';
+        const titleEl = card.querySelector('.project-card__title');
+        return { slug, href, title: titleEl ? titleEl.textContent.trim() : slug };
+      }).filter((p) => p.slug);
     }
 
-    const commandsData = {
-      email: {
-        command: 'cat contacts/email.txt',
-        output: [
-          '→ priyanshupratik07@gmail.com',
-          '  Direct email channel open. Always responsive to optimization, data systems, and research inquiries.'
-        ],
-        link: 'mailto:priyanshupratik07@gmail.com',
-        linkText: 'priyanshupratik07@gmail.com'
-      },
-      linkedin: {
-        command: 'curl -s https://api.linkedin.com/v2/me',
-        output: [
-          '→ linkedin.com/in/priyanshu-pratik-ai',
-          '  Connect with me for professional updates and supply chain optimization posts.'
-        ],
-        link: 'https://www.linkedin.com/in/priyanshu-pratik-ai',
-        linkText: 'linkedin.com/in/priyanshu-pratik-ai'
-      },
-      github: {
-        command: 'git remote -v show origin',
-        output: [
-          '→ github.com/ppratik765',
-          '  Full source for every project above — commits, issues, and the occasional 2am hack.'
-        ],
-        link: 'https://github.com/ppratik765',
-        linkText: 'github.com/ppratik765'
-      },
-      resume: {
-        command: './download_resume.sh',
-        output: [
-          '→ PRIYANSHU_PRATIK_RESUME.pdf',
-          '  Downloading secure file from /data/ volume...'
-        ]
-      }
+    const scrollDown = () => { termBody.scrollTop = termBody.scrollHeight; };
+    const reveal = (el) => {
+      el.style.opacity = '0';
+      if (typeof gsap !== 'undefined') gsap.to(el, { opacity: 1, duration: 0.3 });
+      else el.style.opacity = '1';
     };
 
-    function typeCommandText(spanElement, text) {
-      return new Promise(resolve => {
+    function addPromptLine(text) {
+      const line = document.createElement('div');
+      line.className = 'terminal__line';
+      const prompt = document.createElement('span');
+      prompt.className = 'terminal__prompt';
+      prompt.textContent = PROMPT;
+      const cmd = document.createElement('span');
+      cmd.className = 'terminal__cmd';
+      cmd.textContent = text || '';
+      line.append(prompt, ' ', cmd);
+      outputArea.appendChild(line);
+      scrollDown();
+      return cmd;
+    }
+
+    function addOutput(text, opts = {}) {
+      const line = document.createElement('div');
+      line.className = 'terminal__line terminal__output';
+      if (opts.error) line.classList.add('terminal__output--error');
+      if (opts.success) line.classList.add('terminal__output--success');
+      if (opts.linkText && text.includes(opts.linkText)) {
+        const [before, after] = text.split(opts.linkText);
+        const a = document.createElement('a');
+        a.href = opts.linkHref;
+        a.className = 'terminal__link';
+        a.textContent = opts.linkText;
+        if (/^https?:|^mailto:/.test(opts.linkHref)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        line.append(before, a, after);
+      } else {
+        line.textContent = text;
+      }
+      outputArea.appendChild(line);
+      reveal(line);
+      scrollDown();
+      return line;
+    }
+
+    function addSpacer() {
+      const d = document.createElement('div');
+      d.className = 'terminal__line';
+      d.innerHTML = '&nbsp;';
+      outputArea.appendChild(d);
+      scrollDown();
+    }
+
+    // Print a finished command + its output in one go (typed commands).
+    function printToTerminal(commandStr, outputLines, isError = false, isSuccess = false) {
+      addPromptLine(commandStr);
+      outputLines.forEach((t) => addOutput(t, { error: isError, success: isSuccess }));
+      addSpacer();
+    }
+
+    function typeCommandText(el, text) {
+      return new Promise((resolve) => {
         let i = 0;
-        const intervalId = setInterval(() => {
-          spanElement.textContent += text[i];
+        const id = setInterval(() => {
+          el.textContent += text[i];
           i++;
-          if (i >= text.length) {
-            clearInterval(intervalId);
-            resolve();
-          }
+          scrollDown();
+          if (i >= text.length) { clearInterval(id); resolve(); }
         }, 20);
       });
     }
 
-    // Print to terminal utility
-    function printToTerminal(commandStr, outputLines, isError = false, isSuccess = false, linkText = null, linkHref = null) {
-      const commandLine = document.createElement('div');
-      commandLine.className = 'terminal__line';
-      commandLine.innerHTML = '<span class="terminal__prompt">visitor@portfolio:~$</span> ';
-      const cmdSpan = document.createElement('span');
-      cmdSpan.className = 'terminal__cmd';
-      cmdSpan.textContent = commandStr;
-      commandLine.appendChild(cmdSpan);
-      outputArea.appendChild(commandLine);
+    const clearScreen = () => { outputArea.innerHTML = ''; };
 
-      outputLines.forEach(lineText => {
-        const outLine = document.createElement('div');
-        outLine.className = 'terminal__line terminal__output';
-        if (isError) outLine.classList.add('terminal__output--error');
-        if (isSuccess) outLine.classList.add('terminal__output--success');
-
-        if (linkText && lineText.includes(linkText)) {
-          outLine.innerHTML = lineText.replace(linkText, `<a href="${linkHref}" target="_blank" rel="noopener noreferrer" class="terminal__link">${linkText}</a>`);
-        } else {
-          outLine.textContent = lineText;
-        }
-
-        outputArea.appendChild(outLine);
-        gsap.to(outLine, { opacity: 1, duration: 0.3 });
-      });
-
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'terminal__line';
-      emptyDiv.innerHTML = '&nbsp;';
-      outputArea.appendChild(emptyDiv);
-
-      termBody.scrollTop = termBody.scrollHeight;
-    }
-
-    async function executeCommand(cmdName) {
-      if (cmdName === 'clear') {
-        outputArea.innerHTML = '';
-        return;
-      }
-      
-      const data = commandsData[cmdName];
-      if (!data) return;
-
-      const commandLine = document.createElement('div');
-      commandLine.className = 'terminal__line';
-      commandLine.innerHTML = '<span class="terminal__prompt">visitor@portfolio:~$</span> ';
-      const cmdSpan = document.createElement('span');
-      cmdSpan.className = 'terminal__cmd';
-      commandLine.appendChild(cmdSpan);
-      outputArea.appendChild(commandLine);
-
-      await typeCommandText(cmdSpan, data.command);
-
-      data.output.forEach(lineText => {
-        const outLine = document.createElement('div');
-        outLine.className = 'terminal__line terminal__output';
-        
-        if (data.linkText && lineText.includes(data.linkText)) {
-          outLine.innerHTML = lineText.replace(data.linkText, `<a href="${data.link}" target="_blank" rel="noopener noreferrer" class="terminal__link">${data.linkText}</a>`);
-        } else {
-          outLine.textContent = lineText;
-        }
-
-        outLine.style.opacity = '0';
-        outputArea.appendChild(outLine);
-        gsap.to(outLine, { opacity: 1, duration: 0.3 });
-      });
-
-      if (cmdName === 'resume') {
-        triggerResumeDownload();
-      }
-
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'terminal__line';
-      emptyDiv.innerHTML = '&nbsp;';
-      outputArea.appendChild(emptyDiv);
-      termBody.scrollTop = termBody.scrollHeight;
+    /* ---- resume: real progress, then the download ---- */
+    async function runResume(typed) {
+      const cmd = addPromptLine('');
+      if (typed) await typeCommandText(cmd, './download_resume.sh');
+      else cmd.textContent = 'resume';
+      await runResumeBody();
     }
 
     function triggerResumeDownload() {
       const a = document.createElement('a');
-      a.href = 'data/Priyanshu_Pratik_Resume.pdf';
-      a.download = 'Priyanshu_Resume.pdf';
+      a.href = RESUME_URL;
+      a.download = RESUME_NAME;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     }
 
-    // Parse raw text commands from the hidden input
-    function processRawCommand(rawCmd) {
-      const cmd = rawCmd.toLowerCase();
-      
-      if (cmd === 'clear') {
-        outputArea.innerHTML = '';
-        return;
+    /* ---- commands that type themselves (button clicks) ---- */
+    const commandsData = {
+      email: {
+        command: 'cat contacts/email.txt',
+        output: ['→ priyanshupratik07@gmail.com', '  Direct email channel open. Always responsive to optimization, data systems, and research inquiries.'],
+        link: 'mailto:priyanshupratik07@gmail.com', linkText: 'priyanshupratik07@gmail.com'
+      },
+      linkedin: {
+        command: 'curl -s https://api.linkedin.com/v2/me',
+        output: ['→ linkedin.com/in/priyanshu-pratik-ai', '  Connect with me for professional updates and supply chain optimization posts.'],
+        link: 'https://www.linkedin.com/in/priyanshu-pratik-ai', linkText: 'linkedin.com/in/priyanshu-pratik-ai'
+      },
+      github: {
+        command: 'git remote -v show origin',
+        output: ['→ github.com/ppratik765', '  Full source for every project above — commits, issues, and the occasional 2am hack.'],
+        link: 'https://github.com/ppratik765', linkText: 'github.com/ppratik765'
       }
+    };
 
-      if (cmd === 'help') {
+    async function executeCommand(cmdName) {
+      if (busy) return;
+      if (cmdName === 'clear') { clearScreen(); return; }
+      busy = true;
+      try {
+        if (cmdName === 'resume') { await runResume(true); return; }
+        const data = commandsData[cmdName];
+        if (!data) return;
+        const cmd = addPromptLine('');
+        await typeCommandText(cmd, data.command);
+        data.output.forEach((t) => addOutput(t, { linkText: data.linkText, linkHref: data.link }));
+        addSpacer();
+      } finally { busy = false; }
+    }
+
+    /* ---- free-typed commands ---- */
+    function findProject(query) {
+      const q = query.toLowerCase().replace(/^projects\//, '').replace(/\.html$/, '').trim();
+      if (!q) return null;
+      const list = getProjects();
+      return list.find((p) => p.slug === q) ||
+        list.find((p) => p.title.toLowerCase() === q) ||
+        list.find((p) => p.slug.includes(q) || p.title.toLowerCase().includes(q)) || null;
+    }
+
+    async function processRawCommand(rawCmd) {
+      if (busy) return;
+      const cmd = rawCmd.trim().toLowerCase();
+      const [head, ...rest] = cmd.split(/\s+/);
+      const arg = rest.join(' ');
+
+      if (head === 'clear' || head === 'cls') { clearScreen(); return; }
+
+      if (head === 'help') {
         printToTerminal(rawCmd, [
           'AVAILABLE COMMANDS:',
+          '  about       - Who is behind this terminal',
+          '  projects    - List every project with its shortcut',
+          '  open <name> - Jump to a project page (e.g. open damagelens)',
           '  email       - Initialize direct mail protocol',
           '  linkedin    - Retrieve professional network data',
           '  github      - Clone repository manifests',
           '  resume      - Download authorized curriculum vitae',
+          '  theme       - Flip between dark and light',
           '  status      - Display system/availability status',
-          '  clear       - Clear the terminal screen',
-          '  help        - Show this manual'
+          '  clear       - Clear the screen (or press Ctrl+L)',
+          '',
+          'TIPS: ↑/↓ recalls history · Tab completes commands and project names'
         ]);
         return;
       }
 
-      if (cmd === 'resume' || cmd === 'get_resume' || cmd === 'download resume') {
+      if (head === 'resume' || head === 'cv' || cmd === 'get_resume' || cmd === 'download resume' || cmd === './download_resume.sh') {
+        busy = true;
+        try {
+          addPromptLine(rawCmd);
+          await runResumeBody();
+        } finally { busy = false; }
+        return;
+      }
+
+      if (head === 'email' || head === 'linkedin' || head === 'github') {
+        // typed by the visitor already, so print instantly
+        const d = commandsData[head];
+        addPromptLine(rawCmd);
+        d.output.forEach((t) => addOutput(t, { linkText: d.linkText, linkHref: d.link }));
+        addSpacer();
+        return;
+      }
+
+      if (head === 'about') {
         printToTerminal(rawCmd, [
-          '→ PRIYANSHU_PRATIK_RESUME.pdf',
-          '  Downloading secure file from /data/ volume...'
+          'Priyanshu Pratik — AI & Data Science undergrad, Gati Shakti Vishwavidyalaya.',
+          'Builds real-time ML systems, edge models and WebGL experiences.',
+          'AI engineering internship at BISAG-N behind him. Open to internships.'
         ]);
-        triggerResumeDownload();
         return;
       }
 
-      if (cmd === 'email') return executeCommand('email');
-      if (cmd === 'linkedin') return executeCommand('linkedin');
-      if (cmd === 'github') return executeCommand('github');
+      if (head === 'projects') {
+        const list = getProjects();
+        addPromptLine(rawCmd);
+        list.forEach((p, i) => addOutput(String(i + 1).padStart(2, '0') + '  ' + p.title.padEnd(26, ' ') + 'open ' + p.slug));
+        addOutput('', {});
+        addOutput("Tip: type 'open <name>' to jump to any of them.");
+        addSpacer();
+        return;
+      }
 
-      if (cmd === 'status' || cmd === 'whoami') {
+      if (head === 'open') {
+        const p = findProject(arg);
+        if (!arg) { printToTerminal(rawCmd, ['usage: open <project>   (try: projects)'], true); return; }
+        if (!p) { printToTerminal(rawCmd, [`open: ${arg}: no such project`, "Type 'projects' to list them."], true); return; }
+        addPromptLine(rawCmd);
+        addOutput('→ opening ' + p.title + '…', { success: true });
+        addSpacer();
+        setTimeout(() => { window.location.href = p.href; }, 450);
+        return;
+      }
+
+      if (head === 'theme') {
+        const t = document.getElementById('theme-toggle');
+        if (t) t.click();
+        const now = document.documentElement.getAttribute('data-theme') || 'dark';
+        printToTerminal(rawCmd, ['→ theme: ' + now], false, true);
+        return;
+      }
+
+      if (head === 'status' || head === 'whoami') {
         printToTerminal(rawCmd, [
           'USER: visitor',
           'SYSTEM STATUS: Optimal',
-          'AUTHOR AVAILABILITY: Open to new opportunities.',
+          'AUTHOR AVAILABILITY: Open to internships.',
           'CURRENT OBJECTIVE: Building intelligent agentic systems and scalable architecture.'
         ], false, true);
         return;
       }
 
-      if (cmd === 'ls' || cmd === 'dir') {
-        printToTerminal(rawCmd, [
-          'contacts/   projects/   about/   resume.pdf'
-        ]);
+      if (head === 'ls' || head === 'dir') {
+        printToTerminal(rawCmd, ['contacts/   projects/   about/   resume.pdf']);
         return;
       }
 
-      if (cmd === 'date') {
-        printToTerminal(rawCmd, [new Date().toString()]);
+      if (head === 'date') { printToTerminal(rawCmd, [new Date().toString()]); return; }
+
+      if (head === 'ping') { printToTerminal(rawCmd, ['PONG. System latency: 12ms. Connection solid.']); return; }
+
+      if (head === 'sudo') {
+        printToTerminal(rawCmd, ['visitor is not in the sudoers file.', 'This incident will be reported to Priyanshu.'], true);
         return;
       }
 
-      if (cmd === 'ping' || cmd.startsWith('ping ')) {
-        printToTerminal(rawCmd, [
-          'PONG. System latency: 12ms. Connection solid.'
-        ]);
+      printToTerminal(rawCmd, [`bash: ${head}: command not found`, "Type 'help' to see a list of available systems."], true);
+    }
+
+    // Typed variant of resume: the prompt line is already on screen.
+    async function runResumeBody() {
+      addOutput('→ ' + RESUME_NAME);
+      const bar = addOutput('');
+      const W = 24;
+      const draw = (pct) => {
+        const filled = Math.round((pct / 100) * W);
+        bar.textContent = '  [' + '#'.repeat(filled) + '-'.repeat(W - filled) + '] ' + String(Math.round(pct)).padStart(3, ' ') + '%';
+      };
+      draw(0);
+      let size = 0, ok = true;
+      const fetched = (async () => {
+        try { const r = await fetch(RESUME_URL); if (!r.ok) throw 0; size = (await r.blob()).size; } catch (e) { ok = false; }
+      })();
+      const t0 = performance.now();
+      await new Promise((resolve) => {
+        const tick = (now) => {
+          const k = Math.min((now - t0) / 1100, 1);
+          draw(100 * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(tick); else resolve();
+        };
+        requestAnimationFrame(tick);
+      });
+      await fetched;
+      if (!ok) {
+        addOutput('  Direct fetch unavailable here — opening the file instead.', { error: true });
+        window.open(RESUME_URL, '_blank', 'noopener');
+      } else {
+        triggerResumeDownload();
+        addOutput('✓ Saved ' + RESUME_NAME + (size ? ' (' + Math.max(1, Math.round(size / 1024)) + ' KB)' : ''), { success: true });
+      }
+      addSpacer();
+    }
+
+    /* ---- input: echo, history, tab-complete ---- */
+    function setInput(v) {
+      hiddenInput.value = v;
+      inputEcho.textContent = v;
+    }
+
+    function complete() {
+      const v = hiddenInput.value;
+      const lower = v.toLowerCase();
+      if (!v.trim()) return;
+      const m = lower.match(/^(open)\s+(.*)$/);
+      if (m) {
+        const pool = getProjects().map((p) => p.slug).filter((s) => s.startsWith(m[2]));
+        if (pool.length === 1) setInput('open ' + pool[0]);
+        else if (pool.length > 1) { addPromptLine(v); addOutput(pool.join('   ')); addSpacer(); }
         return;
       }
+      if (/\s/.test(lower)) return;
+      const hits = COMMANDS.filter((c) => c.startsWith(lower));
+      if (hits.length === 1) setInput(hits[0] + (hits[0] === 'open' ? ' ' : ''));
+      else if (hits.length > 1) { addPromptLine(v); addOutput(hits.join('   ')); addSpacer(); }
+    }
 
-      // Easter Eggs
-      if (cmd === 'sudo' || cmd.startsWith('sudo ')) {
-        printToTerminal(rawCmd, [
-          'visitor is not in the sudoers file.',
-          'This incident will be reported to Priyanshu.'
-        ], true);
-        return;
-      }
+    if (hiddenInput && inputEcho) {
+      termBody.addEventListener('click', () => hiddenInput.focus());
 
-      // Fallback
-      printToTerminal(rawCmd, [
-        `bash: ${cmd.split(' ')[0]}: command not found`,
-        `Type 'help' to see a list of available systems.`
-      ], true);
+      hiddenInput.addEventListener('input', (e) => { inputEcho.textContent = e.target.value; });
+
+      hiddenInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const raw = hiddenInput.value.trim();
+          setInput('');
+          if (raw) {
+            if (history[history.length - 1] !== raw) history.push(raw);
+            histIdx = history.length;
+            draft = '';
+            processRawCommand(raw);
+          }
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (!history.length) return;
+          if (histIdx === history.length) draft = hiddenInput.value;
+          histIdx = Math.max(0, histIdx - 1);
+          setInput(history[histIdx]);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (histIdx >= history.length) return;
+          histIdx = Math.min(history.length, histIdx + 1);
+          setInput(histIdx === history.length ? draft : history[histIdx]);
+        } else if (e.key === 'Tab') {
+          e.preventDefault();
+          complete();
+        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+          e.preventDefault();
+          clearScreen();
+        }
+      });
     }
 
     // Attach to buttons (keeps existing functionality)
-    buttons.forEach(btn => {
+    buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
         const cmdName = btn.dataset.cmd;
         if (cmdName) executeCommand(cmdName);
