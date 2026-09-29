@@ -152,52 +152,78 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Cinematic Sequence Logic ---
+  // The tour only plays while the map is on screen. Every time it comes back into view
+  // it restarts from the beginning: world view -> Soar Valley College (England) -> Vadodara -> GSV.
+  const WORLD_VIEW = [35, 38];
   let isHovered = false;
+  let runToken = 0;      // bumping this cancels whatever sequence is currently running
+  let running = false;
 
   mapContainer.addEventListener('mouseenter', () => { isHovered = true; });
   mapContainer.addEventListener('mouseleave', () => { isHovered = false; });
-  mapContainer.addEventListener('touchstart', () => { isHovered = true; }, {passive: true});
+  mapContainer.addEventListener('touchstart', () => { isHovered = true; }, { passive: true });
 
-  async function cinematicWait(ms) {
+  // Resolves true when the wait finished, false when this run was cancelled meanwhile.
+  async function wait(ms, token) {
     let elapsed = 0;
     while (elapsed < ms) {
-      if (!isHovered) {
-        elapsed += 100;
-      }
-      await new Promise(r => setTimeout(r, 100));
+      if (token !== runToken) return false;
+      if (!isHovered) elapsed += 100;
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    return token === runToken;
+  }
+
+  function closeAllTooltips() { markers.forEach((m) => m.closeTooltip()); }
+
+  async function runSequence(token) {
+    map.invalidateSize();
+    map.stop();
+    closeAllTooltips();
+    map.setView(WORLD_VIEW, 3, { animate: false });   // always begin from the same frame
+    if (!(await wait(500, token))) return;
+
+    while (true) {
+      // Phase 1: England — Soar Valley College
+      map.flyTo(LOCATIONS[0].coords, 6, { duration: 2.0 });
+      if (!(await wait(2500, token))) return;
+      markers[0].openTooltip();
+      if (!(await wait(2500, token))) return;
+      markers[0].closeTooltip();
+
+      // Phase 2: Intercontinental flight to Vadodara
+      map.flyTo(LOCATIONS[1].coords, 12, { duration: 3.5 });
+      if (!(await wait(4000, token))) return;
+      markers[1].openTooltip();
+      if (!(await wait(3000, token))) return;
+      markers[1].closeTooltip();
+
+      // Phase 3: Across Vadodara to GSV
+      map.flyTo(LOCATIONS[2].coords, 14, { duration: 2.0 });
+      if (!(await wait(2500, token))) return;
+      markers[2].openTooltip();
+      if (!(await wait(3000, token))) return;
+      markers[2].closeTooltip();
+
+      // Phase 4: Back out to the world view, then loop from England again
+      map.flyTo(WORLD_VIEW, 3, { duration: 3.0 });
+      if (!(await wait(4000, token))) return;
     }
   }
 
-  async function runCinematicLoop() {
-    // Initial delay before starting the loop
-    await cinematicWait(1500);
+  function startTour() {
+    if (running) return;
+    running = true;
+    runSequence(++runToken);
+  }
 
-    while (true) {
-      // Phase 1: UK View
-      map.flyTo(LOCATIONS[0].coords, 6, { duration: 2.0 });
-      await cinematicWait(2500); // let it arrive, wait for user
-      markers[0].openTooltip();
-      await cinematicWait(2500); // read time
-      markers[0].closeTooltip();
-
-      // Phase 2: Intercontinental Flight to Vadodara
-      map.flyTo(LOCATIONS[1].coords, 12, { duration: 3.5 });
-      await cinematicWait(4000); 
-      markers[1].openTooltip();
-      await cinematicWait(3000); // read time
-      markers[1].closeTooltip();
-
-      // Phase 3: Transition across Vadodara to GSV
-      map.flyTo(LOCATIONS[2].coords, 14, { duration: 2.0 });
-      await cinematicWait(2500);
-      markers[2].openTooltip();
-      await cinematicWait(3000); // read time
-      markers[2].closeTooltip();
-
-      // Phase 4: Reset to full world view
-      map.flyTo([35, 38], 3, { duration: 3.0 });
-      await cinematicWait(4000);
-    }
+  function stopTour() {
+    if (!running) return;
+    running = false;
+    runToken++;            // cancels the loop at its next wait
+    isHovered = false;
+    map.stop();
+    closeAllTooltips();
   }
 
   // Allow manual control
@@ -205,6 +231,14 @@ document.addEventListener('DOMContentLoaded', () => {
   map.on('mouseup', () => { isHovered = false; });
   map.on('dragstart', () => { isHovered = true; });
 
-  // Start the loop
-  runCinematicLoop();
+  // Start when the map is (mostly) on screen; stop once it has scrolled away.
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      const ratio = entries[0].intersectionRatio;
+      if (entries[0].isIntersecting && ratio >= 0.4) startTour();
+      else if (!entries[0].isIntersecting || ratio < 0.1) stopTour();
+    }, { threshold: [0, 0.1, 0.4] }).observe(mapContainer);
+  } else {
+    startTour();
+  }
 });

@@ -473,37 +473,4 @@ document.addEventListener('DOMContentLoaded', () => {
     tryVideo();
   })();
 
-  /* ----------------------------------------------------------
-     4. HERO GAME LIFECYCLE
-        The Rust/WASM game keeps a GPU busy. Once the hero has been
-        off-screen for a few seconds the iframe is unloaded, and it is
-        reloaded (with the current theme) when you scroll back up.
-  ---------------------------------------------------------- */
-  (function initHeroLifecycle() {
-    const frame = document.getElementById('hero-iframe');
-    const hero = document.getElementById('hero');
-    if (!frame || !hero || frame.dataset.mode !== 'live' || !('IntersectionObserver' in window)) return;
-    let timer = null;
-
-    function unload() {
-      if (frame.dataset.unloaded === 'true') return;
-      frame.dataset.unloaded = 'true';
-      frame.classList.remove('is-loaded');
-      frame.src = 'about:blank';
-    }
-    function reload() {
-      if (frame.dataset.unloaded !== 'true') return;
-      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-      frame.dataset.unloaded = 'false';
-      frame.src = frame.dataset.base + theme;
-    }
-
-    new IntersectionObserver((entries) => {
-      const visible = entries[0].isIntersecting;
-      clearTimeout(timer);
-      if (visible) reload();
-      else timer = setTimeout(unload, 4000);
-    }, { rootMargin: '25% 0px 25% 0px' }).observe(hero);
-  })();
-
 });

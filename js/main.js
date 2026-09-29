@@ -123,11 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (themeLabel) {
     themeLabel.textContent = initialTheme === 'dark' ? 'Light' : 'Dark';
   }
-  // The hero game iframe is requested exactly once, by the inline script in index.html
-  // (it picks live vs. poster mode and the saved theme). Nothing here re-assigns its src,
-  // which used to trigger a second full load of the game on every visit.
-  const heroLive = () => !!heroIframe && heroIframe.dataset.mode === 'live';
-  const heroUrl = (theme) => (heroIframe ? heroIframe.dataset.base : '') + theme;
+  if (heroIframe) {
+    heroIframe.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + initialTheme;
+  }
 
   /* ---- Hyperspace Jump Theme Transition ---- */
   let hyperspaceRunning = false;
@@ -146,13 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('portfolio-theme', nextTheme);
         if (themeIcon) themeIcon.textContent = nextTheme === 'dark' ? '☾' : '☀';
         if (themeLabel) themeLabel.textContent = nextTheme === 'dark' ? 'Light' : 'Dark';
-        // Poster mode has no game; an unloaded game picks up the new theme when it reloads.
-        if (heroLive() && heroIframe.dataset.unloaded !== 'true') heroIframe.src = heroUrl(nextTheme);
+        if (heroIframe) {
+          heroIframe.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + nextTheme;
+        }
         hyperspaceRunning = false;
         return;
       }
 
-      let iframeLoaded = true;
+      let iframeLoaded = false;
       const onLoad = () => {
         iframeLoaded = true;
         if (heroIframe) {
@@ -160,13 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      // Pre-load the game's new theme while the animation plays. Only wait for it when a live
-      // game is actually on the page (not poster mode, not unloaded while scrolled away).
-      // The warp holds at its peak for at most 2s, so a slow or failed load can never stall it.
-      if (heroLive() && heroIframe.dataset.unloaded !== 'true') {
-        iframeLoaded = false;
+      // Pre-load iframe theme while animation plays
+      if (heroIframe) {
         heroIframe.addEventListener('load', onLoad);
-        heroIframe.src = heroUrl(nextTheme);
+        heroIframe.src =
+          'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + nextTheme;
+      } else {
+        iframeLoaded = true;
       }
 
       /* ============================================

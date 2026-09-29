@@ -3,97 +3,384 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>404 — Page not found | Priyanshu Pratik</title>
-  <meta name="description" content="This page could not be found. Head back to Priyanshu Pratik's portfolio." />
+  <title>404 — Signal lost | Priyanshu Pratik</title>
+  <meta name="description" content="This route drifted off the map. Head back to Priyanshu Pratik's portfolio." />
   <meta name="robots" content="noindex, follow" />
   <meta name="theme-color" content="#000814" />
-  <meta name="site-root" content="/" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="/data/favicon-32.png" />
   <link rel="apple-touch-icon" href="/data/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+
   <script>
     (function () {
-      var t = localStorage.getItem('portfolio-theme');
-      if (t) document.documentElement.setAttribute('data-theme', t);
+      try {
+        var t = localStorage.getItem('portfolio-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <script src="/js/main.js" defer></script>
-  <script src="/js/enhance.js" defer></script>
+
+  <!-- Everything below is inline on purpose: a 404 page is served from arbitrary URL depths
+       (and sometimes previewed in sandboxed viewers), so it must not depend on relative asset paths. -->
+  <style>
+    :root {
+      --bg: #000814; --bg2: #001d3d; --accent: #ffc300; --accent2: #ffd60a;
+      --text: #fffcf2; --text2: #ccd6e0; --muted: #6b7f99;
+      --card: rgba(0, 29, 61, 0.55); --border: rgba(255, 195, 0, 0.18); --glow: rgba(255, 195, 0, 0.35);
+      --star: 255, 252, 242; --orb1: rgba(255, 195, 0, 0.16); --orb2: rgba(0, 53, 102, 0.75);
+      --display: 'Cormorant Garamond', Georgia, serif;
+      --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    [data-theme="light"] {
+      --bg: #efd9ce; --bg2: #dec0f1; --accent: #7161ef; --accent2: #957fef;
+      --text: #111111; --text2: #333333; --muted: #555555;
+      --card: rgba(255, 255, 255, 0.65); --border: rgba(113, 97, 239, 0.3); --glow: rgba(113, 97, 239, 0.35);
+      --star: 113, 97, 239; --orb1: rgba(113, 97, 239, 0.22); --orb2: rgba(255, 180, 190, 0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; }
+    html[data-theme="light"] { color-scheme: light; }
+    body {
+      min-height: 100vh; overflow-x: hidden;
+      background: var(--bg); color: var(--text);
+      font-family: var(--body); line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--accent); color: var(--bg); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+    /* ---------- Backdrop ---------- */
+    #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .orbs { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(48vmax 48vmax at 88% -8%, var(--orb1), transparent 62%),
+        radial-gradient(52vmax 52vmax at -10% 112%, var(--orb2), transparent 62%); }
+    .floor { position: fixed; left: -50%; right: -50%; bottom: -12vh; height: 58vh; z-index: 0; pointer-events: none;
+      background:
+        linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 100% 52px,
+        linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 72px 100%;
+      transform: perspective(520px) rotateX(63deg); transform-origin: 50% 100%;
+      -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 82%);
+      mask-image: linear-gradient(to top, #000 0%, transparent 82%);
+      animation: floor 3.2s linear infinite; opacity: 0.7; }
+    @keyframes floor { to { background-position: 0 52px, 0 0; } }
+    .vignette { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(ellipse 40% 50% at 50% 52%, color-mix(in srgb, var(--bg) 60%, transparent), transparent 100%),
+        radial-gradient(ellipse at 50% 46%, transparent 38%, color-mix(in srgb, var(--bg) 82%, transparent) 100%); }
+
+    /* ---------- Top bar ---------- */
+    .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 2.5rem; backdrop-filter: blur(6px) saturate(1.2); -webkit-backdrop-filter: blur(6px) saturate(1.2);
+      background: color-mix(in srgb, var(--bg) 40%, transparent); border-bottom: 1px solid var(--border); }
+    .bar__logo { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 1.5rem; color: var(--accent); }
+    .bar__links { display: flex; align-items: center; gap: 1.6rem; list-style: none; }
+    .bar__links a, .bar__links button { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text2); transition: color 0.25s ease; }
+    .bar__links a:hover { color: var(--accent); }
+    .bar__links .is-accent { color: var(--accent); }
+    .theme { background: transparent; cursor: pointer; border: 1.5px solid var(--accent); color: var(--accent) !important; padding: 0.42rem 0.95rem; border-radius: 999px; transition: background 0.25s ease, color 0.25s ease !important; }
+    .theme:hover { background: var(--accent); color: var(--bg) !important; }
+
+    /* ---------- Stage ---------- */
+    .stage { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6.4rem 1.5rem 3rem; }
+    .stage > * { animation: rise 0.9s var(--ease) both; }
+    .stage > *:nth-child(1) { animation-delay: 0.05s; } .stage > *:nth-child(2) { animation-delay: 0.15s; }
+    .stage > *:nth-child(3) { animation-delay: 0.28s; } .stage > *:nth-child(4) { animation-delay: 0.4s; }
+    .stage > *:nth-child(5) { animation-delay: 0.52s; } .stage > *:nth-child(6) { animation-delay: 0.64s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+    .kicker { display: inline-flex; align-items: center; gap: 0.7rem; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text);
+      padding: 0.45rem 1rem 0.45rem 0.85rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .kicker .dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #ff5a4f; }
+    .kicker .dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid #ff5a4f; animation: ping 1.8s ease-out infinite; }
+    @keyframes ping { 0% { transform: scale(0.6); opacity: 0.9; } 80%, 100% { transform: scale(2.2); opacity: 0; } }
+
+    /* ---------- 4 0 4 ---------- */
+    .code { display: flex; align-items: center; justify-content: center; gap: 0.015em; margin: 1.2rem 0 0.6rem;
+      font-family: var(--display); font-style: italic; font-weight: 600; font-size: clamp(6.5rem, 23vw, 15rem); line-height: 0.9; user-select: none; }
+    .code .d { display: block; padding: 0 0.04em; background: linear-gradient(180deg, var(--text) 28%, var(--accent) 118%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .code.glitch .d:nth-child(1) { animation: glitch 0.45s steps(2, end); }
+    .code.glitch .d:nth-child(3) { animation: glitch 0.45s steps(2, end) 0.06s reverse; }
+    @keyframes glitch {
+      0% { transform: translate(0); filter: none; } 20% { transform: translate(-0.02em, 0.01em) skewX(-5deg); filter: drop-shadow(0.03em 0 0 #ff4d6d) drop-shadow(-0.03em 0 0 #39d0ff); }
+      40% { transform: translate(0.025em, -0.01em); } 60% { transform: translate(-0.015em, 0) skewX(4deg); filter: drop-shadow(-0.03em 0 0 #ff4d6d) drop-shadow(0.03em 0 0 #39d0ff); }
+      100% { transform: translate(0); filter: none; } }
+    .zero { height: 0.8em; width: auto; overflow: visible; margin: 0 0.02em; filter: drop-shadow(0 0 22px var(--glow)); }
+    .zero .ring { stroke: url(#ringGrad); }
+    .zero .spin { transform-origin: 50px 65px; animation: spin 26s linear infinite; }
+    .zero .spin-r { transform-origin: 50px 65px; animation: spin 18s linear infinite reverse; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .lead { max-width: 46ch; margin-top: 0.4rem; font-size: 1.12rem; color: var(--text2); }
+    .lead strong { color: var(--text); font-weight: 500; }
+
+    /* ---------- Terminal ---------- */
+    .term { width: min(560px, 100%); margin-top: 1.9rem; text-align: left; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      background: rgba(8, 14, 28, 0.94); box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.7), 0 0 40px -14px var(--glow); backdrop-filter: blur(6px); }
+    .term__bar { display: flex; align-items: center; gap: 0.45rem; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em; color: #7d8ea6; }
+    .term__bar i { width: 9px; height: 9px; border-radius: 50%; background: #2b3a52; }
+    .term__bar i:nth-child(1) { background: #ff5f57; } .term__bar i:nth-child(2) { background: #febc2e; } .term__bar i:nth-child(3) { background: #28c840; }
+    .term__bar span { margin-left: 0.5rem; }
+    .term__body { padding: 1rem 1.2rem 1.1rem; min-height: 8.2rem; font-family: var(--mono); font-size: 0.82rem; line-height: 1.9; color: #d7e0ea; overflow-wrap: anywhere; }
+    .term__body .p { color: var(--accent); } .term__body .err { color: #ff6b6b; } .term__body .ok { color: #5eead4; } .term__body .dim { color: #8b9bb0; }
+    .caret { display: inline-block; width: 0.55em; height: 1.05em; margin-left: 2px; vertical-align: -0.16em; background: var(--accent); animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ---------- Actions ---------- */
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.9rem; margin-top: 1.9rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.95rem 1.7rem; border-radius: 6px; border: 1.5px solid var(--accent); transition: transform 0.3s var(--ease), background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; }
+    .btn--primary { background: var(--accent); color: var(--bg); box-shadow: 0 10px 30px -12px var(--glow); }
+    .btn--primary:hover { transform: translateY(-3px); box-shadow: 0 16px 38px -10px var(--glow); }
+    .btn--ghost { color: var(--accent); background: color-mix(in srgb, var(--bg) 60%, transparent); }
+    .btn--ghost:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); transform: translateY(-3px); }
+
+    .jump { margin-top: 2.1rem; max-width: 760px; }
+    .jump__label { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.85rem; }
+    .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; list-style: none; }
+    .chips a { display: inline-block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; padding: 0.45rem 0.9rem; border: 1px solid var(--border); border-radius: 999px; color: var(--text2);
+      background: var(--card); transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s var(--ease); }
+    .chips a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    .foot { position: relative; z-index: 10; padding: 1.4rem 2.5rem 1.8rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+      border-top: 1px solid var(--border); font-family: var(--mono); font-size: 0.72rem; color: var(--muted); background: color-mix(in srgb, var(--bg) 55%, transparent); }
+
+    @media (max-width: 640px) {
+      .bar { padding: 0.8rem 1.1rem; } .bar__links { gap: 0.9rem; } .bar__links .hide-sm { display: none; }
+      .foot { padding: 1.2rem 1.1rem 1.5rem; }
+      .btn { padding: 0.85rem 1.3rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .stage > * { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="orbs" aria-hidden="true"></div>
+  <div class="floor" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
 
-  <!-- Ambient background -->
-  <div class="bg-glow" aria-hidden="true">
-    <span class="bg-glow__orb bg-glow__orb--1"></span>
-    <span class="bg-glow__orb bg-glow__orb--2"></span>
-    <span class="bg-glow__orb bg-glow__orb--3"></span>
-  </div>
-
-  <!-- Scroll progress indicator -->
-  <div class="scroll-progress" id="scroll-progress"></div>
-
-  <!-- ========== Navigation ========== -->
-  <nav class="nav" id="nav">
-    <a href="/" class="nav__logo">← PP</a>
-    <div class="nav__scrim"></div>
-    <ul class="nav__links">
-      <li><a href="/#about">About</a></li>
-      <li><a href="/#projects">Projects</a></li>
-      <li><a href="/#contact">Contact</a></li>
-      <li><a href="/data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf" class="nav__resume">Resume <span aria-hidden="true">&#8595;</span></a></li>
-      <li>
-        <button class="cmdk-trigger" id="cmdk-trigger" type="button" aria-haspopup="dialog" aria-label="Open quick jump menu">
-          <span class="cmdk-trigger__label">Quick Jump</span>
-          <span class="cmdk-trigger__keys"><kbd>&#8984;</kbd><kbd>K</kbd></span>
-        </button>
-      </li>
-      <li>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-          <span class="theme-toggle__icon" id="theme-icon">☾</span>
-          <span id="theme-label">Light</span>
-        </button>
-      </li>
+  <header class="bar">
+    <a class="bar__logo" href="/" aria-label="Back to home">← PP</a>
+    <ul class="bar__links">
+      <li class="hide-sm"><a href="/#about">About</a></li>
+      <li class="hide-sm"><a href="/#projects">Projects</a></li>
+      <li class="hide-sm"><a href="/#contact">Contact</a></li>
+      <li><a class="is-accent" href="/data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf">Resume ↓</a></li>
+      <li><button class="theme" id="theme" type="button" aria-label="Toggle theme"><span id="theme-icon">☾</span> <span id="theme-label">Light</span></button></li>
     </ul>
-    <button class="nav__toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-      <span class="nav__toggle-bar"></span>
-      <span class="nav__toggle-bar"></span>
-      <span class="nav__toggle-bar"></span>
-    </button>
-  </nav>
+  </header>
 
-  <main class="notfound">
-    <p class="section-label">// error</p>
-    <h1 class="notfound__code">404</h1>
-    <p class="notfound__lead">That route doesn't exist. The page may have moved, or the link is off by a character.</p>
+  <main class="stage">
+    <p class="kicker"><span class="dot" aria-hidden="true"></span>Signal lost · Error 404</p>
 
-    <div class="notfound__term" aria-hidden="true">
-      <div><span class="notfound__prompt">$</span> cd <span id="nf-path">/unknown</span></div>
-      <div class="notfound__err">bash: no such route — returning you to a known location</div>
+    <h1 class="code" id="code" aria-label="404">
+      <span class="d" aria-hidden="true">4</span>
+      <svg class="zero" id="zero" viewBox="0 0 100 130" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="ringGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--text)" />
+            <stop offset="1" stop-color="var(--accent)" />
+          </linearGradient>
+          <radialGradient id="core" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="var(--accent)" stop-opacity="0.35" />
+            <stop offset="1" stop-color="var(--accent)" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <!-- the "0": a planet ring with a lost craft in orbit -->
+        <ellipse cx="50" cy="65" rx="40" ry="58" fill="none" class="ring" stroke-width="7" />
+        <ellipse cx="50" cy="65" rx="26" ry="42" fill="none" stroke="var(--accent)" stroke-opacity="0.45" stroke-width="1.2" stroke-dasharray="3 6" class="spin" />
+        <ellipse cx="50" cy="65" rx="16" ry="27" fill="none" stroke="var(--text)" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="1.5 5" class="spin-r" />
+        <circle cx="50" cy="65" r="22" fill="url(#core)" />
+        <!-- crosshair + sonar ping -->
+        <g stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" opacity="0.9">
+          <path d="M50 52v9M50 69v9M37 65h9M54 65h9" />
+        </g>
+        <circle cx="50" cy="65" r="2.6" fill="var(--accent)" />
+        <circle cx="50" cy="65" r="4" fill="none" stroke="var(--accent)" stroke-width="1.2">
+          <animate attributeName="r" values="4;24" dur="2.6s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.9;0" dur="2.6s" repeatCount="indefinite" />
+        </circle>
+        <!-- orbiting craft -->
+        <path id="orbit" d="M 4 65 a 46 64 0 1 0 92 0 a 46 64 0 1 0 -92 0" fill="none" stroke="var(--accent)" stroke-opacity="0.22" stroke-width="1" stroke-dasharray="2 5" />
+        <g>
+          <path d="M7 0 L-5 -4.6 L-2.6 0 L-5 4.6 Z" fill="var(--accent)" />
+          <path d="M-5 0 L-16 0" stroke="var(--accent)" stroke-opacity="0.5" stroke-width="1.6" stroke-linecap="round" />
+          <animateMotion dur="9s" repeatCount="indefinite" rotate="auto"><mpath href="#orbit" /></animateMotion>
+        </g>
+      </svg>
+      <span class="d" aria-hidden="true">4</span>
+    </h1>
+
+    <p class="lead">This route drifted off the map. <strong>The page may have moved</strong>, or the link is off by a character — but everything else is still on course.</p>
+
+    <div class="term" role="img" aria-label="Terminal: locate failed with 404, route to home ready">
+      <div class="term__bar"><i></i><i></i><i></i><span>bash — navigation</span></div>
+      <div class="term__body" id="term">
+        <div><span class="p">$</span> locate <span class="path">this page</span></div>
+        <div class="err">✗ 404 — no such route</div>
+        <div><span class="p">$</span> route --to home</div>
+        <div class="ok">↳ ready. choose a destination below</div>
+      </div>
     </div>
 
-    <div class="notfound__actions">
-      <a href="/" class="btn btn--primary">Back to Home</a>
-      <a href="/#projects" class="btn btn--ghost">Browse Projects</a>
-      <a href="/data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf" class="btn btn--ghost btn--download">Resume <span aria-hidden="true">&#8595;</span></a>
+    <div class="actions">
+      <a class="btn btn--primary" href="/">Back to Home</a>
+      <a class="btn btn--ghost" href="/#projects">Browse Projects</a>
+      <a class="btn btn--ghost" href="/data/Priyanshu_Pratik_Resume.pdf" download="Priyanshu_Pratik_Resume.pdf">Resume ↓</a>
     </div>
-    <p class="notfound__hint">Tip: press <kbd>Ctrl</kbd> / <kbd>&#8984;</kbd> + <kbd>K</kbd> to jump anywhere.</p>
+
+    <div class="jump">
+      <p class="jump__label">Or jump straight to a project</p>
+      <ul class="chips">
+        <li><a href="/projects/its-digital-twin.html">Traffic Digital Twin</a></li>
+        <li><a href="/projects/ambulance-corridor.html">Ambulance Corridor</a></li>
+        <li><a href="/projects/manganese-ore.html">Manganese Ore Detection</a></li>
+        <li><a href="/projects/wavedrop.html">WaveDrop</a></li>
+        <li><a href="/projects/f1-monte-carlo.html">F1 Monte Carlo</a></li>
+        <li><a href="/projects/floralens.html">FloraLens</a></li>
+        <li><a href="/projects/damagelens.html">DamageLens</a></li>
+        <li><a href="/projects/aerotwin.html">AeroTwin</a></li>
+      </ul>
+    </div>
   </main>
-  <script>document.getElementById('nf-path').textContent = decodeURIComponent(location.pathname).slice(0, 60) || '/';</script>
 
-  <!-- ========== Footer ========== -->
-  <footer class="footer">
-    <div class="footer__left">
-      © 2026 Priyanshu Pratik
-    </div>
-    <div class="footer__right">
-      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
-        DEPLOYMENT: OPERATIONAL
-      </span>
-    </div>
+  <footer class="foot">
+    <span>© 2026 Priyanshu Pratik</span>
+    <span>STATUS: ROUTE NOT FOUND · SITE OPERATIONAL</span>
   </footer>
 
+  <script>
+  (function () {
+    'use strict';
+    var root = document.documentElement;
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    /* ---- theme toggle (shares the key the main site uses) ---- */
+    var icon = document.getElementById('theme-icon'), label = document.getElementById('theme-label');
+    function paintTheme() {
+      var light = root.getAttribute('data-theme') === 'light';
+      icon.textContent = light ? '☀' : '☾'; label.textContent = light ? 'Dark' : 'Light';
+      var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', light ? '#efd9ce' : '#000814');
+      readStar();
+    }
+    document.getElementById('theme').addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+      paintTheme();
+    });
+
+    /* ---- path shown in the terminal ---- */
+    var path = '/unknown-route';
+    try {
+      var raw = decodeURIComponent(location.pathname || '');
+      if (raw && raw !== '/' && raw !== 'srcdoc' && location.protocol !== 'file:') path = raw;
+    } catch (e) {}
+    if (path.length > 46) path = path.slice(0, 43) + '…';
+    var pathEl = document.querySelector('.path'); if (pathEl) pathEl.textContent = path;
+
+    /* ---- terminal typing ---- */
+    var term = document.getElementById('term');
+    var lines = [
+      { html: '<span class="p">$</span> locate ', typed: path },
+      { html: '<span class="err">✗ 404 — no such route:</span> <span class="dim"></span>', fill: path },
+      { html: '<span class="p">$</span> ', typed: 'route --to home' },
+      { html: '<span class="ok">↳ recalculating…</span>', pause: 700 },
+      { html: '<span class="ok">↳ ready. choose a destination below</span>' }
+    ];
+    function typeTerminal() {
+      term.innerHTML = '';
+      var i = 0;
+      function next() {
+        if (i >= lines.length) { var c = document.createElement('span'); c.className = 'caret'; term.lastChild.appendChild(c); return; }
+        var L = lines[i++], row = document.createElement('div'); row.innerHTML = L.html; term.appendChild(row);
+        if (L.fill) row.querySelector('.dim').textContent = L.fill;
+        if (L.typed) {
+          var span = document.createElement('span'); row.appendChild(span);
+          var caret = document.createElement('span'); caret.className = 'caret'; row.appendChild(caret);
+          var n = 0;
+          (function tick() {
+            span.textContent = L.typed.slice(0, ++n);
+            if (n < L.typed.length) setTimeout(tick, 34 + Math.random() * 40);
+            else { caret.remove(); setTimeout(next, 260); }
+          })();
+        } else setTimeout(next, L.pause || 240);
+      }
+      next();
+    }
+    if (!reduce) setTimeout(typeTerminal, 700);
+
+    /* ---- occasional glitch on the numerals ---- */
+    var code = document.getElementById('code');
+    if (!reduce) (function loop() {
+      setTimeout(function () { code.classList.add('glitch'); setTimeout(function () { code.classList.remove('glitch'); loop(); }, 480); }, 3800 + Math.random() * 3200);
+    })();
+    var zero = document.getElementById('zero');
+    if (reduce && zero.pauseAnimations) zero.pauseAnimations();
+
+    /* ---- starfield with mouse parallax + shooting stars ---- */
+    var cv = document.getElementById('sky'), ctx = cv.getContext('2d');
+    var W = 0, H = 0, dpr = 1, stars = [], streaks = [], mx = 0, my = 0, px = 0, py = 0, starRGB = '255,252,242', accentRGB = '255,195,0';
+    function readStar() {
+      var cs = getComputedStyle(root);
+      starRGB = cs.getPropertyValue('--star').trim() || starRGB;
+      var m = /^#([0-9a-f]{6})$/i.exec(cs.getPropertyValue('--accent').trim());
+      if (m) accentRGB = parseInt(m[1].slice(0, 2), 16) + ',' + parseInt(m[1].slice(2, 4), 16) + ',' + parseInt(m[1].slice(4, 6), 16);
+    }
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2); W = window.innerWidth; H = window.innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.round((W * H) / 5200); stars = [];
+      for (var i = 0; i < n; i++) stars.push({ x: Math.random() * W, y: Math.random() * H, z: 0.15 + Math.random() * 0.85, ph: Math.random() * 6.28, sp: 0.6 + Math.random() * 1.6 });
+      if (reduce) frame(0);
+    }
+    window.addEventListener('resize', resize);
+    window.addEventListener('pointermove', function (e) { mx = (e.clientX / W - 0.5) * 2; my = (e.clientY / H - 0.5) * 2; }, { passive: true });
+    var nextStreak = 1800, last = 0;
+    function frame(t) {
+      var dt = Math.min(t - last, 50); last = t;
+      px += (mx - px) * 0.05; py += (my - py) * 0.05;
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        if (!reduce) { s.x -= (0.012 + 0.05 * s.z) * dt * 0.6; if (s.x < -2) { s.x = W + 2; s.y = Math.random() * H; } }
+        var x = s.x + px * s.z * 26, y = s.y + py * s.z * 18;
+        var tw = reduce ? 1 : 0.65 + 0.35 * Math.sin(t * 0.001 * s.sp + s.ph);
+        ctx.fillStyle = 'rgba(' + starRGB + ',' + (0.18 + 0.72 * s.z) * tw + ')';
+        ctx.beginPath(); ctx.arc(x, y, 0.4 + s.z * 1.25, 0, 6.283); ctx.fill();
+      }
+      if (!reduce) {
+        nextStreak -= dt;
+        if (nextStreak <= 0) {
+          nextStreak = 3500 + Math.random() * 4500;
+          streaks.push({ x: W * (0.35 + Math.random() * 0.65), y: Math.random() * H * 0.45, vx: -(0.9 + Math.random() * 0.6), vy: 0.45 + Math.random() * 0.3, life: 0 });
+        }
+        for (var k = streaks.length - 1; k >= 0; k--) {
+          var q = streaks[k]; q.life += dt; q.x += q.vx * dt * 0.75; q.y += q.vy * dt * 0.75;
+          var a = Math.max(0, 1 - q.life / 900);
+          if (a <= 0) { streaks.splice(k, 1); continue; }
+          var g = ctx.createLinearGradient(q.x, q.y, q.x - q.vx * 150, q.y - q.vy * 150);
+          g.addColorStop(0, 'rgba(' + accentRGB + ',' + a + ')'); g.addColorStop(1, 'rgba(' + accentRGB + ',0)');
+          ctx.strokeStyle = g; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x - q.vx * 150, q.y - q.vy * 150); ctx.stroke();
+        }
+        requestAnimationFrame(frame);
+      }
+    }
+    paintTheme(); resize();
+    if (!reduce) requestAnimationFrame(frame);
+  })();
+  </script>
 </body>
 </html>

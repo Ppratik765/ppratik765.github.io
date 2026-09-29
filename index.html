@@ -309,31 +309,24 @@
   <section class="hero" id="hero">
     <!-- Backing Iframe Container (locked to autoplay) -->
     <div class="hero__iframe-container">
-      <!-- The game loads only when it will actually be seen: small screens, reduced-motion
-           and data-saver visitors get a lightweight poster instead. The src is assigned by the
-           inline script right here (no waiting on main.js), from the saved theme, so the
-           iframe is requested exactly once. js/enhance.js unloads it when scrolled far away. -->
-      <iframe id="hero-iframe" class="hero__iframe" title="Vector Squadron Space Autopilot"
-        data-base="https://vector-squadron-portfolio.vercel.app/?autoplay=true&amp;theme="
+      <!-- src is set directly (not injected by JS) so the browser's native
+           parser kicks off the request the instant it reaches this tag —
+           no waiting on JS execution. Defaults to the dark theme, which
+           matches this page's own default <html data-theme="dark">. -->
+      <iframe id="hero-iframe" class="hero__iframe" src="https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=dark" title="Vector Squadron Space Autopilot"
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; z-index: 0;"></iframe>
       <script>
         (function () {
           var frame = document.getElementById('hero-iframe');
-          var stage = frame.parentNode;
-          var theme = localStorage.getItem('portfolio-theme') || 'dark';
-          var mq = function (q) { return !!(window.matchMedia && window.matchMedia(q).matches); };
-          var conn = navigator.connection || {};
-          var poster = mq('(max-width: 768px)') || mq('(prefers-reduced-motion: reduce)') || conn.saveData === true;
+          var t = localStorage.getItem('portfolio-theme');
           frame.addEventListener('load', function () {
-            var s = frame.getAttribute('src');
-            if (s && s !== 'about:blank') frame.classList.add('is-loaded');
+            frame.classList.add('is-loaded');
           });
-          if (poster) {
-            frame.dataset.mode = 'poster';
-            stage.classList.add('hero__iframe-container--poster');
-          } else {
-            frame.dataset.mode = 'live';
-            frame.src = frame.dataset.base + theme;
+          // Only re-point the iframe if the saved theme differs from the
+          // hardcoded default above — avoids paying for a second request
+          // in the common case (no saved preference, or already dark).
+          if (t && t !== 'dark') {
+            frame.src = 'https://vector-squadron-portfolio.vercel.app/?autoplay=true&theme=' + t;
           }
         })();
       </script>
