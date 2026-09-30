@@ -573,7 +573,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const href = card.getAttribute('href') || '';
         const slug = (href.match(/projects\/([^/.]+)\.html/) || [])[1] || '';
         const titleEl = card.querySelector('.project-card__title');
-        return { slug, href, title: titleEl ? titleEl.textContent.trim() : slug };
+        const tagEl = card.querySelector('.project-card__tag');
+        const descEl = card.querySelector('.project-card__desc');
+        return {
+          slug, href,
+          title: titleEl ? titleEl.textContent.trim() : slug,
+          tag: tagEl ? tagEl.textContent.trim() : '',
+          desc: descEl ? descEl.textContent.replace(/\s+/g, ' ').trim() : ''
+        };
       }).filter((p) => p.slug);
     }
 
@@ -706,9 +713,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const q = query.toLowerCase().replace(/^projects\//, '').replace(/\.html$/, '').trim();
       if (!q) return null;
       const list = getProjects();
+      const t = (p) => p.title.toLowerCase();
       return list.find((p) => p.slug === q) ||
-        list.find((p) => p.title.toLowerCase() === q) ||
-        list.find((p) => p.slug.includes(q) || p.title.toLowerCase().includes(q)) || null;
+        list.find((p) => t(p) === q) ||
+        list.find((p) => p.slug.startsWith(q) || t(p).startsWith(q)) ||
+        list.find((p) => p.slug.includes(q) || t(p).includes(q)) || null;
     }
 
     async function processRawCommand(rawCmd) {
@@ -787,10 +796,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (head === 'theme') {
+        // The switch is an animated warp that swaps the theme partway through, so
+        // report the theme we're heading to rather than reading it back too early.
         const t = document.getElementById('theme-toggle');
+        const next = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark' ? 'light' : 'dark';
         if (t) t.click();
-        const now = document.documentElement.getAttribute('data-theme') || 'dark';
-        printToTerminal(rawCmd, ['→ theme: ' + now], false, true);
+        printToTerminal(rawCmd, ['→ switching to the ' + next + ' theme…'], false, true);
         return;
       }
 
@@ -827,25 +838,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const bar = addOutput('');
       const W = 24;
       const draw = (pct) => {
-        const filled = Math.round((pct / 100) * W);
-        bar.textContent = '  [' + '#'.repeat(filled) + '-'.repeat(W - filled) + '] ' + String(Math.round(pct)).padStart(3, ' ') + '%';
+        const filled = Math.max(0, Math.min(W, Math.round((pct / 100) * W)));
+        bar.textContent = '  [' + '#'.repeat(filled) + '-'.repeat(W - filled) + '] ' + String(Math.max(0, Math.min(100, Math.round(pct)))).padStart(3, ' ') + '%';
       };
       draw(0);
       let size = 0, ok = true;
       const fetched = (async () => {
-        try { const r = await fetch(RESUME_URL); if (!r.ok) throw 0; size = (await r.blob()).size; } catch (e) { ok = false; }
+        try { const r = await fetch(RESUME_URL); if (!r.ok) throw new Error('bad status'); size = (await r.blob()).size; } catch (e) { ok = false; }
       })();
+
+      // Progress runs off performance.now() (a rAF timestamp can predate t0, which
+      // once produced a negative bar length and froze the terminal), and a timer
+      // guarantees it finishes even if the tab is in the background and rAF pauses.
+      const DURATION = 1100;
       const t0 = performance.now();
       await new Promise((resolve) => {
-        const tick = (now) => {
-          const k = Math.min((now - t0) / 1100, 1);
+        let settled = false;
+        const finish = () => { if (!settled) { settled = true; draw(100); resolve(); } };
+        const tick = () => {
+          const k = Math.min(Math.max((performance.now() - t0) / DURATION, 0), 1);
           draw(100 * (1 - Math.pow(1 - k, 3)));
-          if (k < 1) requestAnimationFrame(tick); else resolve();
+          if (k < 1) requestAnimationFrame(tick); else finish();
         };
         requestAnimationFrame(tick);
+        setTimeout(finish, DURATION + 500);
       });
       await fetched;
+
       if (!ok) {
+        // e.g. opened from file:// — fall back to a plain link so nothing is lost
         addOutput('  Direct fetch unavailable here — opening the file instead.', { error: true });
         window.open(RESUME_URL, '_blank', 'noopener');
       } else {
@@ -855,37 +876,203 @@ document.addEventListener('DOMContentLoaded', () => {
       addSpacer();
     }
 
-    /* ---- input: echo, history, tab-complete ---- */
-    function setInput(v) {
-      hiddenInput.value = v;
-      inputEcho.textContent = v;
+    /* ---- input: echo, ghost text, live preview, history, tab-complete ---- */
+    const ghostEl = document.getElementById('terminal-ghost');
+    const previewEl = document.getElementById('terminal-preview');
+    const previewText = document.getElementById('terminal-preview-text');
+    const tabBtn = document.getElementById('terminal-tab-btn');
+
+    const ALIASES = { cv: 'resume', cls: 'clear', dir: 'ls', get_resume: 'resume' };
+    const CMD_INFO = {
+      about: 'Prints a short bio.',
+      clear: 'Clears the screen (Ctrl+L works too).',
+      date: "Prints today's date and time.",
+      email: 'Prints my email address as a clickable link.',
+      github: 'Prints my GitHub profile link.',
+      help: 'Lists every command and shortcut.',
+      linkedin: 'Prints my LinkedIn profile link.',
+      ls: 'Lists the terminal directories.',
+      open: 'Opens a project page. Usage: open <project>',
+      ping: 'Checks the connection.',
+      projects: () => 'Lists all ' + getProjects().length + ' projects with their shortcuts.',
+      resume: 'Downloads ' + RESUME_NAME + '.',
+      status: 'Shows availability and the current objective.',
+      theme: () => 'Switches to the ' + ((document.documentElement.getAttribute('data-theme') || 'dark') === 'light' ? 'dark' : 'light') + ' theme.',
+      whoami: 'Shows who you are in here (visitor).'
+    };
+    const infoFor = (name) => { const i = CMD_INFO[name]; return typeof i === 'function' ? i() : i; };
+
+    // Every full input string the current text can be completed to, best match first.
+    function getCompletions(value) {
+      const lower = value.replace(/^\s+/, '').toLowerCase();
+      if (!lower) return [];
+      const m = lower.match(/^open\s+(.*)$/);
+      if (m) {
+        const q = m[1].trim();
+        const list = getProjects();
+        let hits = list.filter((p) => p.slug.startsWith(q) || p.title.toLowerCase().startsWith(q));
+        if (!hits.length) hits = list.filter((p) => p.slug.includes(q) || p.title.toLowerCase().includes(q));
+        return hits.map((p) => 'open ' + p.slug);
+      }
+      if (/\s/.test(lower)) return [];
+      return COMMANDS.filter((c) => c.startsWith(lower)).map((c) => (c === 'open' ? 'open ' : c));
     }
 
-    function complete() {
-      const v = hiddenInput.value;
-      const lower = v.toLowerCase();
-      if (!v.trim()) return;
-      const m = lower.match(/^(open)\s+(.*)$/);
-      if (m) {
-        const pool = getProjects().map((p) => p.slug).filter((s) => s.startsWith(m[2]));
-        if (pool.length === 1) setInput('open ' + pool[0]);
-        else if (pool.length > 1) { addPromptLine(v); addOutput(pool.join('   ')); addSpacer(); }
-        return;
+    // Tab cycles through the candidates; `applied` is what the last Tab wrote,
+    // so typing anything else automatically starts a fresh cycle.
+    let cycle = null;
+    const inCycle = (v) => cycle && cycle.applied === v && cycle.list.length > 1;
+
+    function mk(tag, cls, text) {
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    }
+    function clip(str, n) {
+      const s = (str || '').replace(/\s+/g, ' ').trim();
+      return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
+    }
+
+    function renderGhost(value) {
+      let ghost = '';
+      if (!cycle || cycle.applied !== value) {
+        const base = value.replace(/^\s+/, '');
+        const c = getCompletions(value)[0];
+        if (base && c && c.toLowerCase().startsWith(base.toLowerCase()) && c.length > base.length) ghost = c.slice(base.length);
       }
-      if (/\s/.test(lower)) return;
-      const hits = COMMANDS.filter((c) => c.startsWith(lower));
-      if (hits.length === 1) setInput(hits[0] + (hits[0] === 'open' ? ' ' : ''));
-      else if (hits.length > 1) { addPromptLine(v); addOutput(hits.join('   ')); addSpacer(); }
+      ghostEl.textContent = ghost;
+    }
+
+    // The preview shows what Enter will do for the text as it stands right now.
+    function renderPreview(value) {
+      previewText.textContent = '';
+      previewEl.classList.remove('is-error');
+      const v = value.trim();
+      if (!v) { previewEl.hidden = true; tabBtn.hidden = true; return; }
+
+      const lower = v.toLowerCase();
+      const [head, ...rest] = lower.split(/\s+/);
+      const hasSpace = /\s/.test(value.trimStart());
+      const completions = getCompletions(value);
+      const cycling = inCycle(value);
+      let canTab = cycling || (completions.length > 0 && !(completions.length === 1 && completions[0].toLowerCase() === lower));
+      let title = null, tag = '', desc = '', meta = '';
+
+      if (head === 'open' && hasSpace) {
+        const arg = rest.join(' ');
+        const p = arg ? findProject(arg) : null;
+        if (!arg) {
+          title = 'open <project>';
+          desc = 'Jump to a project page. ' + getProjects().length + ' to choose from.';
+          meta = 'Tab lists them one by one';
+        } else if (p) {
+          title = p.title; tag = p.tag; desc = clip(p.desc, 130);
+          meta = 'Enter opens projects/' + p.slug + '.html';
+        } else {
+          title = 'open: ' + arg + ': no such project';
+          desc = "Type 'projects' to list them.";
+          previewEl.classList.add('is-error');
+        }
+      } else {
+        const name = ALIASES[head] || head;
+        if (CMD_INFO[name]) {
+          title = name; desc = infoFor(name); meta = 'Enter to run';
+        } else if (!hasSpace && completions.length) {
+          const first = completions[0].trim();
+          title = first + (completions.length > 1 ? '  (+' + (completions.length - 1) + ' more)' : '');
+          desc = infoFor(first) || '';
+          meta = 'Tab to complete';
+        } else {
+          title = head + ': command not found';
+          desc = "Type 'help' to see what's available.";
+          previewEl.classList.add('is-error');
+          canTab = false;
+        }
+      }
+
+      if (cycling) meta = 'Match ' + (cycle.idx + 1) + ' of ' + cycle.list.length + ' · Tab for next · Shift+Tab back';
+      else if (completions.length > 1 && head === 'open' && hasSpace && rest.length) meta += ' · ' + completions.length + ' matches, Tab to cycle';
+
+      const t = mk('div', 'terminal__preview-title');
+      t.append(mk('strong', null, title));
+      if (tag) t.append(mk('span', 'terminal__preview-tag', tag));
+      previewText.append(t);
+      if (desc) previewText.append(mk('div', 'terminal__preview-desc', desc));
+      if (meta) previewText.append(mk('div', 'terminal__preview-meta', meta));
+      previewEl.hidden = false;
+      tabBtn.hidden = !canTab;
+    }
+
+    function refresh() {
+      const v = hiddenInput.value;
+      inputEcho.textContent = v;
+      renderGhost(v);
+      renderPreview(v);
+      scrollDown();
+    }
+
+    // Phones can insert text at position 0 of a tiny hidden input, which types
+    // "open" as "nepo". This terminal only ever appends, so the caret is pinned
+    // to the end before every insertion, and a repair step backs that up.
+    const toEnd = () => {
+      const n = hiddenInput.value.length;
+      try { hiddenInput.setSelectionRange(n, n); } catch (e) { /* not selectable */ }
+    };
+    let expected = null;
+
+    function setInput(v) {
+      hiddenInput.value = v;
+      toEnd();
+      refresh();
+    }
+
+    function acceptCompletion(step) {
+      const v = hiddenInput.value;
+      if (!cycle || cycle.applied !== v) {
+        const list = getCompletions(v);
+        if (!list.length) return;
+        cycle = { list, idx: step < 0 ? 0 : -1, applied: v };
+      }
+      const n = cycle.list.length;
+      cycle.idx = (cycle.idx + (step < 0 ? -1 : 1) + n) % n;
+      cycle.applied = cycle.list[cycle.idx];
+      setInput(cycle.applied);
     }
 
     if (hiddenInput && inputEcho) {
       termBody.addEventListener('click', () => hiddenInput.focus());
 
-      hiddenInput.addEventListener('input', (e) => { inputEcho.textContent = e.target.value; });
+      hiddenInput.addEventListener('focus', toEnd);
+      hiddenInput.addEventListener('compositionend', () => { toEnd(); refresh(); });
+      hiddenInput.addEventListener('beforeinput', (e) => {
+        expected = null;
+        if (e.isComposing) return;
+        // A real selection (Ctrl+A, then type or Backspace) must be left alone;
+        // only a collapsed caret gets pinned to the end.
+        if (hiddenInput.selectionStart !== hiddenInput.selectionEnd) return;
+        toEnd();
+        if (e.inputType === 'insertText' && e.data) expected = hiddenInput.value + e.data;
+      });
+      hiddenInput.addEventListener('input', (e) => {
+        if (!e.isComposing) {
+          if (expected !== null && hiddenInput.value !== expected && hiddenInput.value.length === expected.length) {
+            hiddenInput.value = expected;           // same characters, wrong order: repair
+          }
+          toEnd();
+        }
+        expected = null;
+        refresh();
+      });
+
+      // Tap target for phones (no Tab key), also clickable on desktop.
+      tabBtn.addEventListener('mousedown', (e) => e.preventDefault());
+      tabBtn.addEventListener('click', () => { acceptCompletion(1); hiddenInput.focus(); });
 
       hiddenInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           const raw = hiddenInput.value.trim();
+          cycle = null;
           setInput('');
           if (raw) {
             if (history[history.length - 1] !== raw) history.push(raw);
@@ -906,7 +1093,10 @@ document.addEventListener('DOMContentLoaded', () => {
           setInput(histIdx === history.length ? draft : history[histIdx]);
         } else if (e.key === 'Tab') {
           e.preventDefault();
-          complete();
+          acceptCompletion(e.shiftKey ? -1 : 1);
+        } else if ((e.key === 'ArrowRight' || e.key === 'End') && ghostEl.textContent) {
+          e.preventDefault();
+          acceptCompletion(1);
         } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
           e.preventDefault();
           clearScreen();

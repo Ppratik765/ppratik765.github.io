@@ -831,7 +831,12 @@
           <div id="terminal-output"></div>
           <div class="terminal__line" id="terminal-input-line"><span
               class="terminal__prompt">visitor@portfolio:~$</span> <span id="terminal-input-echo"></span><span
-              class="terminal__cursor-blink"></span></div>
+              class="terminal__cursor-blink"></span><span id="terminal-ghost" class="terminal__ghost" aria-hidden="true"></span></div>
+          <!-- Live preview of what Enter will do; the Tab button is the phone-friendly way to complete -->
+          <div class="terminal__preview" id="terminal-preview" aria-live="polite" hidden>
+            <div class="terminal__preview-text" id="terminal-preview-text"></div>
+            <button type="button" class="terminal__tab-btn" id="terminal-tab-btn" tabindex="-1" hidden aria-label="Complete the command">Tab <span aria-hidden="true">&#8677;</span></button>
+          </div>
         </div>
 
         <!-- CLI Buttons supporting Spotlight -->
@@ -854,8 +859,8 @@
             </button>
           </div>
         </div>
-        <input type="text" id="terminal-hidden-input" autocomplete="off" spellcheck="false"
-          aria-label="Terminal Input" />
+        <input type="text" id="terminal-hidden-input" autocomplete="off" autocapitalize="off" autocorrect="off"
+          spellcheck="false" inputmode="text" enterkeyhint="go" dir="ltr" aria-label="Terminal Input" />
       </div>
     </div>
   </section>
