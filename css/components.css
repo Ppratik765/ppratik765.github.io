@@ -41,7 +41,7 @@
 
 .btn--ghost:hover {
   border-color: var(--accent-primary);
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   transform: translateY(-2px);
 }
 
@@ -67,7 +67,7 @@
   font-family: var(--font-display);
   font-size: 2.25rem;
   font-weight: 700;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   line-height: 1.1;
 }
 
@@ -179,7 +179,7 @@
 .project-card__tag {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-bottom: 0.75rem;
@@ -301,7 +301,7 @@
 }
 .project-card:hover .project-card__decrypt-block {
   opacity: 0.9;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 /* ---------- Custom Cursor: "Stardust" (fine-pointer devices only) ----------
@@ -516,7 +516,7 @@ html.has-custom-cursor textarea {
 
 .cmdk-trigger:hover {
   border-color: var(--accent-primary);
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 .cmdk-trigger__keys {
@@ -593,7 +593,7 @@ body.cmdk-locked {
 
 .cmdk-prompt {
   font-family: var(--font-mono);
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   font-size: 1rem;
 }
 
@@ -646,7 +646,7 @@ body.cmdk-locked {
 .cmdk-item__hint {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   opacity: 0.8;
@@ -738,7 +738,7 @@ body.cmdk-locked {
 }
 
 .terminal__link {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   text-decoration: none;
   font-weight: 600;
   transition: opacity 0.2s, text-decoration 0.2s;
@@ -790,7 +790,7 @@ body.cmdk-locked {
 
 .terminal__ghost {
   white-space: pre;
-  color: #4b5563;
+  color: #7d8898;
 }
 
 /* Live preview under the prompt */
@@ -802,7 +802,7 @@ body.cmdk-locked {
   padding: 0.55rem 0.8rem;
   border-left: 2px solid color-mix(in srgb, var(--accent-primary) 65%, transparent);
   border-radius: 0 8px 8px 0;
-  background: rgba(255, 195, 0, 0.05);
+  background: color-mix(in srgb, var(--accent-primary) 7%, transparent);
   font-size: 0.74rem;
   line-height: 1.6;
   color: #8b949e;
@@ -825,11 +825,11 @@ body.cmdk-locked {
   font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6b7686;
+  color: #93a0b1;
 }
 
-.terminal__preview-desc { color: #a5b0be; }
-.terminal__preview-meta { margin-top: 0.15rem; font-size: 0.66rem; letter-spacing: 0.04em; color: #5d6877; }
+.terminal__preview-desc { color: #b4bfcc; }
+.terminal__preview-meta { margin-top: 0.15rem; font-size: 0.66rem; letter-spacing: 0.04em; color: #8b97a8; }
 
 .terminal__tab-btn {
   flex-shrink: 0;
@@ -847,6 +847,21 @@ body.cmdk-locked {
 }
 
 .terminal__tab-btn[hidden] { display: none; }
+
+/* Light theme: the accent is purple, so the button carries light text, and the
+   prompt gets a lighter lavender so it stays readable on the dark terminal. */
+[data-theme="light"] .terminal__tab-btn {
+  color: #fff;
+  background: #5a49d8;
+}
+
+[data-theme="light"] .terminal__prompt {
+  color: #a79bff;
+}
+
+[data-theme="light"] .terminal__ghost { color: #8a95a6; }
+[data-theme="light"] .terminal__preview-tag { color: #a3aebd; }
+[data-theme="light"] .terminal__preview-meta { color: #9aa5b5; }
 
 .terminal__output--error {
   color: #ff5f56 !important; /* using the red terminal dot color */
@@ -902,7 +917,7 @@ body.cmdk-locked {
 
 .terminal__btn:hover {
   border-color: var(--accent-primary);
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 .terminal__btn-content {
@@ -1113,8 +1128,8 @@ body.cmdk-locked {
   color: var(--text-muted);
 }
 .breadcrumb a { color: var(--text-secondary); text-decoration: none; transition: color 0.25s ease; }
-.breadcrumb a:hover { color: var(--accent-primary); }
-.breadcrumb [aria-current] { color: var(--accent-primary); }
+.breadcrumb a:hover { color: var(--accent-ink); }
+.breadcrumb [aria-current] { color: var(--accent-ink); }
 
 /* ---------- Project page: at-a-glance stats ---------- */
 .project-stats {
@@ -1137,7 +1152,7 @@ body.cmdk-locked {
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 2.6vw, 2.15rem);
   line-height: 1.1;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 .project-stat__label {
   font-size: 0.86rem;
@@ -1196,7 +1211,7 @@ body.cmdk-locked {
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 .project-pager__name {
   font-family: var(--font-display);
@@ -1296,7 +1311,7 @@ html[data-cursor-style="reticle"] .cursor--down .cursor__shape { transform: scal
 
 html[data-cursor-style="reticle"] .cursor__label,
 html[data-cursor-style="reticle"] .cursor__tag-text {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 html[data-cursor-style="reticle"] .cursor__tag-text {
@@ -1336,4 +1351,15 @@ html[data-cursor-style="reticle"] .cursor-pulse {
 html[data-cursor-style="reticle"] .cursor[data-state="idle"] .cursor__coords,
 html[data-cursor-style="reticle"] .cursor[data-state="grow"] .cursor__coords {
   opacity: 0.85;
+}
+
+
+/* Light theme: solid purple buttons carry white text (the pale page colour was 3.3:1) */
+[data-theme="light"] .btn--primary {
+  background: var(--accent-ink);
+  color: #fff;
+}
+
+[data-theme="light"] .btn--primary:hover {
+  background: color-mix(in srgb, var(--accent-ink) 88%, #000);
 }

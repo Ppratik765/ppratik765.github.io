@@ -968,7 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
           meta = 'Tab lists them one by one';
         } else if (p) {
           title = p.title; tag = p.tag; desc = clip(p.desc, 130);
-          meta = 'Enter opens projects/' + p.slug + '.html';
+          meta = 'Opening ' + p.title;
         } else {
           title = 'open: ' + arg + ': no such project';
           desc = "Type 'projects' to list them.";

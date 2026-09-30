@@ -13,6 +13,9 @@
   --bg-secondary:    #001d3d;
   --bg-tertiary:     #003566;
   --accent-primary:  #ffc300;
+  --on-dark-accent:  #ffc300; /* accent / muted text drawn on always-dark panels (media placeholders) */
+  --on-dark-muted:   #9aa5b5;
+  --accent-ink:      var(--accent-primary); /* accent used for small TEXT (deeper in the light theme for contrast) */
   --accent-secondary:#ffd60a;
   --text-primary:    #fffcf2;
   --text-secondary:  #ccd6e0;
@@ -57,6 +60,9 @@
 
   /* Accents */
   --accent-primary:    #7161ef; /* Medium Slate Blue */
+  --on-dark-accent:    #a79bff;
+  --on-dark-muted:     #9aa5b5;
+  --accent-ink:        #5a49d8; /* 5:1+ on the light background; --accent-primary is only 3.3:1 for small text */
   --accent-secondary:  #957fef; /* Soft Periwinkle */
   --accent-tertiary:   #b79ced; /* Wisteria */
   --accent-muted:      #dec0f1; /* Mauve */

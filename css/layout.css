@@ -26,7 +26,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.5rem;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   text-decoration: none;
   letter-spacing: -0.01em;
   transition: color 0.3s ease;
@@ -67,7 +67,7 @@
 
 .logo-mark > span:last-child {
   font-style: italic;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   margin-left: -0.16em;
 }
 
@@ -86,7 +86,7 @@
 
 .nav__logo--back:hover .nav__back {
   transform: translateX(-4px);
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 .nav__logo-img {
@@ -129,7 +129,7 @@
 }
 
 .nav__links a:hover {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 .nav__links a:hover::after {
@@ -137,7 +137,7 @@
 }
 
 .nav__links a.active {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
 
 .nav__links a.active::after {
@@ -201,7 +201,7 @@
 .theme-toggle {
   background: none;
   border: 1.5px solid var(--accent-primary);
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   padding: 0.45rem 1.1rem;
@@ -235,7 +235,7 @@ section {
 .section-label {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.2em;
   margin-bottom: 1rem;
@@ -422,7 +422,7 @@ html[data-theme="light"] .hero__iframe-container {
 .hero__tagline {
   font-family: var(--font-mono);
   font-size: 0.9rem;
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.25em;
   margin-bottom: 1.5rem;
@@ -454,7 +454,7 @@ html[data-theme="light"] .hero__iframe-container {
 }
 
 .hero__name .highlight {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   font-style: italic;
   font-weight: 600;
 }
@@ -479,7 +479,7 @@ html[data-theme="light"] .hero__iframe-container {
 }
 
 .hero__cta-row .btn--ghost {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   border-color: var(--accent-primary);
 }
 
@@ -594,6 +594,12 @@ html[data-theme="light"] .hero__iframe-container {
   }
 }
 
+/* Light theme: pale text on the purple control button was only 3.3:1 */
+[data-theme="light"] .control-btn {
+  background: var(--accent-ink);
+  color: #fff;
+}
+
 /* ---------- Section 2: About Me (Pathfinding Map + Path timeline) ---------- */
 #about {
   min-height: 0;
@@ -646,7 +652,7 @@ html[data-theme="light"] .hero__iframe-container {
 }
 
 .about__text .about__lede strong {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
   font-weight: 600;
 }
 
@@ -764,7 +770,7 @@ html[data-theme="light"] .hero__iframe-container {
 .path__item.is-active .path__meta { color: var(--text-secondary); }
 
 .path__item:not(.path__item--static) .path__btn:hover .path__name,
-.path__item:not(.path__item--static) .path__btn:focus-visible .path__name { color: var(--accent-primary); }
+.path__item:not(.path__item--static) .path__btn:focus-visible .path__name { color: var(--accent-ink); }
 
 .path__btn:focus-visible {
   outline: 2px solid var(--accent-primary);
@@ -932,14 +938,20 @@ html[data-theme="light"] .hero__iframe-container {
     padding: 2rem 2.5rem;
     background: var(--bg-primary);
     border-left: 1px solid var(--card-border);
-    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+    /* Closed: no shadow (its 60px blur used to leak a grey band onto the right
+       edge of the light theme) and hidden from keyboard/screen readers. */
+    box-shadow: none;
+    visibility: hidden;
     transform: translateX(100%);
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, visibility 0s linear 0.45s;
     z-index: 1150;
   }
 
   .nav--open .nav__links {
     transform: translateX(0);
+    visibility: visible;
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+    transition-delay: 0s;
   }
 
   .nav__links a {
@@ -1271,5 +1283,5 @@ html[data-theme="light"] .hero__iframe-container {
 
 /* ---------- Nav: resume link ---------- */
 .nav__links a.nav__resume {
-  color: var(--accent-primary);
+  color: var(--accent-ink);
 }
